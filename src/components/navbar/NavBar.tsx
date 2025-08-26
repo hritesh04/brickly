@@ -4,7 +4,7 @@ import UserProfile from "./UserProfile";
 export default function NavBar(){
 
     return(
-        <div className="flex w-full h-24 p-2 px-8 gap-4">
+        <div className="flex w-full h-24 p-2 px-8 gap-4 justify-between">
             <a href="/">
                 <div className="h-full flex items-center">
                     <img 
