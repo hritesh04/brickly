@@ -114,7 +114,6 @@ export class useEditor {
       for (const res of node!.resource) resource += this.parseResource(res);
     }
     const nodes = this.traverseChild(node!);
-    // console.log(`[gdscene format=3]`);
     return `[gd_scene format=3]` + resource + nodes;
   }
 

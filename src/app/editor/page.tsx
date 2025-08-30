@@ -1,5 +1,11 @@
+import DotBackGround from "@/components/editor/DotBackGround";
+import {
+  PropertySideBar,
+  PropertySideBarProvider,
+} from "@/components/editor/sidebar/PropertySideBar";
 import SideBar from "@/components/editor/sidebar/SideBar";
 import TopDock from "@/components/editor/TopDock";
+import { Button } from "@/components/ui/button";
 import {
   SidebarInset,
   SidebarProvider,
@@ -8,14 +14,17 @@ import {
 
 export default function EditorPage() {
   return (
-    <div className=" h-[89.5vh] px-2">
+    <DotBackGround>
       <SidebarProvider className="min-h-full">
-        <SideBar />
-        <SidebarInset>
-          <SidebarTrigger className="mt-4" />
-          <TopDock />
-        </SidebarInset>
+        <PropertySideBarProvider>
+          <SideBar />
+          <SidebarInset className=" bg-transparent overflow-hidden">
+            <SidebarTrigger className="mt-4" />
+            <TopDock />
+            <PropertySideBar />
+          </SidebarInset>
+        </PropertySideBarProvider>
       </SidebarProvider>
-    </div>
+    </DotBackGround>
   );
 }

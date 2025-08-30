@@ -14,6 +14,7 @@ import GameTab from "./GameTab";
 import { Code2Icon, ImagePlayIcon, Layers } from "lucide-react";
 import { useState } from "react";
 import ActiveSideBar from "./ActiveSideBar";
+import { usePropertySideBar } from "./PropertySideBar";
 
 const navMain = [
   {
@@ -33,13 +34,15 @@ const navMain = [
 export default function SideBar() {
   const [activeItem, setActiveItem] = useState(navMain[0]);
   const { toggleSidebar, setOpen } = useSidebar();
+  const { setOpen: setPropertyBar, open: PropertyBarOpen } =
+    usePropertySideBar();
   return (
     <Sidebar
       collapsible="icon"
       variant="floating"
       className="relative h-full overflow-hidden *:data-[sidebar=sidebar]:flex-row"
     >
-      <Sidebar collapsible="none" className="w-fit border-r p-2">
+      <Sidebar collapsible="none" className="w-fit border-r py-2">
         <SidebarHeader className="h-fit m-auto">
           <GameTab />
         </SidebarHeader>
@@ -48,12 +51,13 @@ export default function SideBar() {
             <SidebarGroupContent className="px-1.5 md:px-0">
               <SidebarMenu className=" gap-2">
                 {navMain.map((nav) => (
-                  <SidebarMenuItem>
+                  <SidebarMenuItem key={nav.title}>
                     <SidebarMenuButton
                       size="lg"
                       className="[&>svg]:size-6 group-data-[collapsible=icon]:[&>svg]:ml-1"
                       onClick={() => {
                         setActiveItem(nav);
+                        setPropertyBar(!PropertyBarOpen);
                         // activeItem.title == nav.title
                         //   ? setOpen(false)
                         setOpen(true);

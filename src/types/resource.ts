@@ -15,7 +15,6 @@ type BaseResource = {
   type: AssetType;
   path: string;
   id: number;
-  //   resType: ResourceType;
 };
 
 export type Resource =
