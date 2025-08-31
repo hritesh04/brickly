@@ -7,7 +7,7 @@ interface ActiveSideBarProps {
 export default function ActiveSideBar({
   activeTitle,
 }: {
-  activeTitle: string;
+  activeTitle?: string;
 }) {
   switch (activeTitle) {
     case "Scenes":

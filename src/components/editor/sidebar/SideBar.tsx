@@ -11,7 +11,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import GameTab from "./GameTab";
-import { Code2Icon, ImagePlayIcon, Layers } from "lucide-react";
+import { Code2Icon, ImagePlayIcon, Layers, LucideIcon } from "lucide-react";
 import { useState } from "react";
 import ActiveSideBar from "./ActiveSideBar";
 import { usePropertySideBar } from "./PropertySideBar";
@@ -32,7 +32,10 @@ const navMain = [
 ];
 
 export default function SideBar() {
-  const [activeItem, setActiveItem] = useState(navMain[0]);
+  const [activeItem, setActiveItem] = useState<{
+    title: string;
+    icon: LucideIcon;
+  } | null>(navMain[0]);
   const { toggleSidebar, setOpen } = useSidebar();
   const { setOpen: setPropertyBar, open: PropertyBarOpen } =
     usePropertySideBar();
@@ -56,11 +59,16 @@ export default function SideBar() {
                       size="lg"
                       className="[&>svg]:size-6 group-data-[collapsible=icon]:[&>svg]:ml-1"
                       onClick={() => {
-                        setActiveItem(nav);
-                        setPropertyBar(!PropertyBarOpen);
+                        if (activeItem?.title === nav.title) {
+                          setOpen(false);
+                          setPropertyBar(!PropertyBarOpen);
+                          setActiveItem(null);
+                        } else {
+                          setOpen(true);
+                          setActiveItem(nav);
+                        }
                         // activeItem.title == nav.title
                         //   ? setOpen(false)
-                        setOpen(true);
                         // toggleSidebar();
                       }}
                       isActive={activeItem?.title === nav.title}
@@ -77,12 +85,12 @@ export default function SideBar() {
       </Sidebar>
       <Sidebar collapsible="none" className="hidden flex-1 md:flex">
         <SidebarHeader>
-          <p className=" text-center">{activeItem.title}</p>
+          <p className=" text-center">{activeItem?.title}</p>
         </SidebarHeader>
         <SidebarContent>
           <SidebarGroup>
             <SidebarGroupContent>
-              <ActiveSideBar activeTitle={activeItem.title} />
+              <ActiveSideBar activeTitle={activeItem?.title} />
             </SidebarGroupContent>
           </SidebarGroup>
         </SidebarContent>
