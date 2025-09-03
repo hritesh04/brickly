@@ -150,10 +150,10 @@ export class useEditor {
       case NodeType.Node:
         return;
       case NodeType.Node2D:
-        if (node.property.canvas) {
+        if (node.property?.canvas) {
           property += this.getCanvasProperty(node.property.canvas);
         }
-        if (node.property.transform) {
+        if (node.property?.transform) {
           property += this.getTransformProperty(node.property.transform);
         }
     }

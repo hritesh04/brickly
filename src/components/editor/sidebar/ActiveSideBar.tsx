@@ -1,8 +1,4 @@
-import SceneBar from "../SceneBar";
-
-interface ActiveSideBarProps {
-  title: string;
-}
+import SceneBar from "../sceneBar/SceneBar";
 
 export default function ActiveSideBar({
   activeTitle,

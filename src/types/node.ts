@@ -10,6 +10,7 @@ export enum NodeType {
   Node2D = "Node2D",
   Sprite2D = "Sprite2D",
   AnimatedSprite2D = "AnimatedSprite2D",
+  PackedScene = "PackedScene",
 }
 
 interface BaseNode {
@@ -22,7 +23,7 @@ interface BaseNode {
 export type Node = BaseNode &
   (
     | { type: NodeType.Node }
-    | { type: NodeType.Node2D; property: Node2DProperty }
-    | { type: NodeType.Sprite2D; property: Sprite2DProperty }
-    | { type: NodeType.AnimatedSprite2D; property: AnimatedSprite2DProperty }
+    | { type: NodeType.Node2D; property?: Node2DProperty }
+    | { type: NodeType.Sprite2D; property?: Sprite2DProperty }
+    | { type: NodeType.AnimatedSprite2D; property?: AnimatedSprite2DProperty }
   );

@@ -15,6 +15,7 @@ import { Code2Icon, ImagePlayIcon, Layers, LucideIcon } from "lucide-react";
 import { useState } from "react";
 import ActiveSideBar from "./ActiveSideBar";
 import { usePropertySideBar } from "./PropertySideBar";
+import { Separator } from "@/components/ui/separator";
 
 const navMain = [
   {
@@ -85,14 +86,14 @@ export default function SideBar() {
       </Sidebar>
       <Sidebar collapsible="none" className="hidden flex-1 md:flex">
         <SidebarHeader>
-          <p className=" text-center">{activeItem?.title}</p>
+          <div className=" flex items-center gap-3 px-2">
+            {activeItem?.icon && <activeItem.icon className="size-4" />}
+            <p className=" text-center font-medium">{activeItem?.title}</p>
+          </div>
+          <Separator />
         </SidebarHeader>
-        <SidebarContent>
-          <SidebarGroup>
-            <SidebarGroupContent>
-              <ActiveSideBar activeTitle={activeItem?.title} />
-            </SidebarGroupContent>
-          </SidebarGroup>
+        <SidebarContent className=" h-full px-2">
+          <ActiveSideBar activeTitle={activeItem?.title} />
         </SidebarContent>
       </Sidebar>
     </Sidebar>
