@@ -1,6 +1,6 @@
 import { useEditor } from "./editor";
 import { NodeType } from "@/types/node";
-import { Node } from "@/types/node";
+import { INode } from "@/types/node";
 import { Node2DProperty } from "@/types/property";
 import { variant } from "@/types/variant";
 import { Property } from "@/types/property";
@@ -19,13 +19,13 @@ describe("Editor", () => {
   });
   it("should add a scene", () => {
     editor.addNode(NodeType.Node);
-    expect(editor.getNodes()).toEqual<Node[]>([
+    expect(editor.getNodes()).toEqual<INode[]>([
       { name: "Node", type: NodeType.Node },
     ]);
   });
   it("should add a child to scene", () => {
     editor.addChild(NodeType.Node2D);
-    expect(editor.getNodes()).toEqual<Node[]>([
+    expect(editor.getNodes()).toEqual<INode[]>([
       {
         name: "Node",
         type: NodeType.Node,
@@ -49,6 +49,6 @@ describe("Editor", () => {
     editor.addResource(AssetType.Script, ResourceType.ExtResource);
     editor.attachResource("Script", "Node2D");
     console.log(editor.getActiveScene());
-    console.log(editor.saveAsScene("Node2D"));
+    console.log(editor.saveAsScene("Node"));
   });
 });

@@ -1,4 +1,4 @@
-import { Node, NodeType } from "@/types/node";
+import { INode, NodeType, Sprite2D } from "@/types/node";
 import {
   AnimatedSprite2DProperty,
   CanvasItemProperty,
@@ -11,8 +11,8 @@ import { AssetType, Resource, ResourceType } from "@/types/resource";
 // import { Property } from "@/types/property";
 
 export class useEditor {
-  nodes: Node[] = [];
-  activeNode: Node | null = null;
+  nodes: INode[] = [];
+  activeNode: INode | null = null;
   resourceCounter: number = 0;
   resource: Resource[] = [];
   constructor() {}
@@ -23,7 +23,7 @@ export class useEditor {
       type: type,
       // property: {},
       // children: [],
-    } as Node;
+    } as INode;
     this.nodes.push(node);
     if (!this.activeNode) this.activeNode = this.nodes[0];
   }
@@ -36,31 +36,32 @@ export class useEditor {
       type,
       property: {},
       // children: [],
-    } as Node;
+    } as INode;
     this.nodes.push(node);
     this.activeNode.children.push(node);
     this.activeNode = node;
   }
 
-  addResource(type: AssetType, resType: ResourceType) {
+  addResource(assetType: AssetType, type: ResourceType) {
     const path = "demoPath.png";
 
-    if (resType === ResourceType.SubResource) {
-      const resource: Resource = {
+    if (type === ResourceType.SubResource) {
+      const resource = {
         id: ++this.resourceCounter,
-        name: AssetType[type],
+        name: AssetType[assetType],
+        assetType,
         type,
-        resType,
-        path,
+        // resType,
+        // path,
         property: {} as Record<string, any>,
       };
       this.resource.push(resource);
     } else {
-      const resource: Resource = {
+      const resource = {
         id: ++this.resourceCounter,
-        name: AssetType[type],
+        name: AssetType[assetType],
+        assetType,
         type,
-        resType,
         path,
       };
       this.resource.push(resource);
@@ -76,7 +77,7 @@ export class useEditor {
     node.resource.push(res);
   }
 
-  getNodes(): Node[] {
+  getNodes(): INode[] {
     return this.nodes;
   }
 
@@ -109,55 +110,99 @@ export class useEditor {
 
   saveAsScene(name: string) {
     const node = this.nodes.find((n) => n.name == name);
-    let resource = "";
-    if (node!.resource) {
-      for (const res of node!.resource) resource += this.parseResource(res);
-    }
+    // let resource = "";
+    // if (node!.resource) {
+    //   for (const res of node!.resource) resource += this.parseResource(res);
+    // }
     const nodes = this.traverseChild(node!);
-    return `[gd_scene format=3]` + resource + nodes;
+    return `[gd_scene format=3]` + nodes.res + nodes.nodes;
   }
 
-  traverseChild(node: Node, parent?: string) {
+  traverseChild(node: INode, parent?: string): { nodes: string; res: string } {
     const parentAttr = parent ? `parent="${parent}"` : "";
-    let result = `\n\n[node name="${node.name}" type="${node.type}"${
+    let nodes = `\n\n[node name="${node.name}" type="${node.type}"${
       " " + parentAttr
     }]`;
+    let res = "";
 
     if (node.type != NodeType.Node && node.property) {
-      result += this.parseProperty(node);
+      const { property, resource } = this.parseProperty(node);
+      res = resource;
+      nodes += property;
     }
 
     if (node.children) {
       for (const n of node.children) {
-        result += this.traverseChild(n, parent ? node.name : ".");
+        const result = this.traverseChild(n, parent ? node.name : ".");
+        nodes += result.nodes;
+        res += result.res;
       }
     }
-    return result;
+    return { res, nodes };
   }
 
   parseResource(resource: Resource) {
     let res = "";
-    if (resource.resType == ResourceType.ExtResource) {
-      res += `\n\n[ext_resource type="${resource.type}" path="${resource.path}" id="${resource.id}"]`;
+    if (resource.type === ResourceType.ExtResource) {
+      res += `\n\n[ext_resource type="${resource.assetType}" path="${resource.path}" id="${resource.id}"]`;
+    } else {
+      res += `\n\n[sub_resource type="${resource.assetType}" id="${resource.id}"]`;
+      // + this.parseProperty(resource.property)
     }
     return res;
   }
 
-  parseProperty(node: Node) {
+  parseProperty(node: INode): { property: string; resource: string } {
     // console.log("parsing property", node.property);
     let property = "";
+    let resource = "";
     switch (node.type) {
       case NodeType.Node:
-        return;
+        if (node.resource) {
+          for (const res of node.resource) {
+            resource += this.parseResource(res);
+            property += `\n${res.name.toLowerCase()} = ${res.type}("${
+              res.id
+            }")`;
+          }
+        }
+        return { property, resource };
       case NodeType.Node2D:
-        if (node.property?.canvas) {
+        if (!node.property) return { property, resource };
+        if (node.property.canvas) {
           property += this.getCanvasProperty(node.property.canvas);
         }
-        if (node.property?.transform) {
+        if (node.property.transform) {
           property += this.getTransformProperty(node.property.transform);
         }
+        if (node.resource) {
+          for (const res of node.resource) {
+            resource += this.parseResource(res);
+            property += `\n${res.name.toLowerCase()} = ${res.type}("${
+              res.id
+            }")`;
+          }
+        }
+        return { property, resource };
+      case NodeType.Sprite2D:
+        const sprite = node as Sprite2D;
+        if (!sprite.property) return { property, resource };
+        if (sprite.property.canvas) {
+          property += this.getCanvasProperty(sprite.property.canvas);
+        }
+        if (sprite.property.transform) {
+          property += this.getTransformProperty(sprite.property.transform);
+        }
+        if (node.resource) {
+          for (const res of node.resource) {
+            resource += this.parseResource(res);
+            property += `\n${res.name.toLowerCase()} = ${res.type}("${
+              res.id
+            }")`;
+          }
+        }
     }
-    return property;
+    return { property, resource };
   }
 
   getTransformProperty(transform: TransformProperty) {

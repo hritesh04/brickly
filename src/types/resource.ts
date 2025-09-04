@@ -1,6 +1,6 @@
 export enum ResourceType {
-  ExtResource,
-  SubResource,
+  ExtResource = "ExtResource",
+  SubResource = "SubResource",
 }
 
 export enum AssetType {
@@ -11,17 +11,20 @@ export enum AssetType {
 }
 
 type BaseResource = {
-  name: string;
-  type: AssetType;
-  path: string;
   id: number;
+  name: string;
+  assetType: AssetType;
+  // path: string;
 };
 
-export type Resource =
-  | (BaseResource & {
-      resType: ResourceType.SubResource;
-      property: Record<string, any>;
-    })
-  | (BaseResource & {
-      resType: ResourceType.ExtResource;
-    });
+interface SubResource extends BaseResource {
+  type: ResourceType.SubResource;
+  property: Record<string, any>;
+}
+
+interface ExtResource extends BaseResource {
+  type: ResourceType.ExtResource;
+  path: string;
+}
+
+export type Resource = SubResource | ExtResource;

@@ -1,4 +1,4 @@
-import { AssetType, ResourceType } from "./resource";
+import { AssetType, Resource, ResourceType } from "./resource";
 import { variant } from "./variant";
 
 interface BaseProperty {
@@ -16,10 +16,10 @@ export interface Node2DProperty extends BaseProperty {
 }
 
 export interface Sprite2DProperty extends Node2DProperty {
-  sprite_2d: { texture: { type: AssetType.Texture2D } };
+  texture: Resource;
 }
 export interface AnimatedSprite2DProperty extends Node2DProperty {
-  sprite_2d: { texture: { type: AssetType.Texture2D } };
+  texture: Resource;
 }
 
 export interface TransformProperty {
