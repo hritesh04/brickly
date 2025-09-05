@@ -1,21 +1,46 @@
-import { useEffect, useRef, useCallback } from "react";
+"use client";
+import { useCallback, useEffect, useRef, useState } from "react";
+import LayerCanvas from "./layerCanvas";
+import { Stage } from "react-konva";
+import Konva from "konva";
 
-interface PreviewCanvasProps {
-  container: React.RefObject<HTMLDivElement | null>;
-}
+Konva.pixelRatio=5
 
-export default function PreviewCanvas(props: PreviewCanvasProps) {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+export default function MainCanvas() {
+  const containerRef = useRef<HTMLDivElement | null>(null);
+  const canvasRef = useRef<HTMLDivElement | null>(null);
   const dragRef = useRef(false);
   const positionRef = useRef({ x: 0, y: 0 });
   const dragStartRef = useRef({ x: 0, y: 0 });
   const scaleRef = useRef(1);
+  const [dimensions, setDimensions] = useState({ width: 400, height: 300 });
+  const [isInitialized, setIsInitialized] = useState(false);
 
   const updateCanvasTransform = useCallback(() => {
     if (canvasRef.current) {
       canvasRef.current.style.transform = `translate(${positionRef.current.x}px, ${positionRef.current.y}px) scale(${scaleRef.current})`;
     }
   }, []);
+
+  // Center the canvas on initial render
+  const centerCanvas = useCallback(() => {
+    if (containerRef.current && canvasRef.current) {
+      const containerRect = containerRef.current.getBoundingClientRect();
+      const centerX = (containerRect.width - dimensions.width) / 2;
+      const centerY = (containerRect.height - dimensions.height) / 2;
+      
+      positionRef.current = { x: centerX, y: centerY };
+      updateCanvasTransform();
+    }
+  }, [dimensions, updateCanvasTransform]);
+
+  // Initialize canvas position and dimensions
+  useEffect(() => {
+    if (containerRef.current && !isInitialized) {
+      centerCanvas();
+      setIsInitialized(true);
+    }
+  }, [centerCanvas, isInitialized]);
 
   const handleMouseDown = useCallback((e: React.MouseEvent) => {
     dragRef.current = true;
@@ -37,12 +62,10 @@ export default function PreviewCanvas(props: PreviewCanvasProps) {
       const newX = e.clientX - dragStartRef.current.x;
       const newY = e.clientY - dragStartRef.current.y;
 
-      if (props.container.current) {
-        const containerRect = props.container.current.getBoundingClientRect();
-        const canvasRect = canvasRef.current.getBoundingClientRect();
-
-        const scaledWidth = canvasRect.width;
-        const scaledHeight = canvasRect.height;
+      if (containerRef.current) {
+        const containerRect = containerRef.current.getBoundingClientRect();
+        const scaledWidth = dimensions.width * scaleRef.current;
+        const scaledHeight = dimensions.height * scaleRef.current;
 
         const minX = -scaledWidth + 100;
         const maxX = containerRect.width - 100;
@@ -59,7 +82,7 @@ export default function PreviewCanvas(props: PreviewCanvasProps) {
 
       updateCanvasTransform();
     },
-    [props.container, updateCanvasTransform]
+    [dimensions, updateCanvasTransform]
   );
 
   const handleMouseUp = useCallback(() => {
@@ -85,7 +108,6 @@ export default function PreviewCanvas(props: PreviewCanvasProps) {
         Math.min(5, scaleRef.current * zoomFactor)
       );
 
-      // Calculate zoom towards mouse cursor
       const scaleDiff = newScale - scaleRef.current;
       const newX =
         positionRef.current.x - (mouseX * scaleDiff) / scaleRef.current;
@@ -117,7 +139,6 @@ export default function PreviewCanvas(props: PreviewCanvasProps) {
     const canvas = canvasRef.current;
     if (canvas) {
       canvas.addEventListener("wheel", handleWheel, { passive: false });
-
       return () => {
         canvas.removeEventListener("wheel", handleWheel);
       };
@@ -125,21 +146,25 @@ export default function PreviewCanvas(props: PreviewCanvasProps) {
   }, [handleWheel]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      width={400}
-      height={300}
-      style={{
-        position: "absolute",
-        left: 0,
-        top: 0,
-        transform: `translate(${positionRef.current.x}px, ${positionRef.current.y}px) scale(${scaleRef.current})`,
-        transformOrigin: "0 0",
-        cursor: "grab",
-        userSelect: "none",
-      }}
-      className="bg-white border border-gray-300 shadow-lg"
-      onMouseDown={handleMouseDown}
-    />
+    <div className="h-full w-full relative" ref={containerRef}>
+      <div
+        ref={canvasRef}
+        style={{
+          position: "absolute",
+          // width: `${dimensions.width}px`,
+          // height: `${dimensions.height}px`,
+          transform: `translate(${positionRef.current.x}px, ${positionRef.current.y}px) scale(${scaleRef.current})`,
+          transformOrigin: "0 0",
+          cursor: "grab",
+          userSelect: "none",
+        }}
+        className="bg-white border border-gray-300 shadow-lg"
+        onMouseDown={handleMouseDown}
+      >
+   <Stage width={dimensions.width} height={dimensions.height}>
+        <LayerCanvas />
+   </Stage>
+      </div>
+    </div>
   );
 }

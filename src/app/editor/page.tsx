@@ -1,5 +1,5 @@
 import DotBackGround from "@/components/editor/DotBackGround";
-import MainPreview from "@/components/editor/canvas/MainPreview";
+import MainCanvas from "@/components/editor/canvas/MainCanvas";
 import {
   PropertySideBar,
   PropertySideBarProvider,
@@ -19,7 +19,7 @@ export default function EditorPage() {
           <SidebarInset className=" bg-transparent overflow-hidden absolute h-full">
             <TopDock />
             <PropertySideBar />
-            <MainPreview />
+            <MainCanvas />
           </SidebarInset>
         </PropertySideBarProvider>
       </SidebarProvider>
