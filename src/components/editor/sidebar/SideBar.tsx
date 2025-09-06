@@ -16,6 +16,9 @@ import { useState } from "react";
 import ActiveSideBar from "./ActiveSideBar";
 import { usePropertySideBar } from "./PropertySideBar";
 import { Separator } from "@/components/ui/separator";
+import { Prisma, Project } from "@prisma/client";
+import { projectWithRelation } from "@/actions/project/schema";
+import z from "zod";
 
 const navMain = [
   {
@@ -32,7 +35,11 @@ const navMain = [
   //   },
 ];
 
-export default function SideBar() {
+export default function SideBar({
+  project,
+}: {
+  project: z.infer<typeof projectWithRelation>;
+}) {
   const [activeItem, setActiveItem] = useState<{
     title: string;
     icon: LucideIcon;
@@ -93,7 +100,7 @@ export default function SideBar() {
           <Separator />
         </SidebarHeader>
         <SidebarContent className=" h-full px-2">
-          <ActiveSideBar activeTitle={activeItem?.title} />
+          <ActiveSideBar activeTitle={activeItem?.title} project={project} />
         </SidebarContent>
       </Sidebar>
     </Sidebar>

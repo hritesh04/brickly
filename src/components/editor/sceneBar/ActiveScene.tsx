@@ -3,8 +3,12 @@ import { Image, Layers, Plus } from "lucide-react";
 import FileTree from "./FileTree";
 import { Node, NodeType } from "@/types/node";
 import { Tree } from "@/components/magicui/file-tree";
+import { node } from "@/actions/node/schema";
+import { useAction } from "@/hooks/useAction";
+import { createNode } from "@/actions/node";
 
-export default function ActiveScene({ scene }: { scene: Node | null }) {
+export default function ActiveScene({ scene }: { scene: node | null }) {
+  const { execute } = useAction(createNode);
   if (!scene) {
     return (
       <div className="flex-1 flex items-center flex-col">
@@ -12,7 +16,10 @@ export default function ActiveScene({ scene }: { scene: Node | null }) {
           <p className="text-sm font-medium text-sidebar-foreground/80">
             Active Scene
           </p>
-          <div className="p-1 hover:bg-secondary rounded-md cursor-pointer">
+          <div
+            className="p-1 hover:bg-secondary rounded-md cursor-pointer"
+            onClick={() => execute({ type: "Node", projectID: 1 })}
+          >
             <Plus size={18} />
           </div>
         </div>
@@ -30,7 +37,16 @@ export default function ActiveScene({ scene }: { scene: Node | null }) {
         <p className="text-sm font-medium text-sidebar-foreground/80">
           Active Scene
         </p>
-        <div className="flex p-1 hover:bg-secondary rounded-md cursor-pointer">
+        <div
+          className="flex p-1 hover:bg-secondary rounded-md cursor-pointer"
+          onClick={() =>
+            execute({
+              type: "Node",
+              parentID: scene.id,
+              // projectID: 1
+            })
+          }
+        >
           <Plus size={18} />
         </div>
       </div>

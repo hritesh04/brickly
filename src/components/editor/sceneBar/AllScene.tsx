@@ -1,16 +1,20 @@
+import { createNode } from "@/actions/node";
+import { node, nodeType } from "@/actions/node/schema";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
+import { useAction } from "@/hooks/useAction";
 import { Node } from "@/types/node";
 import { Image, Plus } from "lucide-react";
 import { SetStateAction } from "react";
 
 interface AllScenesProps {
-  scenes: Node[];
-  setScene: React.Dispatch<SetStateAction<Node | null>>;
+  scenes: node[] | null;
+  setScene: React.Dispatch<SetStateAction<node | null>>;
 }
 
 export default function AllScenes({ scenes, setScene }: AllScenesProps) {
-  if (scenes.length < 1) {
+  const { execute, error } = useAction(createNode);
+  if (!scenes) {
     return (
       <div className="min-h-2/5 max-h-2/5 w-full flex flex-col gap-1">
         <div className="flex justify-between items-center px-2">
@@ -35,7 +39,10 @@ export default function AllScenes({ scenes, setScene }: AllScenesProps) {
         <p className="text-sm font-medium text-sidebar-foreground/80">
           All Scenes
         </p>
-        <div className="p-1 hover:bg-secondary rounded-md cursor-pointer">
+        <div
+          className="p-1 hover:bg-secondary rounded-md cursor-pointer"
+          onClick={() => execute({ type: "Node", projectID: 1 })}
+        >
           <Plus size={18} />
         </div>
       </div>

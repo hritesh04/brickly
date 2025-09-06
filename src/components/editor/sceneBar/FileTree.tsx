@@ -1,8 +1,9 @@
+import { node } from "@/actions/node/schema";
 import { File, Folder, Tree } from "@/components/magicui/file-tree";
 import { Node } from "@/types/node";
 import { CircleIcon } from "lucide-react";
 
-export default function FileTree({ scene }: { scene: Node }) {
+export default function FileTree({ scene }: { scene: node }) {
   if (!scene.children) {
     return (
       <File
@@ -17,7 +18,7 @@ export default function FileTree({ scene }: { scene: Node }) {
   return (
     <Folder element={scene.name} value={scene.name} className="mb-1">
       {scene.children.map((n) => (
-        <FileTree scene={n} />
+        <FileTree scene={n as node} />
       ))}
     </Folder>
   );

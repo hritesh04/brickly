@@ -4,7 +4,7 @@ import LayerCanvas from "./layerCanvas";
 import { Stage } from "react-konva";
 import Konva from "konva";
 
-Konva.pixelRatio=5
+Konva.pixelRatio = 5;
 
 export default function MainCanvas() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -22,19 +22,17 @@ export default function MainCanvas() {
     }
   }, []);
 
-  // Center the canvas on initial render
   const centerCanvas = useCallback(() => {
     if (containerRef.current && canvasRef.current) {
       const containerRect = containerRef.current.getBoundingClientRect();
       const centerX = (containerRect.width - dimensions.width) / 2;
       const centerY = (containerRect.height - dimensions.height) / 2;
-      
+
       positionRef.current = { x: centerX, y: centerY };
       updateCanvasTransform();
     }
   }, [dimensions, updateCanvasTransform]);
 
-  // Initialize canvas position and dimensions
   useEffect(() => {
     if (containerRef.current && !isInitialized) {
       centerCanvas();
@@ -151,8 +149,6 @@ export default function MainCanvas() {
         ref={canvasRef}
         style={{
           position: "absolute",
-          // width: `${dimensions.width}px`,
-          // height: `${dimensions.height}px`,
           transform: `translate(${positionRef.current.x}px, ${positionRef.current.y}px) scale(${scaleRef.current})`,
           transformOrigin: "0 0",
           cursor: "grab",
@@ -161,9 +157,9 @@ export default function MainCanvas() {
         className="bg-white border border-gray-300 shadow-lg"
         onMouseDown={handleMouseDown}
       >
-   <Stage width={dimensions.width} height={dimensions.height}>
-        <LayerCanvas />
-   </Stage>
+        <Stage width={dimensions.width} height={dimensions.height}>
+          <LayerCanvas />
+        </Stage>
       </div>
     </div>
   );

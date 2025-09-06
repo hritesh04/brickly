@@ -1,9 +1,9 @@
-import { ActionState, FieldErrors } from "@/lib/actionState"
+import { ActionState, FieldErrors } from "@/lib/actionState";
 import { useCallback, useState } from "react";
 
 type Action<TInput, TOutput> = (
-    data:TInput
-) => Promise<ActionState<TInput,TOutput>>
+  data: TInput
+) => Promise<ActionState<TInput, TOutput>>;
 
 interface UseActionOptions<TOutput> {
   onSuccess?: (data: TOutput) => void;

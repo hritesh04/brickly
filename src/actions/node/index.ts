@@ -6,7 +6,6 @@ import { createSafeAction } from "@/lib/actionState";
 
 async function createNodeHandler(data: CreateNodeInput) {
   try {
-    console.log(data);
     const res = await prisma.node.create({
       data: {
         name: data.type,
@@ -15,10 +14,8 @@ async function createNodeHandler(data: CreateNodeInput) {
         projectID: data.projectID,
       },
     });
-    console.log(res);
     return { data: res };
   } catch (error: any) {
-    console.log(error);
     return { error: "failed to create node" };
   }
 }

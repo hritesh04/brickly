@@ -8,13 +8,20 @@ import SideBar from "@/components/editor/sidebar/SideBar";
 import TopDock from "@/components/editor/TopDock";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import SideBarTrigger from "@/components/editor/sidebar/SideBarTrigger";
+import { getProject } from "@/actions/project";
 
-export default function EditorPage() {
+export default async function EditorPage({ id }: { id: number }) {
+  const { data, error } = await getProject(id);
+
+  if (error) {
+    return <div>INAVLID ID</div>;
+  }
+
   return (
     <DotBackGround>
       <SidebarProvider className="min-h-full absolute">
         <PropertySideBarProvider>
-          <SideBar />
+          {data && <SideBar project={data} />}
           <SideBarTrigger className="mt-4 z-50" />
           <SidebarInset className=" bg-transparent overflow-hidden absolute h-full">
             <TopDock />
