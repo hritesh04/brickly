@@ -1,0 +1,73 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id Int @id @default(autoincrement())
+  name String?
+  email String @unique
+  password String
+  project Project[]
+}
+
+model Project{
+  id Int @id @default(autoincrement())
+  name String
+  icon String?
+  property Json?
+  scene Node[]
+  resource Resource[]
+  userID Int
+  user User @relation(references: [id],fields: [userID])
+}
+
+enum NodeType {
+  Node
+  Node2D
+}
+
+model Node{
+  id Int @id @default(autoincrement())
+  name String
+  type NodeType @default(Node)
+  parentID Int?
+  parent Node? @relation("children",references: [id],fields: [parentID])
+  children Node[] @relation("children")
+  projectID Int
+  project Project @relation(references: [id],fields: [projectID])
+}
+
+enum ResourceType {
+  ExtResource
+  SubResource
+}
+
+enum AssetType {
+  Script
+  TileSet
+  Texture2D
+  JSON
+}
+
+model Resource{
+  id Int @id @default(autoincrement())
+  name String
+  type  ResourceType
+  assetType AssetType
+  path String?
+  property Json?
+  projectID Int
+  project Project @relation(references: [id],fields: [projectID])
+}
