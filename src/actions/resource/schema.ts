@@ -1,5 +1,7 @@
+import { ActionState } from "@/lib/actionState";
 import {
   AssetType,
+  Prisma,
   Resource as ResourceDTO,
   ResourceType,
 } from "@prisma/client";
@@ -20,4 +22,18 @@ export const resourceSchema = z.object({
   projectID: z.number().nullable(),
 }) satisfies z.ZodType<ResourceDTO>;
 
+export const createResourceSchema = z.object({
+  name: z.string(),
+  type: resourceType,
+  assetType: assetType,
+  parentID: z.number().nullable().optional(),
+  projectID: z.number().nullable().optional(),
+  file: z.file(),
+}) satisfies z.ZodType<Prisma.ResourceCreateManyInput>;
+
 export type Resource = z.infer<typeof resourceSchema>;
+export type CreateResourceInput = z.infer<typeof createResourceSchema>;
+export type ReturnTypeCreateResource = ActionState<
+  CreateResourceInput,
+  Resource
+>;

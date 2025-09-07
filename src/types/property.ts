@@ -1,4 +1,3 @@
-import { AssetType, ResourceType } from "./resource";
 import { Resource } from "@/actions/resource/schema";
 import { variant } from "./variant";
 
