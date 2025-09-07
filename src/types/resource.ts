@@ -27,4 +27,4 @@ interface ExtResource extends BaseResource {
   path: string;
 }
 
-export type Resource = SubResource | ExtResource;
+// export type Resource = SubResource | ExtResource;
