@@ -1,9 +1,9 @@
-import { SceneBar } from "../sceneBar/SceneBar";
+import { SceneBar } from "./sceneBar/SceneBar";
 import { ProjectWithRelation } from "@/actions/project/schema";
 export default function ActiveSideBar({
   activeTitle,
-  // project,
-}: {
+}: // project,
+{
   activeTitle?: string;
   // project: ProjectWithRelation;
 }) {
@@ -11,6 +11,6 @@ export default function ActiveSideBar({
     case "Scenes":
       return <SceneBar />;
     case "Animations":
-      return <div>ANIMATION</div>
+      return <div>ANIMATION</div>;
   }
 }

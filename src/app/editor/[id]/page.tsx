@@ -1,10 +1,10 @@
 import DotBackGround from "@/components/editor/DotBackGround";
-import MainCanvas from "@/components/editor/canvas/MainCanvas";
+import { MainCanvas } from "@/components/editor/canvas/MainCanvas";
 import {
   PropertySideBar,
   PropertySideBarProvider,
 } from "@/components/editor/sidebar/propertySideBar/PropertySideBar";
-import {SideBar} from "@/components/editor/sidebar/SideBar";
+import { SideBar } from "@/components/editor/sidebar/SideBar";
 import TopDock from "@/components/editor/TopDock";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import SideBarTrigger from "@/components/editor/sidebar/SideBarTrigger";

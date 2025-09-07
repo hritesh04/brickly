@@ -1,12 +1,14 @@
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
-import LayerCanvas from "./layerCanvas";
-import { Stage } from "react-konva";
+import NodeCanvas from "./layerCanvas";
+import { Layer, Stage, Text } from "react-konva";
 import Konva from "konva";
+import { useEditor } from "@/store/editor";
+import { observer } from "mobx-react-lite";
 
 Konva.pixelRatio = 5;
 
-export default function MainCanvas() {
+export const MainCanvas = observer(() => {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLDivElement | null>(null);
   const dragRef = useRef(false);
@@ -15,7 +17,8 @@ export default function MainCanvas() {
   const scaleRef = useRef(1);
   const [dimensions, setDimensions] = useState({ width: 400, height: 300 });
   const [isInitialized, setIsInitialized] = useState(false);
-
+  const editor = useEditor();
+  const activeNode = editor.activeNode;
   const updateCanvasTransform = useCallback(() => {
     if (canvasRef.current) {
       canvasRef.current.style.transform = `translate(${positionRef.current.x}px, ${positionRef.current.y}px) scale(${scaleRef.current})`;
@@ -158,9 +161,24 @@ export default function MainCanvas() {
         onMouseDown={handleMouseDown}
       >
         <Stage width={dimensions.width} height={dimensions.height}>
-          <LayerCanvas />
+          <Layer key={1}>
+            {activeNode && <NodeCanvas node={activeNode} />}
+            {!activeNode && (
+              <Text
+                text="Please select a node to view its Preview"
+                x={dimensions.width / 4}
+                y={dimensions.height / 2.5}
+                width={200}
+                fontSize={20}
+                fontFamily="Calibri"
+                fill="#555"
+                align="center"
+                // verticalAlign="center"
+              />
+            )}
+          </Layer>
         </Stage>
       </div>
     </div>
   );
-}
+});

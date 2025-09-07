@@ -12,7 +12,6 @@ export const Sprite2DProperty = observer(() => {
     onSuccess(data) {
       editor.addResource(data);
       editor.setProperty("sprite_2d", "texture", data);
-      console.log(editor.getActiveScene());
     },
     onError(error) {
       console.log(error);
