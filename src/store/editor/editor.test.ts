@@ -1,13 +1,14 @@
-import { useEditor } from "./editor";
+import { Editor } from "./editor";
 import { NodeType } from "@/types/node";
 import { INode } from "@/types/node";
 import { Node2DProperty } from "@/types/property";
 import { variant } from "@/types/variant";
 import { Property } from "@/types/property";
 import { AssetType, ResourceType } from "@/types/resource";
+import { node, nodeType } from "@/actions/node/schema";
 
 describe("Editor", () => {
-  const editor = new useEditor();
+  const editor = new Editor();
   it("all nodes should be empty array", () => {
     expect(editor.getNodes()).toEqual([]);
   });
@@ -15,29 +16,59 @@ describe("Editor", () => {
     expect(editor.getActiveScene()).toBeNull();
   });
   it("should throw error while adding child", () => {
-    expect(() => editor.addChild(NodeType.Node2D)).toThrow("no active scene");
+    expect(() =>
+      editor.addNode({ id: 1, name: "Node", type: "Node", parentID: 1 } as node)
+    ).toThrow("parent node not found");
   });
   it("should add a scene", () => {
-    editor.addNode(NodeType.Node);
-    expect(editor.getNodes()).toEqual<INode[]>([
-      { name: "Node", type: NodeType.Node },
+    editor.addNode({
+      id: 1,
+      name: "Node",
+      type: "Node",
+      projectID: 1,
+      parentID: null,
+      property: {},
+    } as node);
+    expect(editor.getNodes()).toEqual<node[]>([
+      {
+        id: 1,
+        name: "Node",
+        type: NodeType.Node,
+        projectID: 1,
+        parentID: null,
+        property: {},
+      },
     ]);
   });
   it("should add a child to scene", () => {
-    editor.addChild(NodeType.Node2D);
-    expect(editor.getNodes()).toEqual<INode[]>([
+    editor.addNode({
+      id: 2,
+      name: "Node2D",
+      type: "Node2D",
+      parentID: 1,
+      projectID: null,
+      property: {},
+    } as node);
+    expect(editor.getNodes()).toEqual<node[]>([
       {
+        id: 1,
         name: "Node",
         type: NodeType.Node,
         children: [
           {
+            id: 2,
             name: "Node2D",
             type: NodeType.Node2D,
-            property: {} as Node2DProperty,
+            projectID: null,
+            parentID: 1,
+            property: {},
           },
         ],
+        projectID: 1,
+        // resource: null,
+        parentID: null,
+        property: {},
       },
-      { name: "Node2D", type: NodeType.Node2D, property: {} as Node2DProperty },
     ]);
   });
   it("should show gdscript file", () => {
@@ -46,9 +77,43 @@ describe("Editor", () => {
       type: variant.Float,
       value: 2.1,
     });
-    editor.addResource(AssetType.Script, ResourceType.ExtResource);
-    editor.attachResource("Script", "Node2D");
     console.log(editor.getActiveScene());
-    console.log(editor.saveAsScene("Node"));
+    editor.addResource({
+      id: 1,
+      name: "testScript",
+      path: "demoPath.gd",
+      parentID: null,
+      projectID: 1,
+      property: {},
+      assetType: AssetType.Script,
+      type: ResourceType.ExtResource,
+    });
+    // console.log(editor.getNodes());
+    // console.log(editor.saveAsScene("Node"));
+    expect(editor.getNodes()).toEqual<node[]>([
+      {
+        id: 1,
+        name: "Node",
+        type: NodeType.Node,
+        children: [
+          {
+            id: 2,
+            name: "Node2D",
+            type: NodeType.Node2D,
+            projectID: null,
+            parentID: 1,
+            property: {},
+          },
+        ],
+        projectID: 1,
+        // resource: null,
+        parentID: null,
+        property: {
+          transform: {
+            rotation: 2.1,
+          },
+        },
+      },
+    ]);
   });
 });

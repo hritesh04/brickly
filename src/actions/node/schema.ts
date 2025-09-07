@@ -1,5 +1,6 @@
 import z from "zod";
 import { Node, NodeType } from "@prisma/client";
+import { resourceSchema } from "../resource/schema";
 
 export const nodeType = z.enum(NodeType);
 
@@ -9,11 +10,13 @@ export const nodeSchema = z.object({
   type: nodeType,
   parentID: z.number().nullable(),
   projectID: z.number().nullable(),
+  property: z.any().nullable(),
 }) satisfies z.ZodType<Node>;
 
 export const nodeWithRelations = nodeSchema.extend({
   // parent: nodeSchema.nullable(),
-  children: z.array(nodeSchema).nullable(),
+  resource: z.array(resourceSchema).nullable().optional(),
+  children: z.array(nodeSchema).nullable().optional(),
 });
 
 export const createNodeSchema = z.object({

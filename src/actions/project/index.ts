@@ -27,7 +27,7 @@ export async function getProject(id: number): Promise<ReturnTypeGetProject> {
     const res = await prisma.project.findFirst({
       where: { id: id },
       include: {
-        scene: { include: { parent: true, children: true } },
+        scene: { include: { parent: true, children: true, resource: true } },
         resource: true,
       },
     });

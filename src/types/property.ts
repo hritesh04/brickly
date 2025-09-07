@@ -1,7 +1,8 @@
-import { AssetType, Resource, ResourceType } from "./resource";
+import { AssetType, ResourceType } from "./resource";
+import { Resource } from "@/actions/resource/schema";
 import { variant } from "./variant";
 
-interface BaseProperty {
+export interface BaseProperty {
   canvas: CanvasItemProperty;
 }
 
@@ -12,7 +13,7 @@ export type Property = {
 };
 
 export interface Node2DProperty extends BaseProperty {
-  transform: TransformProperty;
+  transform?: TransformProperty;
 }
 
 export interface Sprite2DProperty extends Node2DProperty {

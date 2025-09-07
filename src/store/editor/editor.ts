@@ -1,3 +1,4 @@
+import { node } from "@/actions/node/schema";
 import { INode, NodeType, Sprite2D } from "@/types/node";
 import {
   AnimatedSprite2DProperty,
@@ -7,64 +8,86 @@ import {
   Sprite2DProperty,
   TransformProperty,
 } from "@/types/property";
-import { AssetType, Resource, ResourceType } from "@/types/resource";
+import { Resource } from "@/actions/resource/schema";
+import { AssetType, ResourceType } from "@/types/resource";
 // import { Property } from "@/types/property";
-
-export class useEditor {
-  nodes: INode[] = [];
-  activeNode: INode | null = null;
+import { makeAutoObservable } from "mobx";
+export class Editor {
+  nodes: node[] = [];
+  activeNode: node | null = null;
   resourceCounter: number = 0;
   resource: Resource[] = [];
-  constructor() {}
+  constructor() {
+    makeAutoObservable(this);
+  }
 
-  addNode<T extends NodeType>(type: T) {
-    const node = {
-      name: NodeType[type],
-      type: type,
-      // property: {},
-      // children: [],
-    } as INode;
+  initScene(scene: node[]) {
+    scene.map((s) => {
+      this.nodes.push(s);
+    });
+  }
+
+  addNode(node: node) {
+    if (node.parentID) {
+      const parentIdx = this.nodes.findIndex((n) => n.id == node.parentID);
+      if (parentIdx === -1) throw new Error("parent node not found");
+      this.nodes[parentIdx].children ??= [];
+      this.nodes[parentIdx].children.push(node);
+      return;
+    }
+    // const node = {
+    // name: NodeType[type],
+    // type: type,
+    // property: {},
+    // children: [],
+    // } as INode;
     this.nodes.push(node);
     if (!this.activeNode) this.activeNode = this.nodes[0];
   }
 
-  addChild<T extends NodeType>(type: T) {
-    if (!this.activeNode) throw new Error("no active scene");
-    this.activeNode.children ??= [];
-    const node = {
-      name: NodeType[type],
-      type,
-      property: {},
-      // children: [],
-    } as INode;
-    this.nodes.push(node);
-    this.activeNode.children.push(node);
-    this.activeNode = node;
-  }
+  // addChild<T extends NodeType>(type: T) {
+  //   if (!this.activeNode) throw new Error("no active scene");
+  //   this.activeNode.children ??= [];
+  //   const node = {
+  //     name: NodeType[type],
+  //     type,
+  //     property: {},
+  //     // children: [],
+  //   } as INode;
+  //   this.nodes.push(node);
+  //   this.activeNode.children.push(node);
+  //   this.activeNode = node;
+  // }
 
-  addResource(assetType: AssetType, type: ResourceType) {
+  addResource(resource: Resource) {
     const path = "demoPath.png";
 
-    if (type === ResourceType.SubResource) {
-      const resource = {
-        id: ++this.resourceCounter,
-        name: AssetType[assetType],
-        assetType,
-        type,
-        // resType,
-        // path,
-        property: {} as Record<string, any>,
-      };
-      this.resource.push(resource);
+    if (resource.type === ResourceType.SubResource) {
+      const parent = this.nodes.find((n) => {
+        if (n.id === resource.parentID) return n;
+        else n.children?.find((c) => c.id === resource.id);
+      });
+      if (!parent) return;
+      // const resource = {
+      //   id: ++this.resourceCounter,
+      //   name: AssetType[assetType],
+      //   assetType,
+      //   type,
+      //   // resType,
+      //   // path,
+      //   property: {} as Record<string, any>,
+      // };
+      parent.resource ??= [];
+      parent.resource.push(resource);
     } else {
-      const resource = {
-        id: ++this.resourceCounter,
-        name: AssetType[assetType],
-        assetType,
-        type,
-        path,
-      };
-      this.resource.push(resource);
+      // const resource = {
+      //   id: ++this.resourceCounter,
+      //   name: AssetType[assetType],
+      //   assetType,
+      //   type,
+      //   path,
+      // };
+      this.resource.push(resource as Resource);
     }
   }
 
@@ -74,10 +97,10 @@ export class useEditor {
     if (!node) throw new Error("node not found");
     if (!res) throw new Error("resource not found");
     node.resource ??= [];
-    node.resource.push(res);
+    node.resource.push(res as Resource);
   }
 
-  getNodes(): INode[] {
+  getNodes(): node[] {
     return this.nodes;
   }
 
@@ -104,7 +127,6 @@ export class useEditor {
     if (!(property in (this.activeNode.property as Property))) {
       (this.activeNode.property as Property)[property] = {} as Property[P];
     }
-
     (this.activeNode.property as Property)[property][subProperty] = value;
   }
 
@@ -114,11 +136,11 @@ export class useEditor {
     // if (node!.resource) {
     //   for (const res of node!.resource) resource += this.parseResource(res);
     // }
-    const nodes = this.traverseChild(node!);
+    const nodes = this.traverseChild(node as node);
     return `[gd_scene format=3]` + nodes.res + nodes.nodes;
   }
 
-  traverseChild(node: INode, parent?: string): { nodes: string; res: string } {
+  traverseChild(node: node, parent?: string): { nodes: string; res: string } {
     const parentAttr = parent ? `parent="${parent}"` : "";
     let nodes = `\n\n[node name="${node.name}" type="${node.type}"${
       " " + parentAttr
@@ -133,7 +155,7 @@ export class useEditor {
 
     if (node.children) {
       for (const n of node.children) {
-        const result = this.traverseChild(n, parent ? node.name : ".");
+        const result = this.traverseChild(n as node, parent ? node.name : ".");
         nodes += result.nodes;
         res += result.res;
       }
@@ -152,7 +174,7 @@ export class useEditor {
     return res;
   }
 
-  parseProperty(node: INode): { property: string; resource: string } {
+  parseProperty(node: node): { property: string; resource: string } {
     // console.log("parsing property", node.property);
     let property = "";
     let resource = "";
@@ -243,7 +265,7 @@ export class useEditor {
     return property;
   }
 
-  setActiveNode(name: string) {
-    this.activeNode = this.nodes.find((n) => n.name === name)!;
+  setActiveNode(node: node) {
+    this.activeNode = node;
   }
 }

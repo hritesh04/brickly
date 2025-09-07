@@ -36,12 +36,15 @@ model Project{
 enum NodeType {
   Node
   Node2D
+  Sprite2D
 }
 
 model Node{
   id Int @id @default(autoincrement())
   name String 
   type NodeType @default(Node)
+  property Json?
+  resource Resource[]
   parentID Int?
   parent Node? @relation("children",references: [id],fields: [parentID])
   children Node[] @relation("children")
@@ -68,6 +71,8 @@ model Resource{
   assetType AssetType
   path String?
   property Json?
-  projectID Int
-  project Project @relation(references: [id],fields: [projectID])
+  parentID Int?
+  parent Node? @relation(references: [id],fields: [parentID])
+  projectID Int?
+  project Project? @relation(references: [id],fields: [projectID])
 }

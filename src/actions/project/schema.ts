@@ -1,7 +1,7 @@
 import z from "zod";
-import type { Prisma, Project } from "@prisma/client";
+import type { Prisma, Project as ProjectDTO } from "@prisma/client";
 import { ActionState } from "@/lib/actionState";
-import { nodeSchema, nodeWithRelations } from "../node/schema";
+import { nodeWithRelations } from "../node/schema";
 import { resourceSchema } from "../resource/schema";
 
 export const createProjectSchema = z.object({
@@ -15,16 +15,15 @@ export const projectSchema = z.object({
   icon: z.string().nullable(),
   property: z.any().nullable(),
   userID: z.number(),
-}) satisfies z.ZodType<Project>;
+}) satisfies z.ZodType<ProjectDTO>;
 
-export const projectWithRelation = projectSchema.extend({
+export const projectWithRelationSchema = projectSchema.extend({
   scene: z.array(nodeWithRelations).nullable(),
   resource: z.array(resourceSchema).nullable(),
 });
 
+export type Project = z.infer<typeof projectSchema>;
 export type CreateProjectInput = z.infer<typeof createProjectSchema>;
 export type ReturnTypeCreateProject = ActionState<CreateProjectInput, Project>;
-export type ReturnTypeGetProject = ActionState<
-  number,
-  z.infer<typeof projectWithRelation>
->;
+export type ProjectWithRelation = z.infer<typeof projectWithRelationSchema>;
+export type ReturnTypeGetProject = ActionState<number, ProjectWithRelation>;
