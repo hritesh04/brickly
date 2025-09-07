@@ -27,6 +27,19 @@ async function createNodeHandler(data: CreateNodeInput) {
 
 async function updateNodeHandler(data: UpdateNodeInput) {
   try {
+    if (data.property) {
+      const property = JSON.parse(data.property);
+      const res = await prisma.node.update({
+        where: {
+          id: data.id,
+        },
+        data: {
+          ...data,
+          property,
+        },
+      });
+      return { data: res };
+    }
     const res = await prisma.node.update({
       where: {
         id: data.id,

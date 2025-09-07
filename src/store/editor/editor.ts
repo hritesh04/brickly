@@ -37,7 +37,7 @@ export class Editor {
       try {
         updateNode({
           id: this.activeNode.id,
-          property: this.activeNode.property,
+          property: JSON.stringify({ ...this.activeNode.property }),
         });
         this.dirty = false;
       } catch (error) {

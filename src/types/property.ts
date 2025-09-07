@@ -8,7 +8,7 @@ export interface BaseProperty {
 export type Property = {
   transform: TransformProperty;
   canvas: CanvasItemProperty;
-  sprite_2d: Sprite2DProperty;
+  sprite_2d: SpriteProperty;
 };
 
 export interface Node2DProperty extends BaseProperty {
@@ -19,6 +19,10 @@ export interface Sprite2DProperty extends Node2DProperty {
   texture: Resource;
 }
 export interface AnimatedSprite2DProperty extends Node2DProperty {
+  texture: Resource;
+}
+
+export interface SpriteProperty {
   texture: Resource;
 }
 
