@@ -6,10 +6,13 @@ import { Tree } from "@/components/magicui/file-tree";
 import { node } from "@/actions/node/schema";
 import { useAction } from "@/hooks/useAction";
 import { createNode } from "@/actions/node";
+import { useEditor } from "@/store/editor";
+import { observer } from "mobx-react-lite";
 
-export default function ActiveScene({ scene }: { scene: node | null }) {
+export const ActiveScene = observer(() => {
+  const editor = useEditor();
   const { execute } = useAction(createNode);
-  if (!scene) {
+  if (!editor.activeNode) {
     return (
       <div className="flex-1 flex items-center flex-col">
         <div className="flex items-center w-full justify-between">
@@ -42,7 +45,7 @@ export default function ActiveScene({ scene }: { scene: node | null }) {
           onClick={() =>
             execute({
               type: "Node",
-              parentID: scene.id,
+              parentID: editor.activeNode?.id,
               // projectID: 1
             })
           }
@@ -51,12 +54,12 @@ export default function ActiveScene({ scene }: { scene: node | null }) {
         </div>
       </div>
       <Tree
-        initialExpandedItems={[scene.name]}
+        initialExpandedItems={[editor.activeNode.name]}
         closeIcon={<Image className=" size-4" />}
         openIcon={<Layers className=" size-4" />}
       >
-        <FileTree scene={scene} />
+        <FileTree scene={editor.activeNode} key={editor.activeNode.id} />
       </Tree>
     </div>
   );
-}
+});

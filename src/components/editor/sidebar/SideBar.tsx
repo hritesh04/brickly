@@ -12,13 +12,17 @@ import {
 } from "@/components/ui/sidebar";
 import GameTab from "./GameTab";
 import { Code2Icon, ImagePlayIcon, Layers, LucideIcon } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ActiveSideBar from "./ActiveSideBar";
-import { usePropertySideBar } from "./PropertySideBar";
+import { usePropertySideBar } from "./propertySideBar/PropertySideBar";
 import { Separator } from "@/components/ui/separator";
 import { Prisma, Project } from "@prisma/client";
-import { projectWithRelation } from "@/actions/project/schema";
+import { ProjectWithRelation } from "@/actions/project/schema";
 import z from "zod";
+import { useProjectManager } from "@/store/project";
+import { useEditor } from "@/store/editor";
+import {node} from "@/actions/node/schema"
+import { observer } from "mobx-react-lite";
 
 const navMain = [
   {
@@ -35,18 +39,20 @@ const navMain = [
   //   },
 ];
 
-export default function SideBar({
-  project,
-}: {
-  project: z.infer<typeof projectWithRelation>;
-}) {
+export const SideBar = observer(({ project }: { project: ProjectWithRelation }) => {
   const [activeItem, setActiveItem] = useState<{
     title: string;
     icon: LucideIcon;
   } | null>(navMain[0]);
-  const { toggleSidebar, setOpen } = useSidebar();
+  const { setOpen } = useSidebar();
   const { setOpen: setPropertyBar, open: PropertyBarOpen } =
     usePropertySideBar();
+  const projectManger = useProjectManager();
+  const editor = useEditor()
+  useEffect(() => {
+    projectManger.setProject(project);
+    editor.initScene(project.scene as node[])
+  }, [project]);
   return (
     <Sidebar
       collapsible="icon"
@@ -100,9 +106,9 @@ export default function SideBar({
           <Separator />
         </SidebarHeader>
         <SidebarContent className=" h-full px-2">
-          <ActiveSideBar activeTitle={activeItem?.title} project={project} />
+          <ActiveSideBar activeTitle={activeItem?.title} />
         </SidebarContent>
       </Sidebar>
     </Sidebar>
   );
-}
+})

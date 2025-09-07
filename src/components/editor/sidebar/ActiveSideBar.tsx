@@ -1,15 +1,16 @@
-import z from "zod";
-import SceneBar from "../sceneBar/SceneBar";
-import { projectWithRelation } from "@/actions/project/schema";
+import { SceneBar } from "../sceneBar/SceneBar";
+import { ProjectWithRelation } from "@/actions/project/schema";
 export default function ActiveSideBar({
   activeTitle,
-  project,
+  // project,
 }: {
   activeTitle?: string;
-  project: z.infer<typeof projectWithRelation>;
+  // project: ProjectWithRelation;
 }) {
   switch (activeTitle) {
     case "Scenes":
-      return <SceneBar scenes={project.scene} />;
+      return <SceneBar />;
+    case "Animations":
+      return <div>ANIMATION</div>
   }
 }
