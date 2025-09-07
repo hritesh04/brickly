@@ -8,6 +8,7 @@ import { Node } from "@/types/node";
 import { Image, Plus } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { SetStateAction } from "react";
+import { usePropertySideBar } from "../propertySideBar/PropertySideBar";
 
 interface AllScenesProps {
   scenes: node[] | null;
@@ -16,6 +17,7 @@ interface AllScenesProps {
 
 export const AllScenes = observer(() => {
   const editor = useEditor();
+  const { setOpen } = usePropertySideBar();
   const { execute, error } = useAction(createNode, {
     onSuccess(data) {
       editor.addNode(data as node);
@@ -59,7 +61,10 @@ export const AllScenes = observer(() => {
             <div key={index}>
               <div
                 className="flex items-center gap-2 text-sm py-2 cursor-pointer hover:bg-secondary/50 px-2 rounded-md"
-                onClick={() => editor.setActiveNode(s)}
+                onClick={() => {
+                  editor.setActiveNode(s);
+                  setOpen(true);
+                }}
               >
                 <Image className="size-5" />
                 {s.name}
