@@ -9,30 +9,28 @@ import { prisma } from "@/lib/prisma";
 import { writeFile } from "node:fs/promises";
 import { ResourceType } from "@prisma/client";
 import path from "node:path";
+import { updateNode } from "../node";
 
 async function createResourceHandler(
   data: CreateResourceInput
 ): Promise<ReturnTypeCreateResource> {
   try {
-    if (data.type === ResourceType.SubResource) {
-      const res = await prisma.resource.create({
-        data,
-      });
-      return { data: res };
+    // if (data.type === ResourceType.SubResource) {
+    if (data.file) {
+      const filePath = path.join(process.cwd(), "public", data.file.name);
+      const arrayBuffer = await data.file.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
+      await writeFile(filePath, buffer);
     }
-    const filePath = path.join(process.cwd(), "public", data.name);
-    // const path = `public/uploads/${data.name}`;
-    const arrayBuffer = await data.file.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-    await writeFile(filePath, buffer);
+
     const res = await prisma.resource.create({
       data: {
-        name: data.name,
+        name: data.file.name,
         type: data.type,
         assetType: data.assetType,
-        path: data.name,
         parentID: data.parentID,
-        projectID: data.projectID,
+        projectID: data.projectID ? data.projectID : null,
+        path: data.file ? data.file.name : null,
       },
     });
     return { data: res };

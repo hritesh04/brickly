@@ -1,10 +1,36 @@
 "use client";
+import { createResource } from "@/actions/resource";
+import { useAction } from "@/hooks/useAction";
 import { useEditor } from "@/store/editor";
-import { Sprite2DProperty as SpriteProperty } from "@/types/property";
+import { Property, Sprite2DProperty as SpriteProperty } from "@/types/property";
+import { AssetType, ResourceType } from "@prisma/client";
 import { observer } from "mobx-react-lite";
+import React from "react";
 export const Sprite2DProperty = observer(() => {
   const editor = useEditor();
-  const propery = editor.activeNode?.property as SpriteProperty;
+  const { execute } = useAction(createResource, {
+    onSuccess(data) {
+      editor.addResource(data);
+      editor.setProperty("sprite_2d", "texture", data);
+      console.log(editor.getActiveScene());
+    },
+    onError(error) {
+      console.log(error);
+    },
+  });
+  const property = editor.activeNode?.property as Property;
+  const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files) throw new Error("File not selected");
+    execute({
+      name: "texture",
+      assetType: AssetType.Texture2D,
+      type: ResourceType.ExtResource,
+      projectID: 1,
+      parentID: editor.activeNode!.id,
+      file: files[0],
+    });
+  };
   return (
     <div>
       <p className=" font-semibold">Sprite 2D</p>
@@ -13,7 +39,12 @@ export const Sprite2DProperty = observer(() => {
           <span className="text-md font-medium text-sidebar-foreground/80">
             Texture
           </span>
-          <input type="file" />
+          <input
+            type="file"
+            onChange={handleUpload}
+            // defaultValue={property?.sprite_2d?.texture?.name || ""}
+          />
+          <span>{property?.sprite_2d?.texture?.path || ""}</span>
         </div>
       </div>
     </div>

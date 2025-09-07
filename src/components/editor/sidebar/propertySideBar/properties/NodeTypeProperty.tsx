@@ -1,3 +1,4 @@
+import { updateNode } from "@/actions/node";
 import { nodeType } from "@/actions/node/schema";
 import { Button } from "@/components/ui/button";
 import {
@@ -7,11 +8,17 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { useAction } from "@/hooks/useAction";
 import { useEditor } from "@/store/editor";
 import { observer } from "mobx-react-lite";
 // import { nodeType } from "@/actions/node/schema";
 export const NodeTypeProperty = observer(() => {
   const editor = useEditor();
+  const { execute } = useAction(updateNode, {
+    onSuccess(data) {
+      editor.updateNode(data);
+    },
+  });
   const activeNode = editor.activeNode;
   if (!activeNode) {
     return <p>node not active</p>;
@@ -30,7 +37,7 @@ export const NodeTypeProperty = observer(() => {
             <DropdownMenuCheckboxItem
               key={n}
               checked={activeNode.type == n}
-              onCheckedChange={() => (activeNode.type = n)}
+              onCheckedChange={() => execute({ id: activeNode.id, type: n })}
             >
               {n}
             </DropdownMenuCheckboxItem>

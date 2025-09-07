@@ -1,5 +1,5 @@
 import z from "zod";
-import { Node, NodeType } from "@prisma/client";
+import { Node, NodeType, Prisma } from "@prisma/client";
 import { resourceSchema } from "../resource/schema";
 
 export const nodeType = z.enum(NodeType);
@@ -25,6 +25,16 @@ export const createNodeSchema = z.object({
   projectID: z.number().optional(),
 });
 
+export const updateNodeSchema = z.object({
+  id: z.number(),
+  name: z.string().optional(),
+  type: nodeType.optional(),
+  parentID: z.number().nullable().optional(),
+  projectID: z.number().nullable().optional(),
+  property: z.any().nullable().optional(),
+});
+
 export type node = z.infer<typeof nodeWithRelations>;
 export type nodeType = z.infer<typeof nodeType>;
 export type CreateNodeInput = z.infer<typeof createNodeSchema>;
+export type UpdateNodeInput = z.infer<typeof updateNodeSchema>;

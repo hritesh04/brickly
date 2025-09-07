@@ -12,13 +12,38 @@ import { Resource } from "@/actions/resource/schema";
 import { AssetType, ResourceType } from "@/types/resource";
 // import { Property } from "@/types/property";
 import { makeAutoObservable } from "mobx";
+import { useAction } from "@/hooks/useAction";
+import { updateNode } from "@/actions/node";
 export class Editor {
   nodes: node[] = [];
   activeNode: node | null = null;
   resourceCounter: number = 0;
   resource: Resource[] = [];
+  saveTimer: NodeJS.Timeout | null;
+  dirty: boolean = false;
   constructor() {
     makeAutoObservable(this);
+    this.saveTimer = null;
+    this.autoSave();
+  }
+
+  autoSave() {
+    if (this.saveTimer) {
+      clearInterval(this.saveTimer);
+    }
+    this.saveTimer = setInterval(() => {
+      if (!this.activeNode || !this.activeNode.id || !this.dirty) return;
+
+      try {
+        updateNode({
+          id: this.activeNode.id,
+          property: this.activeNode.property,
+        });
+        this.dirty = false;
+      } catch (error) {
+        console.error("Failed to save node:", error);
+      }
+    }, 3000);
   }
 
   initScene(scene: node[]) {
@@ -45,6 +70,10 @@ export class Editor {
     if (!this.activeNode) this.activeNode = this.nodes[0];
   }
 
+  updateNode(data: Partial<node>) {
+    this.activeNode = { ...this.activeNode, ...data } as node;
+  }
+
   // addChild<T extends NodeType>(type: T) {
   //   if (!this.activeNode) throw new Error("no active scene");
   //   this.activeNode.children ??= [];
@@ -60,35 +89,42 @@ export class Editor {
   // }
 
   addResource(resource: Resource) {
-    const path = "demoPath.png";
+    // const path = "demoPath.png";
+    const parent = this.nodes.find((n) => {
+      if (n.id === resource.parentID) return n;
+      else n.children?.find((c) => c.id === resource.id);
+    });
 
-    if (resource.type === ResourceType.SubResource) {
-      const parent = this.nodes.find((n) => {
-        if (n.id === resource.parentID) return n;
-        else n.children?.find((c) => c.id === resource.id);
-      });
-      if (!parent) return;
-      // const resource = {
-      //   id: ++this.resourceCounter,
-      //   name: AssetType[assetType],
-      //   assetType,
-      //   type,
-      //   // resType,
-      //   // path,
-      //   property: {} as Record<string, any>,
-      // };
-      parent.resource ??= [];
-      parent.resource.push(resource);
-    } else {
-      // const resource = {
-      //   id: ++this.resourceCounter,
-      //   name: AssetType[assetType],
-      //   assetType,
-      //   type,
-      //   path,
-      // };
+    // if (resource.type === ResourceType.SubResource) {
+    if (!parent) {
+      console.log("PARENT NOT FOUDN");
+      return;
+    }
+    // const resource = {
+    //   id: ++this.resourceCounter,
+    //   name: AssetType[assetType],
+    //   assetType,
+    //   type,
+    //   // resType,
+    //   // path,
+    //   property: {} as Record<string, any>,
+    // };
+    parent.resource ??= [];
+    parent.resource.push(resource);
+    this.setProperty("sprite_2d", "texture", resource);
+    // } else {
+    // const resource = {
+    //   id: ++this.resourceCounter,
+    //   name: AssetType[assetType],
+    //   assetType,
+    //   type,
+    //   path,
+    // };
+    if (resource.type === ResourceType.ExtResource) {
       this.resource.push(resource as Resource);
     }
+    // pare
+    // }
   }
 
   attachResource(resName: string, nodeName: string) {
@@ -111,9 +147,7 @@ export class Editor {
   setProperty<
     P extends keyof Property,
     SP extends keyof Property[P],
-    V extends Property[P][SP] extends { value: infer U }
-      ? Property[P][SP]
-      : never
+    V extends Property[P][SP]
   >(property: P, subProperty: SP, value: V): void {
     if (!this.activeNode) {
       throw new Error("No active node selected");
@@ -128,6 +162,7 @@ export class Editor {
       (this.activeNode.property as Property)[property] = {} as Property[P];
     }
     (this.activeNode.property as Property)[property][subProperty] = value;
+    this.dirty = true;
   }
 
   saveAsScene(name: string) {
