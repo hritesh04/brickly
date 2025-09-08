@@ -15,7 +15,7 @@ import { makeAutoObservable } from "mobx";
 import { useAction } from "@/hooks/useAction";
 import { updateNode } from "@/actions/node";
 export class Editor {
-  nodes: node[] = [];
+  scene: node[] = [];
   activeNode: node | null = null;
   activeScene: node | null = null;
   resourceCounter: number = 0;
@@ -49,96 +49,52 @@ export class Editor {
 
   initScene(scene: node[]) {
     scene.map((s) => {
-      this.nodes.push(s);
+      this.scene.push(s);
     });
   }
 
   addNode(node: node) {
     if (node.parentID) {
-      const parentIdx = this.nodes.findIndex((n) => n.id == node.parentID);
-      if (parentIdx === -1) throw new Error("parent node not found");
-      this.nodes[parentIdx].children ??= [];
-      this.nodes[parentIdx].children.push(node);
+      //   const parentIdx = this.nodes.findIndex((n) => n.id == node.parentID);
+      //   if (parentIdx === -1) throw new Error("parent node not found");
+      //   this.nodes[parentIdx].children ??= [];
+      //   this.nodes[parentIdx].children.push(node);
+      //   return;
+      this.activeNode?.children?.push(node);
       return;
     }
-    // const node = {
-    // name: NodeType[type],
-    // type: type,
-    // property: {},
-    // children: [],
-    // } as INode;
-    this.nodes.push(node);
-    if (!this.activeNode) this.activeNode = this.nodes[0];
+    this.scene.push(node);
+    if (!this.activeNode) this.activeNode = this.scene[0];
   }
 
   updateNode(data: Partial<node>) {
     this.activeNode = { ...this.activeNode, ...data } as node;
   }
 
-  // addChild<T extends NodeType>(type: T) {
-  //   if (!this.activeNode) throw new Error("no active scene");
-  //   this.activeNode.children ??= [];
-  //   const node = {
-  //     name: NodeType[type],
-  //     type,
-  //     property: {},
-  //     // children: [],
-  //   } as INode;
-  //   this.nodes.push(node);
-  //   this.activeNode.children.push(node);
-  //   this.activeNode = node;
-  // }
-
   addResource(resource: Resource) {
-    // const path = "demoPath.png";
-    const parent = this.nodes.find((n) => {
-      if (n.id === resource.parentID) return n;
-      else n.children?.find((c) => c.id === resource.id);
-    });
-
-    // if (resource.type === ResourceType.SubResource) {
-    if (!parent) {
+    if (!this.activeNode) {
       console.log("PARENT NOT FOUDN");
       return;
     }
-    // const resource = {
-    //   id: ++this.resourceCounter,
-    //   name: AssetType[assetType],
-    //   assetType,
-    //   type,
-    //   // resType,
-    //   // path,
-    //   property: {} as Record<string, any>,
-    // };
-    parent.resource ??= [];
-    parent.resource.push(resource);
+    this.activeNode.resource ??= [];
+    this.activeNode.resource.push(resource);
     this.setProperty("sprite_2d", "texture", resource);
-    // } else {
-    // const resource = {
-    //   id: ++this.resourceCounter,
-    //   name: AssetType[assetType],
-    //   assetType,
-    //   type,
-    //   path,
-    // };
     if (resource.type === ResourceType.ExtResource) {
       this.resource.push(resource as Resource);
     }
-    // pare
-    // }
   }
 
-  attachResource(resName: string, nodeName: string) {
-    const node = this.nodes.find((n) => n.name == nodeName);
-    const res = this.resource.find((r) => r.name == resName);
-    if (!node) throw new Error("node not found");
-    if (!res) throw new Error("resource not found");
-    node.resource ??= [];
-    node.resource.push(res as Resource);
-  }
+  // attachResource(resName: string, nodeName: string) {
+  //   const node = this.nodes.find((n) => n.name == nodeName);
+  //   const res = this.resource.find((r) => r.name == resName);
+  //   if (!node) throw new Error("node not found");
+  //   if (!res) throw new Error("resource not found");
+  //   node.resource ??= [];
+  //   node.resource.push(res as Resource);
+  // }
 
   getNodes(): node[] {
-    return this.nodes;
+    return this.scene;
   }
 
   getActiveScene() {
@@ -211,7 +167,6 @@ export class Editor {
   }
 
   parseProperty(node: node): { property: string; resource: string } {
-    // console.log("parsing property", node.property);
     let property = "";
     let resource = "";
     switch (node.type) {

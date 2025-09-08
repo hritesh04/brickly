@@ -26,12 +26,10 @@ export const NodeTypeProperty = observer(() => {
   return (
     <div className="flex gap-2 items-center">
       <span>Node Type : </span>
-      <DropdownMenu
-        onOpenChange={(open) => console.log("Dropdown opened:", open)}
-      >
+      <DropdownMenu>
         <DropdownMenuTrigger asChild>
-          <Button 
-            variant="outline" 
+          <Button
+            variant="outline"
             onClick={(e) => e.stopPropagation()}
             onMouseDown={(e) => e.stopPropagation()}
           >

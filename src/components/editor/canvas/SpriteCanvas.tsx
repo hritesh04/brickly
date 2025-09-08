@@ -14,7 +14,6 @@ export const SpriteCanvas = observer(({ node }: { node: node }) => {
   const [image, status] = useImage(imgPath);
   useEffect(() => {
     const img = property?.sprite_2d?.texture?.path;
-    console.log(img);
     if (img) setImgPath("/" + img);
   }, [node.property]);
   if (!imgPath) return <Text fontSize={32} text="no img" />;
@@ -37,11 +36,13 @@ export const SpriteCanvas = observer(({ node }: { node: node }) => {
         });
       }}
       onClick={(e) => {
+        editor.setActiveNode(node);
         e.cancelBubble = true;
         e.evt.stopPropagation();
         e.evt.preventDefault();
       }}
       onDragStart={(e) => {
+        editor.setActiveNode(node);
         e.cancelBubble = true;
         e.evt.stopPropagation();
         e.evt.preventDefault();

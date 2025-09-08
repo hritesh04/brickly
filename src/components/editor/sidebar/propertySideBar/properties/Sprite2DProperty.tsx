@@ -15,9 +15,7 @@ export const Sprite2DProperty = observer(() => {
       editor.addResource(data);
       editor.setProperty("sprite_2d", "texture", data);
     },
-    onError(error) {
-      console.log(error);
-    },
+    onError(error) {},
   });
   const property = editor.activeNode?.property as Property;
   const handleUpload = (e: React.ChangeEvent<HTMLInputElement>) => {

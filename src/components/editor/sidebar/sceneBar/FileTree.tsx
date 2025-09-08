@@ -30,10 +30,11 @@ export default function FileTree({ scene }: { scene: node }) {
       value={scene.name}
       className="mb-1"
       key={scene.id}
-      onClick={() => {
-        editor.setActiveScene(scene);
+      onClick={(e) => {
+        // editor.setActiveScene(scene);
         editor.setActiveNode(scene);
         setOpen(true);
+        e.stopPropagation();
       }}
       isSelectable
     >

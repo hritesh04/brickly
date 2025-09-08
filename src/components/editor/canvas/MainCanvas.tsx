@@ -166,7 +166,7 @@ export const MainCanvas = observer(() => {
           height={dimensions.height}
           className="z-10"
         >
-          <Layer key={1} onClick={() => console.log("LAYER")}>
+          <Layer key={1}>
             {activeNode && <NodeCanvas node={activeNode} />}
             {!activeNode && (
               <Text

@@ -10,11 +10,16 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import SideBarTrigger from "@/components/editor/sidebar/SideBarTrigger";
 import { getProject } from "@/actions/project";
 
-export default async function EditorPage({ id }: { id: number }) {
-  const { data, error } = await getProject(id);
+export default async function EditorPage({ params }: { params: { id: string } }) {
+  const projectId = Number(params.id);
+  if (!Number.isFinite(projectId)) {
+    return <div>INVALID ID</div>;
+  }
+
+  const { data, error } = await getProject(projectId);
 
   if (error) {
-    return <div>INAVLID ID</div>;
+    return <div>INVALID ID</div>;
   }
 
   return (

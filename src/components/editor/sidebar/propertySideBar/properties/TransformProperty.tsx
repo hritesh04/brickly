@@ -23,7 +23,6 @@ export const TransformProperty = observer(() => {
                   // defaultValue={0.0}
                   value={property?.transform?.position.value.x || 0}
                   onChange={(e) => {
-                    console.log(e.target.valueAsNumber);
                     editor.setProperty("transform", "position", {
                       name: "position",
                       type: variant.Vector2,

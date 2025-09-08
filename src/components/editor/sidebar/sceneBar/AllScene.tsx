@@ -25,7 +25,7 @@ export const AllScenes = observer(() => {
       editor.addNode(data as node);
     },
   });
-  if (!editor.nodes) {
+  if (!editor.scene) {
     return (
       <div className="min-h-2/5 max-h-2/5 w-full flex flex-col gap-1">
         <div className="flex justify-between items-center px-2">
@@ -61,7 +61,7 @@ export const AllScenes = observer(() => {
       </div>
       <div className="flex-1 min-h-0 pb-2">
         <ScrollArea className="h-full rounded-md">
-          {editor.nodes.map((s, index) => (
+          {editor.scene.map((s, index) => (
             <div key={index}>
               <div
                 className="flex items-center gap-2 text-sm py-2 cursor-pointer hover:bg-secondary/50 px-2 rounded-md"
@@ -74,7 +74,7 @@ export const AllScenes = observer(() => {
                 <Image className="size-5" />
                 {s.name}
               </div>
-              {index < editor.nodes.length - 1 && (
+              {index < editor.scene.length - 1 && (
                 <Separator className="my-1" />
               )}
             </div>
