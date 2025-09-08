@@ -38,8 +38,6 @@ export const SpriteCanvas = observer(({ node }: { node: node }) => {
       onClick={(e) => {
         editor.setActiveNode(node);
         e.cancelBubble = true;
-        e.evt.stopPropagation();
-        e.evt.preventDefault();
       }}
       onDragStart={(e) => {
         editor.setActiveNode(node);

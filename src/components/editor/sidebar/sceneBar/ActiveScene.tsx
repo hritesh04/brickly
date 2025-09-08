@@ -1,6 +1,6 @@
 import { Separator } from "@/components/ui/separator";
 import { Image, Layers, Plus } from "lucide-react";
-import FileTree from "./FileTree";
+import { FileTree } from "./FileTree";
 import { Node, NodeType } from "@/types/node";
 import { Tree } from "@/components/magicui/file-tree";
 import { node } from "@/actions/node/schema";
@@ -58,7 +58,7 @@ export const ActiveScene = observer(() => {
         </div>
       </div>
       <Tree
-        initialExpandedItems={[editor.activeScene.name]}
+        initialExpandedItems={[String(editor.activeScene.id)]}
         closeIcon={<Image className=" size-4" />}
         openIcon={<Layers className=" size-4" />}
       >

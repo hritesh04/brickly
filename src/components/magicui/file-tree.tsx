@@ -1,7 +1,14 @@
 "use client";
 
 import * as AccordionPrimitive from "@radix-ui/react-accordion";
-import { FileIcon, FolderIcon, FolderOpenIcon } from "lucide-react";
+import {
+  ChevronDownIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  FileIcon,
+  FolderIcon,
+  FolderOpenIcon,
+} from "lucide-react";
 import React, {
   createContext,
   forwardRef,
@@ -191,7 +198,7 @@ const TreeIndicator = forwardRef<
       dir={direction}
       ref={ref}
       className={cn(
-        "absolute left-1.5 h-full w-px rounded-md bg-muted py-3 duration-300 ease-in-out hover:bg-slate-300 rtl:right-1.5",
+        "absolute left-1.5 h-full w-px rounded-md bg-muted border py-3 duration-300 ease-in-out hover:bg-slate-300 rtl:right-1.5",
         className
       )}
       {...props}
@@ -243,9 +250,9 @@ const Folder = forwardRef<
         value={value}
         className="relative h-full overflow-hidden"
       >
-        <AccordionPrimitive.Trigger
+        <div
           className={cn(
-            `flex items-center gap-1 rounded-md text-sm`,
+            `flex items-center gap-1 justify-between rounded-md text-sm p-1`,
             className,
             {
               "bg-muted rounded-md": isSelect && isSelectable,
@@ -253,14 +260,25 @@ const Folder = forwardRef<
               "cursor-not-allowed opacity-50": !isSelectable,
             }
           )}
-          disabled={!isSelectable}
-          onClick={() => handleExpand(value)}
         >
-          {expandedItems?.includes(value)
-            ? openIcon ?? <FolderOpenIcon className="size-4" />
-            : closeIcon ?? <FolderIcon className="size-4" />}
-          <span>{element}</span>
-        </AccordionPrimitive.Trigger>
+          <div className={`flex items-center gap-2 rounded-md text-sm`}>
+            {expandedItems?.includes(value)
+              ? openIcon ?? <FolderOpenIcon className="size-4" />
+              : closeIcon ?? <FolderIcon className="size-4" />}
+            <span>{element}</span>
+          </div>
+          <AccordionPrimitive.Trigger
+            className={`flex items-center gap-1 rounded-md text-sm`}
+            disabled={!isSelectable}
+            onClick={() => handleExpand(value)}
+          >
+            {expandedItems?.includes(value) ? (
+              <ChevronDownIcon className="size-4" />
+            ) : (
+              <ChevronRightIcon className="size-4" />
+            )}
+          </AccordionPrimitive.Trigger>
+        </div>
         <AccordionPrimitive.Content className="relative h-full overflow-hidden text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down">
           {element && indicator && <TreeIndicator aria-hidden="true" />}
           <AccordionPrimitive.Root

@@ -7,7 +7,7 @@ export const TransformProperty = observer(() => {
   const editor = useEditor();
   const property = editor.activeNode?.property as Node2DProperty;
   return (
-    <div>
+    <div className="mt-3">
       <p className=" font-semibold">Transform</p>
       <div className="flex flex-col p-2">
         <div className="flex items-center">
