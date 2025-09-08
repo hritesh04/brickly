@@ -17,6 +17,7 @@ import { updateNode } from "@/actions/node";
 export class Editor {
   nodes: node[] = [];
   activeNode: node | null = null;
+  activeScene: node | null = null;
   resourceCounter: number = 0;
   resource: Resource[] = [];
   saveTimer: NodeJS.Timeout | null;
@@ -165,13 +166,13 @@ export class Editor {
     this.dirty = true;
   }
 
-  saveAsScene(name: string) {
-    const node = this.nodes.find((n) => n.name == name);
+  saveAsScene() {
+    // const node = this.nodes.find((n) => n.name == name);
     // let resource = "";
     // if (node!.resource) {
     //   for (const res of node!.resource) resource += this.parseResource(res);
     // }
-    const nodes = this.traverseChild(node as node);
+    const nodes = this.traverseChild(this.activeNode as node);
     return `[gd_scene format=3]` + nodes.res + nodes.nodes;
   }
 
@@ -268,9 +269,7 @@ export class Editor {
       transform.position &&
       (transform.position.value.x || transform.position.value.y)
     ) {
-      property += `\n${transform.position.name} = ${transform.position.type}(${
-        (transform.position.value.x, transform.position.value.y)
-      })`;
+      property += `\n${transform.position.name} = ${transform.position.type}(${transform.position.value.x},${transform.position.value.y})`;
     }
     if (transform.rotation && transform.rotation.value) {
       property += `\n${transform.rotation.name} = ${transform.rotation.value}`;
@@ -302,5 +301,8 @@ export class Editor {
 
   setActiveNode(node: node) {
     this.activeNode = node;
+  }
+  setActiveScene(node: node) {
+    this.activeScene = node;
   }
 }

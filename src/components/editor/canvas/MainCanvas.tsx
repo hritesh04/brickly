@@ -1,10 +1,17 @@
 "use client";
-import { useCallback, useEffect, useRef, useState } from "react";
-import NodeCanvas from "./layerCanvas";
+import React, {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  WheelEventHandler,
+} from "react";
+import { NodeCanvas } from "./nodeCanvas";
 import { Layer, Stage, Text } from "react-konva";
 import Konva from "konva";
 import { useEditor } from "@/store/editor";
 import { observer } from "mobx-react-lite";
+import { useProjectManager } from "@/store/project";
 
 Konva.pixelRatio = 5;
 
@@ -15,10 +22,21 @@ export const MainCanvas = observer(() => {
   const positionRef = useRef({ x: 0, y: 0 });
   const dragStartRef = useRef({ x: 0, y: 0 });
   const scaleRef = useRef(1);
+  const project = useProjectManager();
   const [dimensions, setDimensions] = useState({ width: 400, height: 300 });
   const [isInitialized, setIsInitialized] = useState(false);
   const editor = useEditor();
-  const activeNode = editor.activeNode;
+  const activeNode = editor.activeScene;
+
+  useEffect(() => {
+    if (project.project) {
+      setDimensions({
+        height: project.project.height,
+        width: project.project.width,
+      });
+    }
+  }, []);
+
   const updateCanvasTransform = useCallback(() => {
     if (canvasRef.current) {
       canvasRef.current.style.transform = `translate(${positionRef.current.x}px, ${positionRef.current.y}px) scale(${scaleRef.current})`;
@@ -57,7 +75,7 @@ export const MainCanvas = observer(() => {
   }, []);
 
   const handleMouseMove = useCallback(
-    (e: MouseEvent) => {
+    (e: React.MouseEvent) => {
       if (!dragRef.current || !canvasRef.current) return;
 
       const newX = e.clientX - dragStartRef.current.x;
@@ -94,7 +112,7 @@ export const MainCanvas = observer(() => {
   }, []);
 
   const handleWheel = useCallback(
-    (e: WheelEvent) => {
+    (e: React.WheelEvent) => {
       e.preventDefault();
 
       if (!canvasRef.current) return;
@@ -123,31 +141,13 @@ export const MainCanvas = observer(() => {
     [updateCanvasTransform]
   );
 
-  useEffect(() => {
-    const handleGlobalMouseMove = (e: MouseEvent) => handleMouseMove(e);
-    const handleGlobalMouseUp = () => handleMouseUp();
-
-    document.addEventListener("mousemove", handleGlobalMouseMove);
-    document.addEventListener("mouseup", handleGlobalMouseUp);
-
-    return () => {
-      document.removeEventListener("mousemove", handleGlobalMouseMove);
-      document.removeEventListener("mouseup", handleGlobalMouseUp);
-    };
-  }, [handleMouseMove, handleMouseUp]);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (canvas) {
-      canvas.addEventListener("wheel", handleWheel, { passive: false });
-      return () => {
-        canvas.removeEventListener("wheel", handleWheel);
-      };
-    }
-  }, [handleWheel]);
-
   return (
-    <div className="h-full w-full relative" ref={containerRef}>
+    <div
+      className="h-full w-full relative"
+      ref={containerRef}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUp}
+    >
       <div
         ref={canvasRef}
         style={{
@@ -159,15 +159,20 @@ export const MainCanvas = observer(() => {
         }}
         className="bg-white border border-gray-300 shadow-lg"
         onMouseDown={handleMouseDown}
+        onWheel={handleWheel}
       >
-        <Stage width={dimensions.width} height={dimensions.height}>
-          <Layer key={1}>
+        <Stage
+          width={dimensions.width}
+          height={dimensions.height}
+          className="z-10"
+        >
+          <Layer key={1} onClick={() => console.log("LAYER")}>
             {activeNode && <NodeCanvas node={activeNode} />}
             {!activeNode && (
               <Text
                 text="Please select a node to view its Preview"
-                x={dimensions.width / 4}
-                y={dimensions.height / 2.5}
+                x={dimensions.width / 2 - 100}
+                y={dimensions.height / 2 - 50}
                 width={200}
                 fontSize={20}
                 fontFamily="Calibri"

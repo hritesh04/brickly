@@ -26,6 +26,8 @@ model Project{
   id Int @id @default(autoincrement())
   name String
   icon String?
+  height Int
+  width Int
   property Json?
   scene Node[]
   resource Resource[]

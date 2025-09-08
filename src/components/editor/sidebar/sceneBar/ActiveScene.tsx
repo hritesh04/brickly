@@ -11,8 +11,12 @@ import { observer } from "mobx-react-lite";
 
 export const ActiveScene = observer(() => {
   const editor = useEditor();
-  const { execute } = useAction(createNode);
-  if (!editor.activeNode) {
+  const { execute } = useAction(createNode, {
+    onSuccess(data) {
+      editor.addNode(data);
+    },
+  });
+  if (!editor.activeScene) {
     return (
       <div className="flex-1 flex items-center flex-col">
         <div className="flex items-center w-full justify-between">
@@ -54,11 +58,11 @@ export const ActiveScene = observer(() => {
         </div>
       </div>
       <Tree
-        initialExpandedItems={[editor.activeNode.name]}
+        initialExpandedItems={[editor.activeScene.name]}
         closeIcon={<Image className=" size-4" />}
         openIcon={<Layers className=" size-4" />}
       >
-        <FileTree scene={editor.activeNode} key={editor.activeNode.id} />
+        <FileTree scene={editor.activeScene} key={editor.activeScene.id} />
       </Tree>
     </div>
   );

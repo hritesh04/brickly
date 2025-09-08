@@ -30,7 +30,13 @@ export const NodeTypeProperty = observer(() => {
         onOpenChange={(open) => console.log("Dropdown opened:", open)}
       >
         <DropdownMenuTrigger asChild>
-          <Button variant="outline">{activeNode.type}</Button>
+          <Button 
+            variant="outline" 
+            onClick={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+          >
+            {activeNode.type}
+          </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-56">
           {nodeType.options.map((n) => (

@@ -2,12 +2,14 @@
 import { createResource } from "@/actions/resource";
 import { useAction } from "@/hooks/useAction";
 import { useEditor } from "@/store/editor";
+import { useProjectManager } from "@/store/project";
 import { Property, Sprite2DProperty as SpriteProperty } from "@/types/property";
 import { AssetType, ResourceType } from "@prisma/client";
 import { observer } from "mobx-react-lite";
 import React from "react";
 export const Sprite2DProperty = observer(() => {
   const editor = useEditor();
+  const project = useProjectManager();
   const { execute } = useAction(createResource, {
     onSuccess(data) {
       editor.addResource(data);
@@ -25,7 +27,7 @@ export const Sprite2DProperty = observer(() => {
       name: "texture",
       assetType: AssetType.Texture2D,
       type: ResourceType.ExtResource,
-      projectID: 1,
+      projectID: project.project?.id,
       parentID: editor.activeNode!.id,
       file: files[0],
     });

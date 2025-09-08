@@ -15,7 +15,10 @@ export default function FileTree({ scene }: { scene: node }) {
         value={scene.name}
         className="p-1"
         fileIcon={<CircleIcon className=" size-4" />}
-        onClick={() => editor.setActiveNode(scene)}
+        onClick={(e) => {
+          editor.setActiveNode(scene);
+          e.stopPropagation();
+        }}
       >
         <p>{scene.name}</p>
       </File>
@@ -28,6 +31,7 @@ export default function FileTree({ scene }: { scene: node }) {
       className="mb-1"
       key={scene.id}
       onClick={() => {
+        editor.setActiveScene(scene);
         editor.setActiveNode(scene);
         setOpen(true);
       }}

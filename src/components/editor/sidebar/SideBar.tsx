@@ -54,6 +54,11 @@ export const SideBar = observer(
       projectManger.setProject(project);
       editor.initScene(project.scene as node[]);
     }, [project]);
+
+    if (!project) {
+      return <div>INVALID PROJECT</div>;
+    }
+
     return (
       <Sidebar
         collapsible="icon"

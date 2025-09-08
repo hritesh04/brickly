@@ -20,18 +20,20 @@ export const TransformProperty = observer(() => {
               <div>
                 <input
                   type="number"
-                  defaultValue={property?.transform?.position.value.x || 0.0}
-                  onChange={(e) =>
+                  // defaultValue={0.0}
+                  value={property?.transform?.position.value.x || 0}
+                  onChange={(e) => {
+                    console.log(e.target.valueAsNumber);
                     editor.setProperty("transform", "position", {
                       name: "position",
                       type: variant.Vector2,
                       value: {
                         x: e.target.valueAsNumber,
-                        y: property?.transform?.position.value.y || 0.0,
+                        y: property?.transform?.position?.value.y || 0,
                       },
-                    })
-                  }
-                  className="w-8 text-center"
+                    });
+                  }}
+                  className="w-12 text-center"
                 />
                 <span>px</span>
               </div>
@@ -41,14 +43,15 @@ export const TransformProperty = observer(() => {
               <div>
                 <input
                   type="number"
-                  defaultValue={property?.transform?.position?.value.y || 0.0}
-                  className="w-8 text-center"
+                  value={property?.transform?.position.value.y || 0}
+                  // defaultValue={0.0}
+                  className="w-12 text-center"
                   onChange={(e) =>
                     editor.setProperty("transform", "position", {
                       name: "position",
                       type: variant.Vector2,
                       value: {
-                        x: property?.transform?.position?.value.x || 0.0,
+                        x: property?.transform?.position?.value.x || 0,
                         y: e.target.valueAsNumber,
                       },
                     })
@@ -63,11 +66,7 @@ export const TransformProperty = observer(() => {
           <span className="text-md font-medium text-sidebar-foreground/80">
             Rotation
           </span>
-          <input
-            type="number"
-            defaultValue={property?.transform?.rotation?.value || 0}
-            className="w-10"
-          />
+          <input type="number" defaultValue={0} className="w-10" />
         </div>
         <div className="flex items-center">
           <span className="text-md font-medium text-sidebar-foreground/80">
@@ -79,7 +78,7 @@ export const TransformProperty = observer(() => {
               <div>
                 <input
                   type="number"
-                  defaultValue={property?.transform?.scale?.value.x || 1}
+                  defaultValue={1}
                   className="w-8 text-center"
                 />
                 {/* <span>px</span> */}
@@ -90,7 +89,7 @@ export const TransformProperty = observer(() => {
               <div>
                 <input
                   type="number"
-                  defaultValue={property?.transform?.scale?.value.y || 1}
+                  defaultValue={1}
                   className="w-8 text-center"
                 />
                 {/* <span>px</span> */}

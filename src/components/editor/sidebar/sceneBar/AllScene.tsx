@@ -9,6 +9,7 @@ import { Image, Plus } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { SetStateAction } from "react";
 import { usePropertySideBar } from "../propertySideBar/PropertySideBar";
+import { useProjectManager } from "@/store/project";
 
 interface AllScenesProps {
   scenes: node[] | null;
@@ -16,6 +17,7 @@ interface AllScenesProps {
 }
 
 export const AllScenes = observer(() => {
+  const project = useProjectManager();
   const editor = useEditor();
   const { setOpen } = usePropertySideBar();
   const { execute, error } = useAction(createNode, {
@@ -50,7 +52,9 @@ export const AllScenes = observer(() => {
         </p>
         <div
           className="p-1 hover:bg-secondary rounded-md cursor-pointer"
-          onClick={() => execute({ type: "Node", projectID: 1 })}
+          onClick={() =>
+            execute({ type: "Node", projectID: project.project?.id })
+          }
         >
           <Plus size={18} />
         </div>
@@ -62,6 +66,7 @@ export const AllScenes = observer(() => {
               <div
                 className="flex items-center gap-2 text-sm py-2 cursor-pointer hover:bg-secondary/50 px-2 rounded-md"
                 onClick={() => {
+                  editor.setActiveScene(s);
                   editor.setActiveNode(s);
                   setOpen(true);
                 }}

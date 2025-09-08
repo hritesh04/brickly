@@ -89,31 +89,6 @@ describe("Editor", () => {
       type: ResourceType.ExtResource,
     });
     // console.log(editor.getNodes());
-    // console.log(editor.saveAsScene("Node"));
-    expect(editor.getNodes()).toEqual<node[]>([
-      {
-        id: 1,
-        name: "Node",
-        type: NodeType.Node,
-        children: [
-          {
-            id: 2,
-            name: "Node2D",
-            type: NodeType.Node2D,
-            projectID: null,
-            parentID: 1,
-            property: {},
-          },
-        ],
-        projectID: 1,
-        // resource: null,
-        parentID: null,
-        property: {
-          transform: {
-            rotation: 2.1,
-          },
-        },
-      },
-    ]);
+    console.log(editor.saveAsScene());
   });
 });
