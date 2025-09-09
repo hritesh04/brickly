@@ -5,7 +5,7 @@ import { createContext, useContext, useMemo, useState } from "react";
 import { NodeTypeProperty } from "./properties/NodeTypeProperty";
 import { NodeType } from "@prisma/client";
 import Node2DProperty from "./Node2DProperty";
-import { Sprite2DProperty } from "./properties/Sprite2DProperty";
+// import { Sprite2DProperty } from "./properties/Sprite2DProperty";
 
 type PropertySideBarProps = {
   open: boolean;
@@ -58,10 +58,10 @@ const PropertySideBar = observer(() => {
         `}
     >
       <NodeTypeProperty />
-      {activeNode.type === NodeType.Sprite2D && <Sprite2DProperty />}
-      <div className=" grid gap-2 mt-4">
-        {activeNode.type !== NodeType.Node && <Node2DProperty />}
-      </div>
+      {/* {activeNode.type === NodeType.Sprite2D && <Sprite2DProperty />} */}
+      {/* <div className=" grid gap-2 mt-4"> */}
+      {activeNode.type !== NodeType.Node && <Node2DProperty />}
+      {/* </div> */}
     </div>
   );
 });

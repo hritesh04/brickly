@@ -7,14 +7,15 @@ import { NodeType } from "@prisma/client";
 import { SpriteCanvas } from "./SpriteCanvas";
 import { observer } from "mobx-react-lite";
 export const NodeCanvas = ({ node }: { node: node }) => {
+  console.log(node);
   return (
     <>
-      {node.type === NodeType.Sprite2D && <SpriteCanvas node={node} />}
+      {node.type !== NodeType.Node && <SpriteCanvas node={node} />}
       {node?.children &&
         node.children.map((n) => (
-          <Group key={n.id}>
-            <NodeCanvas node={n} />
-          </Group>
+          // <Group key={n.id}>
+          <NodeCanvas node={n} key={n.id} />
+          // </Group>
         ))}
     </>
   );

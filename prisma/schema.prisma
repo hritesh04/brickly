@@ -39,6 +39,10 @@ enum NodeType {
   Node
   Node2D
   Sprite2D
+  Area2D
+  StaticBody2D
+  RigidBody2D
+  CharacterBody2D
 }
 
 model Node{
@@ -64,6 +68,11 @@ enum AssetType {
   TileSet
   Texture2D
   JSON
+  SegmentShape2D
+  CircleShape2D
+  RectangleShape2D
+  CapsuleShap2D
+  CollisionPolygon2D
 }
 
 model Resource{

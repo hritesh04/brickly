@@ -8,12 +8,17 @@ import { useAction } from "@/hooks/useAction";
 import { createNode } from "@/actions/node";
 import { useEditor } from "@/store/editor";
 import { observer } from "mobx-react-lite";
+import { useProjectManager } from "@/store/project";
 
 export const ActiveScene = observer(() => {
   const editor = useEditor();
+  const project = useProjectManager();
   const { execute } = useAction(createNode, {
     onSuccess(data) {
       editor.addNode(data);
+    },
+    onError(error) {
+      console.log(error);
     },
   });
   if (!editor.activeScene) {
@@ -25,7 +30,9 @@ export const ActiveScene = observer(() => {
           </p>
           <div
             className="p-1 hover:bg-secondary rounded-md cursor-pointer"
-            onClick={() => execute({ type: "Node", projectID: 1 })}
+            onClick={() =>
+              execute({ type: "Node", projectID: project.project?.id })
+            }
           >
             <Plus size={18} />
           </div>

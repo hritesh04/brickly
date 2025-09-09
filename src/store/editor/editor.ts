@@ -6,10 +6,11 @@ import {
   Node2DProperty,
   Property,
   Sprite2DProperty,
+  SubResource,
   TransformProperty,
 } from "@/types/property";
 import { Resource } from "@/actions/resource/schema";
-import { AssetType, ResourceType } from "@/types/resource";
+import { AssetType, ResourceType, SubResourceType } from "@/types/resource";
 // import { Property } from "@/types/property";
 import { makeAutoObservable } from "mobx";
 import { useAction } from "@/hooks/useAction";
@@ -48,6 +49,7 @@ export class Editor {
   }
 
   initScene(scene: node[]) {
+    this.scene = [];
     scene.map((s) => {
       this.scene.push(s);
     });
@@ -60,11 +62,16 @@ export class Editor {
       //   this.nodes[parentIdx].children ??= [];
       //   this.nodes[parentIdx].children.push(node);
       //   return;
-      this.activeNode?.children?.push(node);
+      if (!this.activeNode) return;
+      this.activeNode.children ??= [];
+      this.activeNode.children.push(node);
+      this.activeNode = node;
       return;
     }
     this.scene.push(node);
     if (!this.activeNode) this.activeNode = this.scene[0];
+    if (!this.activeScene) this.activeScene = this.scene[0];
+    console.log(this.activeScene);
   }
 
   updateNode(data: Partial<node>) {
@@ -78,20 +85,27 @@ export class Editor {
     }
     this.activeNode.resource ??= [];
     this.activeNode.resource.push(resource);
-    this.setProperty("sprite_2d", "texture", resource);
+    this.setProperty("sprite_2d", "texture", {
+      type: ResourceType.ExtResource,
+      value: resource.id,
+    });
     if (resource.type === ResourceType.ExtResource) {
       this.resource.push(resource as Resource);
     }
   }
 
-  // attachResource(resName: string, nodeName: string) {
-  //   const node = this.nodes.find((n) => n.name == nodeName);
-  //   const res = this.resource.find((r) => r.name == resName);
-  //   if (!node) throw new Error("node not found");
-  //   if (!res) throw new Error("resource not found");
-  //   node.resource ??= [];
-  //   node.resource.push(res as Resource);
-  // }
+  attachResource(data: Resource) {
+    // const node = this.nodes.find((n) => n.name == nodeName);
+    // const res = this.resource.find((r) => r.name == resName);
+    // if (!node) throw new Error("node not found");
+    // if (!res) throw new Error("resource not found");
+    if (!this.activeNode) return;
+    // if(data.type===ResourceType.SubResource){
+    this.activeNode.resource ??= [];
+    this.activeNode.resource.push(data);
+    // this.setProperty("")
+    // }
+  }
 
   getNodes(): node[] {
     return this.scene;
@@ -100,6 +114,31 @@ export class Editor {
   getActiveScene() {
     return this.activeNode;
   }
+
+  // setResourceProperty<
+  //   // T extends ResourceType, // The type of property
+  //   K extends keyof SubResource // The key inside that property
+  //   V extends K
+  //   >(
+  //   id:number,
+  //   type: K, // SubResource or ExtResource
+  //   key: K // property key
+  //   // value: T[K] // property value
+  // ) {
+  //   if (!this.activeNode) {
+  //     throw new Error("No active node selected");
+  //   }
+  //   if (this.activeNode.type == NodeType.Node) return;
+
+  //   const res = this.activeNode.resource?.find((r) => r.type === type);
+  //   if (!res) return;
+
+  //   if (!res.property) {
+  //     res.property = {};
+  //   }
+
+  //   (res.property as any)[key] = value;
+  // }
 
   setProperty<
     P extends keyof Property,
