@@ -34,20 +34,55 @@ export async function getProject(id: number): Promise<ReturnTypeGetProject> {
       },
     });
     if (!project) return { error: "project not found" };
-    const nodes = await prisma.$queryRaw<node[]>(Prisma.sql`
-  WITH RECURSIVE scene_hierarchy AS (
-    SELECT n.*
-    FROM "Node" n
-    WHERE n."projectID" = ${id} AND n."parentID" IS NULL
-    UNION ALL
-    SELECT cn.*
-    FROM "Node" cn
-    INNER JOIN scene_hierarchy sh ON cn."parentID" = sh.id
-  )
-  SELECT *
-  FROM scene_hierarchy
-`);
-
+    const nodes = await prisma.$queryRaw<
+      node[]
+    >(Prisma.sql`WITH RECURSIVE node_hierarchy AS (
+      SELECT 
+        n.id,
+        n.name,
+        n.type,
+        n.property,
+        n."parentID",
+        n."projectID"
+      FROM "Node" n
+      WHERE n."projectID" = ${id} AND n."parentID" IS NULL
+      
+      UNION ALL
+      
+      SELECT 
+        n.id,
+        n.name,
+        n.type,
+        n.property,
+        n."parentID",
+        n."projectID"
+      FROM "Node" n
+      INNER JOIN node_hierarchy nh ON n."parentID" = nh.id
+    )
+    SELECT 
+      nh.id,
+      nh.name,
+      nh.type,
+      nh.property,
+      nh."parentID",
+      nh."projectID",
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'id', r.id,
+            'name', r.name,
+            'type', r.type,
+            'assetType', r."assetType",
+            'path', r.path,
+            'property', r.property
+          )
+        ) FILTER (WHERE r.id IS NOT NULL), '[]'::json
+      ) as resource,
+      '[]'::json as children
+    FROM node_hierarchy nh
+    LEFT JOIN "Resource" r ON r."parentID" = nh.id
+    GROUP BY nh.id, nh.name, nh.type, nh.property, nh."parentID", nh."projectID"
+    ORDER BY nh.id;`);
     const scene = buildTree(nodes);
     return { data: { ...project, scene } };
   } catch (e: any) {

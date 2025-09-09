@@ -25,7 +25,7 @@ async function createResourceHandler(
 
     const res = await prisma.resource.create({
       data: {
-        name: data.file.name,
+        name: data.file?.name || data.name,
         type: data.type,
         assetType: data.assetType,
         parentID: data.parentID,

@@ -28,7 +28,7 @@ export const createResourceSchema = z.object({
   assetType: assetType,
   parentID: z.number(),
   projectID: z.number().nullable().optional(),
-  file: z.file(),
+  file: z.file().optional(),
 }) satisfies z.ZodType<Prisma.ResourceCreateManyInput>;
 
 export type Resource = z.infer<typeof resourceSchema>;
