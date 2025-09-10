@@ -1,13 +1,11 @@
 import { createNode } from "@/actions/node";
-import { node, nodeType } from "@/actions/node/schema";
+import { node } from "@/actions/node/schema";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
 import { useAction } from "@/hooks/useAction";
 import { useEditor } from "@/store/editor";
-import { Node } from "@/types/node";
 import { Image, Plus } from "lucide-react";
 import { observer } from "mobx-react-lite";
-import { SetStateAction } from "react";
 import { usePropertySideBar } from "../propertySideBar/PropertySideBar";
 import { useProjectManager } from "@/store/project";
 import { NodeType } from "@prisma/client";

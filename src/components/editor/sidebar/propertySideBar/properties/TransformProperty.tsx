@@ -1,6 +1,6 @@
 import { useEditor } from "@/store/editor";
 import { useResourceStore } from "@/store/resource";
-import { BaseProperty, Node2DProperty, Property } from "@/types/property";
+import { Node2DProperty } from "@/types/property";
 import { variant } from "@/types/variant";
 import { Resource } from "@prisma/client";
 import { observer } from "mobx-react-lite";

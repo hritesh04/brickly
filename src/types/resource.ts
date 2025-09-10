@@ -1,4 +1,3 @@
-import { CanvasItemProperty, TransformProperty } from "./property";
 import { variant } from "./variant";
 
 export interface Script {

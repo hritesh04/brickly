@@ -11,7 +11,12 @@ export type Property = {
   transform: TransformProperty;
   canvas: CanvasItemProperty;
   sprite_2d: SpriteProperty;
-  collison: { shape: SegmentShape2D | CollisionPolygon2D };
+  collison: { shape: { type: ResourceType; value: number } };
+};
+
+export type ResourceProperty = {
+  transform: TransformProperty;
+  collision: { shape: SegmentShape2D | CollisionPolygon2D };
 };
 
 export interface Node2DProperty extends BaseProperty {

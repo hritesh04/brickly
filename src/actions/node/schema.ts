@@ -1,5 +1,5 @@
 import z from "zod";
-import { Node, NodeType, Prisma } from "@prisma/client";
+import { Node, NodeType } from "@prisma/client";
 import { resourceSchema } from "../resource/schema";
 
 export const nodeType = z.enum(NodeType);

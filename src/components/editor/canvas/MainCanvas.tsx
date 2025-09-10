@@ -1,11 +1,5 @@
 "use client";
-import React, {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  WheelEventHandler,
-} from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { NodeCanvas } from "./NodeCanvas";
 import { Layer, Stage, Text } from "react-konva";
 import Konva from "konva";

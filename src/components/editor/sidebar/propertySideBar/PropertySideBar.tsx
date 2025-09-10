@@ -1,7 +1,7 @@
 "use client";
 import { useEditor } from "@/store/editor";
 import { observer } from "mobx-react-lite";
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { NodeTypeProperty } from "./properties/NodeTypeProperty";
 import { NodeType } from "@prisma/client";
 import Node2DProperty from "./Node2DProperty";

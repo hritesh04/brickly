@@ -4,7 +4,6 @@ import { prisma } from "@/lib/prisma";
 import {
   CreateProjectInput,
   createProjectSchema,
-  ProjectWithRelation,
   ReturnTypeCreateProject,
   ReturnTypeGetProject,
 } from "./schema";
@@ -92,7 +91,7 @@ export async function getProject(id: number): Promise<ReturnTypeGetProject> {
 
 function buildTree(nodes: node[]) {
   const map = new Map<number, node>();
-  let rootNodes: node[] = [];
+  const rootNodes: node[] = [];
 
   nodes.forEach((node) => {
     map.set(node.id, node);

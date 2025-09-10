@@ -9,9 +9,7 @@ import {
 } from "./schema";
 import { prisma } from "@/lib/prisma";
 import { writeFile } from "node:fs/promises";
-import { ResourceType } from "@prisma/client";
 import path from "node:path";
-import { updateNode } from "../node";
 
 async function createResourceHandler(
   data: CreateResourceInput

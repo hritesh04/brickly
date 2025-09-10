@@ -1,4 +1,4 @@
-import { Project, projectWithResource } from "@/actions/project/schema";
+import { projectWithResource } from "@/actions/project/schema";
 import { resourceStore } from "@/store/resource";
 
 export class ProjectManager {

@@ -1,12 +1,11 @@
 // "use client";
-import { createResource } from "@/actions/resource";
 import { updateNode } from "@/actions/node";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useAction } from "@/hooks/useAction";
 import { useEditor } from "@/store/editor";
 import { useProjectManager } from "@/store/project";
 import { Property } from "@/types/property";
-import { AssetType, NodeType, ResourceType } from "@prisma/client";
+import { NodeType } from "@prisma/client";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
 import { CollisionProperty } from "./CollisionProperty";

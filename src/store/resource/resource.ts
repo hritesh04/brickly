@@ -1,9 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import { Resource } from "@/actions/resource/schema";
-import { projectWithResource } from "@/actions/project/schema";
-import { node } from "@/actions/node/schema";
-import { CollisionShapeType, Property } from "@/types/property";
-import { SubResource } from "@/types/resource";
+import { ResourceProperty } from "@/types/property";
 import { updateResource } from "@/actions/resource";
 
 export class ResourceStore {
@@ -48,21 +45,23 @@ export class ResourceStore {
   }
 
   setResourceProperty<
-    P extends keyof Property,
-    SP extends keyof Property[P],
-    V extends Property[P][SP]
+    P extends keyof ResourceProperty,
+    SP extends keyof ResourceProperty[P],
+    V extends ResourceProperty[P][SP]
   >(id: number, property: P, subProperty: SP, value: V): void {
     if (!this.activeResource) {
       throw new Error("No active node selected");
     }
 
     if (!this.activeResource.property) {
-      this.activeResource.property = {} as Property;
+      this.activeResource.property = {} as ResourceProperty;
     }
 
-    if (!(property in (this.activeResource.property as Property))) {
-      (this.activeResource.property as Property)[property] = {} as Property[P];
+    if (!(property in (this.activeResource.property as ResourceProperty))) {
+      (this.activeResource.property as ResourceProperty)[property] =
+        {} as ResourceProperty[P];
     }
-    (this.activeResource.property as Property)[property][subProperty] = value;
+    (this.activeResource.property as ResourceProperty)[property][subProperty] =
+      value;
   }
 }

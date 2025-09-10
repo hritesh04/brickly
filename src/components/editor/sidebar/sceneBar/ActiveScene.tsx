@@ -1,9 +1,7 @@
-import { Separator } from "@/components/ui/separator";
 import { Image, Layers, Plus } from "lucide-react";
 import { FileTree } from "./FileTree";
-import { Node, NodeType } from "@/types/node";
+import { NodeType } from "@/types/node";
 import { Tree } from "@/components/magicui/file-tree";
-import { node } from "@/actions/node/schema";
 import { useAction } from "@/hooks/useAction";
 import { createNode } from "@/actions/node";
 import { useEditor } from "@/store/editor";

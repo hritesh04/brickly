@@ -1,5 +1,4 @@
 import { SceneBar } from "./sceneBar/SceneBar";
-import { ProjectWithRelation } from "@/actions/project/schema";
 export default function ActiveSideBar({
   activeTitle,
 }: // project,

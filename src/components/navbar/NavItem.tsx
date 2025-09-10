@@ -25,7 +25,7 @@ export default function NavItem() {
     <div className=" flex gap-18 flex-1 items-center justify-center">
       {homeNav.map((nav) => {
         return (
-          <a href={nav.path}>
+          <a href={nav.path} key={nav.name}>
             <div className="hover:border-b border-black">
               <p>{nav.name}</p>
             </div>

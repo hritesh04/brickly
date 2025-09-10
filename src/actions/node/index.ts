@@ -7,7 +7,7 @@ import {
   UpdateNodeInput,
   updateNodeSchema,
 } from "./schema";
-import { ActionState, createSafeAction } from "@/lib/actionState";
+import { createSafeAction } from "@/lib/actionState";
 
 async function createNodeHandler(data: CreateNodeInput) {
   try {

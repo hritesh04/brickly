@@ -11,14 +11,12 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import GameTab from "./GameTab";
-import { Code2Icon, ImagePlayIcon, Layers, LucideIcon } from "lucide-react";
+import { ImagePlayIcon, Layers, LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import ActiveSideBar from "./ActiveSideBar";
 import { usePropertySideBar } from "./propertySideBar/PropertySideBar";
 import { Separator } from "@/components/ui/separator";
-import { Prisma, Project } from "@prisma/client";
 import { ProjectWithRelation } from "@/actions/project/schema";
-import z from "zod";
 import { useProjectManager } from "@/store/project";
 import { useEditor } from "@/store/editor";
 import { node } from "@/actions/node/schema";

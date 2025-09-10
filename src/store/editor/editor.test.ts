@@ -1,11 +1,8 @@
 import { Editor } from "./editor";
 import { NodeType } from "@/types/node";
-import { INode } from "@/types/node";
-import { Node2DProperty } from "@/types/property";
 import { variant } from "@/types/variant";
-import { Property } from "@/types/property";
-import { AssetType, ResourceType } from "@/types/resource";
-import { node, nodeType } from "@/actions/node/schema";
+import { node } from "@/actions/node/schema";
+import { AssetType, ResourceType } from "@prisma/client";
 
 describe("Editor", () => {
   const editor = new Editor();

@@ -1,11 +1,7 @@
-import { useEffect, useRef, useCallback } from "react";
-import Konva from "konva";
-import { Stage, Text, Layer, Circle, Sprite, Group } from "react-konva";
+import { Layer, Group } from "react-konva";
 import { node } from "@/actions/node/schema";
-import { useEditor } from "@/store/editor";
 import { NodeType } from "@prisma/client";
 import { ResourceCanvas } from "./ResourceCanvas";
-import { observer } from "mobx-react-lite";
 export const NodeCanvas = ({ node }: { node: node }) => {
   return (
     <>
