@@ -1,7 +1,6 @@
 import { node } from "@/actions/node/schema";
-import { File, Folder, Tree } from "@/components/magicui/file-tree";
+import { File, Folder } from "@/components/magicui/file-tree";
 import { useEditor } from "@/store/editor";
-import { Node } from "@/types/node";
 import { CircleIcon } from "lucide-react";
 import { usePropertySideBar } from "../propertySideBar/PropertySideBar";
 import { observer } from "mobx-react-lite";

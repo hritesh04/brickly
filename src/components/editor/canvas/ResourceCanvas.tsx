@@ -1,28 +1,12 @@
-import { node } from "@/actions/node/schema";
 import { Resource } from "@/actions/resource/schema";
-import { useEditor } from "@/store/editor";
-import { useProjectManager } from "@/store/project";
 import { useResourceStore } from "@/store/resource";
-import {
-  CollisionProperty,
-  Property,
-  Sprite2DProperty,
-} from "@/types/property";
-import { SegmentShape2D, Texture2D } from "@/types/resource";
+import { ResourceProperty, Sprite2DProperty } from "@/types/property";
+import { SegmentShape2D } from "@/types/resource";
 import { variant } from "@/types/variant";
 import { AssetType } from "@prisma/client";
 import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
 import { observer } from "mobx-react-lite";
-import { useEffect } from "react";
-import {
-  Circle,
-  Group,
-  Image,
-  KonvaNodeEvents,
-  Layer,
-  Line,
-  Text,
-} from "react-konva";
+import { Circle, Image, Line, Text } from "react-konva";
 import useImage from "use-image";
 
 // onDragMove={(e) => {
@@ -78,8 +62,8 @@ export const ResourceCanvas = observer(
     }
 
     if (resource.assetType === AssetType.SegmentShape2D) {
-      const property = resource.property as Property;
-      const collision = property?.collison?.shape as SegmentShape2D;
+      const property = resource.property as ResourceProperty;
+      const collision = property?.collision?.shape as SegmentShape2D;
       return (
         <>
           <Circle
@@ -93,7 +77,7 @@ export const ResourceCanvas = observer(
               e.cancelBubble = true;
             }}
             onDragMove={(e) => {
-              resStore.setResourceProperty(resource.id, "collison", "shape", {
+              resStore.setResourceProperty(resource.id, "collision", "shape", {
                 name: "SegmentShape2D",
                 type: variant.Vector2,
                 value: {
@@ -128,7 +112,7 @@ export const ResourceCanvas = observer(
               e.cancelBubble = true;
             }}
             onDragMove={(e) => {
-              resStore.setResourceProperty(resource.id, "collison", "shape", {
+              resStore.setResourceProperty(resource.id, "collision", "shape", {
                 name: "SegmentShape2D",
                 type: variant.Vector2,
                 value: {
