@@ -104,10 +104,11 @@ export const PhysicsProperty = observer(() => {
           <div className="flex flex-col gap-2">
             {property?.sprite_2d?.texture?.value ? (
               <div className="text-md text-sidebar-foreground/80">
-                {(() => {
-                  const img = property?.sprite_2d?.texture?.value;
-                  return img;
-                })()}
+                {
+                  project.project?.resource?.find(
+                    (r) => r.id == property.sprite_2d.texture.value
+                  )?.path
+                }
                 {/* {property.sprite_2d.texture.path} */}
               </div>
             ) : (
