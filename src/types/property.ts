@@ -1,6 +1,7 @@
 import { Resource } from "@/actions/resource/schema";
 import { variant } from "./variant";
 import { ResourceType } from "@prisma/client";
+import { CollisionPolygon2D, SegmentShape2D } from "./resource";
 
 export interface BaseProperty {
   canvas: CanvasItemProperty;
@@ -10,7 +11,7 @@ export type Property = {
   transform: TransformProperty;
   canvas: CanvasItemProperty;
   sprite_2d: SpriteProperty;
-  collison: CollisionProperty;
+  collison: { shape: SegmentShape2D | CollisionPolygon2D };
 };
 
 export interface Node2DProperty extends BaseProperty {
@@ -31,15 +32,11 @@ export enum CollisionShapeType {
   CapsuleShap2D = "CapsuleShap2D",
   CollisionPolygon2D = "CollisionPolygon2D",
 }
-export interface CollisionShapeProperty {
-  a: { name: "a"; type: variant.Vector2; value: { x: number; y: number } };
-  b: { name: "b"; type: variant.Vector2; value: { x: number; y: number } };
-}
 
-export type SubResource = CollisionProperty;
+// export type Texture2DProperty
 
 export interface CollisionProperty {
-  shape: { type: ResourceType; value: number };
+  shape: { name: "shape"; type: CollisionShapeType; value: number };
 }
 
 export interface SpriteProperty {

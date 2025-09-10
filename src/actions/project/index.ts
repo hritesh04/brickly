@@ -78,7 +78,7 @@ export async function getProject(id: number): Promise<ReturnTypeGetProject> {
           )
         ) FILTER (WHERE r.id IS NOT NULL), '[]'::json
       ) as resource,
-      '[]'::json as children
+      null as children
     FROM node_hierarchy nh
     LEFT JOIN "Resource" r ON r."parentID" = nh.id
     GROUP BY nh.id, nh.name, nh.type, nh.property, nh."parentID", nh."projectID"

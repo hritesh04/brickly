@@ -3,7 +3,7 @@ import {
   Node2DProperty,
   Sprite2DProperty,
 } from "./property";
-import { Resource } from "./resource";
+import { Resource } from "@prisma/client";
 
 export enum NodeType {
   Node = "Node",

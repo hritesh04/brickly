@@ -10,6 +10,7 @@ import { observer } from "mobx-react-lite";
 import { SetStateAction } from "react";
 import { usePropertySideBar } from "../propertySideBar/PropertySideBar";
 import { useProjectManager } from "@/store/project";
+import { NodeType } from "@prisma/client";
 
 interface AllScenesProps {
   scenes: node[] | null;
@@ -53,7 +54,7 @@ export const AllScenes = observer(() => {
         <div
           className="p-1 hover:bg-secondary rounded-md cursor-pointer"
           onClick={() =>
-            execute({ type: "Node", projectID: project.project?.id })
+            execute({ type: NodeType.Node2D, projectID: project.project?.id })
           }
         >
           <Plus size={18} />

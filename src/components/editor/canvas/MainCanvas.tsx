@@ -6,12 +6,13 @@ import React, {
   useState,
   WheelEventHandler,
 } from "react";
-import { NodeCanvas } from "./nodeCanvas";
+import { NodeCanvas } from "./NodeCanvas";
 import { Layer, Stage, Text } from "react-konva";
 import Konva from "konva";
 import { useEditor } from "@/store/editor";
 import { observer } from "mobx-react-lite";
 import { useProjectManager } from "@/store/project";
+import { useResourceStore } from "@/store/resource";
 
 Konva.pixelRatio = 5;
 
@@ -26,6 +27,7 @@ export const MainCanvas = observer(() => {
   const [dimensions, setDimensions] = useState({ width: 400, height: 300 });
   const [isInitialized, setIsInitialized] = useState(false);
   const editor = useEditor();
+  const resStore = useResourceStore();
   const activeNode = editor.activeScene;
 
   useEffect(() => {
@@ -165,10 +167,17 @@ export const MainCanvas = observer(() => {
           width={dimensions.width}
           height={dimensions.height}
           className="z-10"
+          onClick={() => {
+            resStore.clearActive();
+          }}
         >
-          <Layer key={1}>
-            {activeNode && <NodeCanvas node={activeNode} />}
-            {!activeNode && (
+          {activeNode && (
+            // <Layer key={1}>
+            <NodeCanvas node={activeNode} />
+            // </Layer>
+          )}
+          {!activeNode && (
+            <Layer key={1}>
               <Text
                 text="Please select a node to view its Preview"
                 x={dimensions.width / 2 - 100}
@@ -178,10 +187,9 @@ export const MainCanvas = observer(() => {
                 fontFamily="Calibri"
                 fill="#555"
                 align="center"
-                // verticalAlign="center"
               />
-            )}
-          </Layer>
+            </Layer>
+          )}
         </Stage>
       </div>
     </div>

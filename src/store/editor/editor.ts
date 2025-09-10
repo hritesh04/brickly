@@ -6,15 +6,15 @@ import {
   Node2DProperty,
   Property,
   Sprite2DProperty,
-  SubResource,
   TransformProperty,
 } from "@/types/property";
 import { Resource } from "@/actions/resource/schema";
-import { AssetType, ResourceType, SubResourceType } from "@/types/resource";
+import { ResourceType } from "@prisma/client";
 // import { Property } from "@/types/property";
 import { makeAutoObservable } from "mobx";
 import { useAction } from "@/hooks/useAction";
 import { updateNode } from "@/actions/node";
+import { resourceStore } from "@/store/resource";
 export class Editor {
   scene: node[] = [];
   activeNode: node | null = null;
@@ -52,7 +52,9 @@ export class Editor {
     this.scene = [];
     scene.map((s) => {
       this.scene.push(s);
+      if (s.resource) resourceStore.add(s.resource);
     });
+    // Collect resources from the initialized scene into the resource store
   }
 
   addNode(node: node) {
@@ -71,7 +73,6 @@ export class Editor {
     this.scene.push(node);
     if (!this.activeNode) this.activeNode = this.scene[0];
     if (!this.activeScene) this.activeScene = this.scene[0];
-    console.log(this.activeScene);
   }
 
   updateNode(data: Partial<node>) {
@@ -298,5 +299,7 @@ export class Editor {
   }
   setActiveScene(node: node) {
     this.activeScene = node;
+    // When changing scenes, re-collect resources from the subtree of the active scene
+    // resourceStore.collectFromNodes([node]);
   }
 }

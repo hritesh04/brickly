@@ -1,34 +1,52 @@
-import { CollisionShapeType } from "./property";
+import { CanvasItemProperty, TransformProperty } from "./property";
+import { variant } from "./variant";
 
-export enum ResourceType {
-  ExtResource = "ExtResource",
-  SubResource = "SubResource",
+export interface Script {
+  name: "Script";
+  type: variant.Text;
+  value: string;
+}
+export interface Texture2D {
+  name: "Texture2D";
+  type: variant.Text;
+  value: string;
 }
 
-export enum AssetType {
-  Script = "Script",
-  TileSet = "TileSet",
-  Texture2D = "Texture2D",
-  JSON = "JSON",
+export interface SegmentShape2D {
+  name: "SegmentShape2D";
+  type: variant.Vector2;
+  value: {
+    a: { x: number; y: number };
+    b: { x: number; y: number };
+  };
 }
 
-type BaseResource = {
-  id: number;
-  name: string;
-  assetType: AssetType;
-  // path: string;
+export interface CollisionPolygon2D {
+  name: "CollisionPolygon2D";
+  type: variant.Text;
+  value: {
+    position: {
+      name: "position";
+      type: variant.Vector2;
+      value: { x: number; y: number };
+    };
+    scale: {
+      name: "scale";
+      type: variant.Vector2;
+      value: { x: number; y: number };
+    };
+    polygon: {
+      name: "position";
+      type: variant.PackedVector2Array;
+      value: number[];
+    };
+  };
+}
+
+export type ExtResource = Script | Texture2D;
+export type SubResource = {
+  line: SegmentShape2D;
+  polygon: CollisionPolygon2D;
+  // transform: TransformProperty;
+  // canvas: CanvasItemProperty;
 };
-
-export type SubResourceType = CollisionShapeType;
-
-// interface SubResource extends BaseResource {
-//   type: ResourceType.SubResource;
-//   property: Record<string, any>;
-// }
-
-// interface ExtResource extends BaseResource {
-//   type: ResourceType.ExtResource;
-//   path: string;
-// }
-
-// export type Resource = SubResource | ExtResource;

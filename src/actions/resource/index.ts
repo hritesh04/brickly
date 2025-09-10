@@ -4,6 +4,8 @@ import {
   CreateResourceInput,
   createResourceSchema,
   ReturnTypeCreateResource,
+  UpdateResourceInput,
+  updateResourceSchema,
 } from "./schema";
 import { prisma } from "@/lib/prisma";
 import { writeFile } from "node:fs/promises";
@@ -39,7 +41,41 @@ async function createResourceHandler(
   }
 }
 
+async function updateResourceHandler(data: UpdateResourceInput) {
+  try {
+    if (data.property) {
+      const property = JSON.parse(data.property);
+
+      const res = await prisma.resource.update({
+        where: {
+          id: data.id,
+        },
+        data: {
+          ...data,
+          property,
+        },
+      });
+      return { data: res };
+    }
+    const res = await prisma.resource.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        ...data,
+      },
+    });
+    return { data: res };
+  } catch (error: any) {
+    return { error };
+  }
+}
+
 export const createResource = createSafeAction(
   createResourceSchema,
   createResourceHandler
+);
+export const updateResource = createSafeAction(
+  updateResourceSchema,
+  updateResourceHandler
 );

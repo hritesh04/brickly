@@ -1,4 +1,5 @@
 export enum variant {
+  Text = "Text",
   Bool = "Bool",
   Int = "Int",
   Float = "Float",
@@ -7,4 +8,5 @@ export enum variant {
   Transform2D = "Transform2D",
   Vector2 = "Vector2D",
   Texture2D = "Texture2D",
+  PackedVector2Array = "PackedVector2Array",
 }

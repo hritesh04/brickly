@@ -31,7 +31,7 @@ export const ActiveScene = observer(() => {
           <div
             className="p-1 hover:bg-secondary rounded-md cursor-pointer"
             onClick={() =>
-              execute({ type: "Node", projectID: project.project?.id })
+              execute({ type: NodeType.Node2D, projectID: project.project?.id })
             }
           >
             <Plus size={18} />
@@ -55,7 +55,7 @@ export const ActiveScene = observer(() => {
           className="flex p-1 hover:bg-secondary rounded-md cursor-pointer"
           onClick={() =>
             execute({
-              type: "Node",
+              type: NodeType.Node2D,
               parentID: editor.activeNode?.id,
               // projectID: 1
             })

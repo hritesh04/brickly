@@ -1,11 +1,18 @@
 import { useEditor } from "@/store/editor";
-import { BaseProperty, Node2DProperty } from "@/types/property";
+import { useResourceStore } from "@/store/resource";
+import { BaseProperty, Node2DProperty, Property } from "@/types/property";
 import { variant } from "@/types/variant";
+import { Resource } from "@prisma/client";
 import { observer } from "mobx-react-lite";
 
 export const TransformProperty = observer(() => {
   const editor = useEditor();
-  const property = editor.activeNode?.property as Node2DProperty;
+  const resStore = useResourceStore();
+  const activeRes = resStore.activeResource;
+  const isParent = editor.activeNode?.resource?.includes(activeRes as Resource);
+  const property = isParent
+    ? (resStore.activeResource?.property as Node2DProperty)
+    : (editor.activeNode?.property as Node2DProperty);
   return (
     <div className="mt-3">
       <p className=" font-semibold">Transform</p>
