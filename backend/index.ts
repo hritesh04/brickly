@@ -11,6 +11,10 @@ app.use(express.json());
 
 app.get("/health", buildHandler);
 
+app.get("/assets", (req, res) => {
+  console.log(req);
+});
+
 app.post("/build", authMiddleware, buildValidation, buildHandler);
 
 app.listen(3001, () => {

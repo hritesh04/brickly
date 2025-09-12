@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { failedResponse, successResponse } from "./utils";
-import BuildQueue from "./rabbitmq";
+import BuildQueue from "./lib/rabbitmq";
 import { DB } from "./db";
 import { BuildMessage } from "./types";
 import { parseProject } from "./parser";

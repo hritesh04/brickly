@@ -1,5 +1,5 @@
 import { Channel, ChannelModel, connect, Connection } from "amqplib";
-import { BuildMessage } from "./types";
+import { BuildMessage } from "../types";
 
 export default class BuildQueue {
   private static instance: BuildQueue;

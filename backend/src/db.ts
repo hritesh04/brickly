@@ -93,7 +93,7 @@ LEFT JOIN (
 ) resources ON resources."projectID" = p.id
 WHERE p.id = $1 AND p."userID" = $2;
         `,
-        [projectID, 1]
+        [projectID, userID]
       );
       if (res.rows.length === 0) throw new Error("Project Not Found");
       return res.rows[0];
