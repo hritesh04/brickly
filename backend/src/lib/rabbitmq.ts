@@ -1,5 +1,5 @@
 import { Channel, ChannelModel, connect, Connection } from "amqplib";
-import { BuildMessage } from "../types";
+import { BuildMessage, BuildTask } from "../types";
 
 export default class BuildQueue {
   private static instance: BuildQueue;
@@ -21,7 +21,7 @@ export default class BuildQueue {
     return this.channel;
   }
 
-  async push(data: BuildMessage) {
+  async push(data: BuildTask) {
     const channel = await this.getChannel();
     const bufferData = JSON.stringify(data);
     channel.sendToQueue("queue", Buffer.from(bufferData));

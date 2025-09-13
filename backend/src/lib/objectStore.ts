@@ -1,4 +1,8 @@
-import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 
 export class ObjectStore {
   private static instance: ObjectStore;
@@ -31,5 +35,13 @@ export class ObjectStore {
     const res = await client.send(command);
     return res.Body;
   }
-  uploadDir() {}
+  async uploadDir(key: string, data: NonSharedBuffer) {
+    const client = await this.getClient();
+    const command = new PutObjectCommand({
+      Bucket: "builds",
+      Key: key,
+      Body: data,
+    });
+    await client.send(command);
+  }
 }

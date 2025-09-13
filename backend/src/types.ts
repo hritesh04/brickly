@@ -7,7 +7,13 @@ export const buildSchema = z.object({
   buildType: build,
 });
 
+export const buildTask = z.object({
+  key: z.string(),
+  buildType: build,
+});
+
 export type BuildMessage = z.infer<typeof buildSchema>;
+export type BuildTask = z.infer<typeof buildTask>;
 export type UserJWTPayload = {
   userId: number;
 };

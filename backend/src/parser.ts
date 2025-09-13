@@ -1,27 +1,34 @@
 import { ObjectStore } from "./lib/objectStore";
 import tmp from "tmp";
 import { writeFile } from "fs/promises";
+import BuildQueue from "./lib/rabbitmq";
+import { execSync } from "child_process";
 
-export const parseProject = async (project: any) => {
+export const parseProject = async (project: any): Promise<string> => {
+  const queue = BuildQueue.getInstance();
   const objStore = ObjectStore.getInstance();
   const tmpDir = tmp.dirSync({ unsafeCleanup: true });
   const scenes = project.scenes;
   const resources: any[] = project.resources;
+  const zipDir = tmpDir.name + ".tar.gz";
   for (const r of resources) {
     if (!r.path) continue;
     const obj = await objStore.getFile(r.path);
-    if (!obj) return;
+    if (!obj) throw new Error("Assets file not found");
     const buff = await obj.transformToByteArray();
     await writeFile(tmpDir.name + "/" + r.path, buff);
   }
   for (const s of scenes) {
+    let file = "[gd_scene format=3]";
     if (!s.parentID) {
       const nodes = parseNode(s);
-      const file = `[gd_scene format=3]` + nodes.res + nodes.nodes;
-      console.log(file);
+      file = file + nodes.res + nodes.nodes;
     }
+    console.log(file);
   }
+  execSync(`tar -czf ${zipDir}.tar.gz ${tmpDir.name}`);
   tmpDir.removeCallback();
+  return zipDir;
 };
 
 function parseNode(node: any, parent?: string) {
