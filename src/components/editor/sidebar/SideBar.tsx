@@ -42,15 +42,14 @@ export const SideBar = observer(
     const [activeItem, setActiveItem] = useState<{
       title: string;
       icon: LucideIcon;
-    } | null>(navMain[0]);
+    } | null>(null);
     const { setOpen } = useSidebar();
-    const { setOpen: setPropertyBar, open: PropertyBarOpen } =
-      usePropertySideBar();
     const projectManger = useProjectManager();
     const editor = useEditor();
     useEffect(() => {
       projectManger.setProject(project);
       editor.initScene(project.scene as node[]);
+      if (!activeItem) setOpen(false);
     }, [project]);
 
     if (!project) {

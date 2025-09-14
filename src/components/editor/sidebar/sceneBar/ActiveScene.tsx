@@ -7,6 +7,7 @@ import { createNode } from "@/actions/node";
 import { useEditor } from "@/store/editor";
 import { observer } from "mobx-react-lite";
 import { useProjectManager } from "@/store/project";
+import { NewSceneDialog } from "./NewSceneDialog";
 
 export const ActiveScene = observer(() => {
   const editor = useEditor();
@@ -28,11 +29,12 @@ export const ActiveScene = observer(() => {
           </p>
           <div
             className="p-1 hover:bg-secondary rounded-md cursor-pointer"
-            onClick={() =>
-              execute({ type: NodeType.Node2D, projectID: project.project?.id })
-            }
+            // onClick={() =>
+            //   execute({ type: NodeType.Node2D, projectID: project.project?.id })
+            // }
           >
-            <Plus size={18} />
+            {/* <Plus size={18} /> */}
+            <NewSceneDialog />
           </div>
         </div>
         <div className="flex-1 flex items-center">

@@ -36,13 +36,17 @@ model Project{
 }
 
 enum NodeType {
+  Control
   Node
   Node2D
   Sprite2D
+  AnimatedSprite2D
   Area2D
   StaticBody2D
   RigidBody2D
   CharacterBody2D
+  CollisionShape2D
+  CollisionPolygon2D
 }
 
 model Node{
@@ -73,6 +77,8 @@ enum AssetType {
   RectangleShape2D
   CapsuleShap2D
   CollisionPolygon2D
+  SpriteFrames
+  PhysicsMaterial
 }
 
 model Resource{

@@ -25,7 +25,13 @@ const stopKonvaPropagation = (
 };
 
 export const ResourceCanvas = observer(
-  ({ resource }: { resource: Resource }) => {
+  ({
+    resource,
+    resourceClick,
+  }: {
+    resource: Resource;
+    resourceClick: () => void;
+  }) => {
     // useEffect(() => {});
     const resStore = useResourceStore();
     if (resource.assetType == AssetType.Texture2D) {
@@ -41,6 +47,7 @@ export const ResourceCanvas = observer(
           width={image?.width}
           draggable
           onClick={(e) => {
+            resourceClick();
             resStore.setActiveResource(resource);
             e.cancelBubble = true;
           }}
@@ -51,9 +58,10 @@ export const ResourceCanvas = observer(
               value: { x: e.target.x(), y: e.target.y() },
             });
           }}
-          onDragStart={() => {
+          onDragStart={(e) => {
+            resourceClick();
             resStore.setActiveResource(resource);
-            stopKonvaPropagation;
+            stopKonvaPropagation(e);
           }}
           onMouseDown={stopKonvaPropagation}
         />
@@ -73,6 +81,7 @@ export const ResourceCanvas = observer(
             fill="red"
             draggable
             onClick={(e) => {
+              resourceClick();
               resStore.setActiveResource(resource);
               e.cancelBubble = true;
             }}
@@ -86,11 +95,15 @@ export const ResourceCanvas = observer(
                 },
               });
             }}
-            onDragStart={() => {
+            onDragStart={(e) => {
+              resourceClick();
               resStore.setActiveResource(resource);
-              stopKonvaPropagation;
+              stopKonvaPropagation(e);
             }}
-            onMouseDown={stopKonvaPropagation}
+            onMouseDown={(e) => {
+              resourceClick();
+              stopKonvaPropagation(e);
+            }}
           />
           <Line
             points={[
@@ -108,6 +121,7 @@ export const ResourceCanvas = observer(
             fill="red"
             draggable
             onClick={(e) => {
+              resourceClick();
               resStore.setActiveResource(resource);
               e.cancelBubble = true;
             }}
@@ -121,11 +135,15 @@ export const ResourceCanvas = observer(
                 },
               });
             }}
-            onDragStart={() => {
+            onDragStart={(e) => {
+              resourceClick();
               resStore.setActiveResource(resource);
-              stopKonvaPropagation;
+              stopKonvaPropagation(e);
             }}
-            onMouseDown={stopKonvaPropagation}
+            onMouseDown={(e) => {
+              resourceClick();
+              stopKonvaPropagation(e);
+            }}
           />
         </>
       );

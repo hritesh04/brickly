@@ -25,6 +25,10 @@ export const createNodeSchema = z.object({
   projectID: z.number().optional(),
 });
 
+export const createNodeWithChildrenSchema = createNodeSchema.extend({
+  children: z.array(createNodeSchema).optional(),
+});
+
 export const updateNodeSchema = z.object({
   id: z.number(),
   name: z.string().optional(),
@@ -36,5 +40,5 @@ export const updateNodeSchema = z.object({
 
 export type node = z.infer<typeof nodeWithRelations>;
 export type nodeType = z.infer<typeof nodeType>;
-export type CreateNodeInput = z.infer<typeof createNodeSchema>;
+export type CreateNodeInput = z.infer<typeof createNodeWithChildrenSchema>;
 export type UpdateNodeInput = z.infer<typeof updateNodeSchema>;

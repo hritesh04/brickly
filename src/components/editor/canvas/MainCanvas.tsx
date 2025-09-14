@@ -162,13 +162,14 @@ export const MainCanvas = observer(() => {
           height={dimensions.height}
           className="z-10"
           onClick={() => {
-            resStore.clearActive();
+            // resStore.clearActive();
+            editor.setActiveNode(activeNode!);
           }}
         >
           {activeNode && (
-            // <Layer key={1}>
-            <NodeCanvas node={activeNode} />
-            // </Layer>
+            <Layer key={1}>
+              <NodeCanvas node={activeNode} />
+            </Layer>
           )}
           {!activeNode && (
             <Layer key={1}>

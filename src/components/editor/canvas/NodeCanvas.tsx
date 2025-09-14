@@ -2,24 +2,31 @@ import { Layer, Group } from "react-konva";
 import { node } from "@/actions/node/schema";
 import { NodeType } from "@prisma/client";
 import { ResourceCanvas } from "./ResourceCanvas";
-export const NodeCanvas = ({ node }: { node: node }) => {
+import { observer } from "mobx-react-lite";
+import { useEditor } from "@/store/editor";
+export const NodeCanvas = observer(({ node }: { node: node }) => {
+  const editor = useEditor();
   return (
     <>
       {node.type !== NodeType.Node && node.resource && (
-        <Layer key={node.id}>
+        <Group key={node.id}>
           {node.resource.map((r) => (
-            <ResourceCanvas key={r.id} resource={r} />
+            <ResourceCanvas
+              key={r.id}
+              resource={r}
+              resourceClick={() => editor.setActiveNode(node)}
+            />
           ))}
-        </Layer>
+        </Group>
       )}
       {node?.children &&
         node.children.map((n) => (
-          <Layer key={n.id}>
-            <Group>
-              <NodeCanvas node={n} key={n.id} />
-            </Group>
-          </Layer>
+          // <Layer key={n.id}>
+          <Group key={n.id}>
+            <NodeCanvas node={n} key={n.id} />
+          </Group>
+          // </Layer>
         ))}
     </>
   );
-};
+});
