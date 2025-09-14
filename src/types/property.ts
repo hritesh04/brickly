@@ -45,7 +45,7 @@ export interface CollisionProperty {
 }
 
 export interface SpriteProperty {
-  texture: { type: ResourceType; value: number };
+  texture: { name: "texture"; type: ResourceType; value: number };
 }
 
 export interface TransformProperty {

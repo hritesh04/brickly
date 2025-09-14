@@ -84,6 +84,7 @@ export class Editor {
     this.activeNode.resource ??= [];
     this.activeNode.resource.push(resource);
     this.setProperty("sprite_2d", "texture", {
+      name: "texture",
       type: ResourceType.ExtResource,
       value: resource.id,
     });

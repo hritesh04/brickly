@@ -72,32 +72,43 @@ func main(){
 				return
 			}
 			projectZip.Write(data)
-
-			unZipCmd := exec.Command("tar", "-xvf", projectZip.Name(), "-C", "/tmp/")
+			projectZip.Close()
 			
-			unZipErr := unZipCmd.Run()
+			unZipProjectPath := strings.Split(projectZip.Name(), ".")[0]
+			if err := os.MkdirAll(unZipProjectPath, 0755); err != nil {
+				logger.Println("Error creating extraction directory: ", err)
+				task.Nack(false,true)
+				return
+			}
+
+			unZipCmd := exec.Command("tar", "-xvf", projectZip.Name(), "-C", unZipProjectPath, "--strip-components=1","--no-same-permissions", "--no-same-owner")
+			
+			_,unZipErr := unZipCmd.CombinedOutput()
 			if unZipErr != nil {
 				logger.Println("Error unzipping file: ", unZipErr)
 				task.Nack(false,true)
 				return
 			}
 			
-			unZipProjectPath := strings.Split(projectZip.Name(), ".")[0]
 			logger.Println("Unzipped project path : ",unZipProjectPath)
 			buildPath := path.Join(unZipProjectPath, taskObj.BuildType)
-			exec.Command("mkdir", buildPath).Run()
-			logger.Println("Build path : ",buildPath)		
+			if err := os.MkdirAll(buildPath, 0755); err != nil {
+				logger.Println("Error creating extraction directory: ", err)
+				task.Nack(false,true)
+				return
+			}
+			logger.Println("Build path : ",buildPath)
 
 			buildCmd := exec.Command("godot", "--headless", "--verbose", "--export-release", taskObj.BuildType, buildPath+"/index.html")
 			buildCmd.Dir = unZipProjectPath
-
-			_, buildErr := buildCmd.CombinedOutput()
+			
+			out, buildErr := buildCmd.CombinedOutput()
+			fmt.Println(string(out))
 			if buildErr != nil {
 				logger.Println("Error building project:", err)
 				task.Nack(false, true)
 				return
 			}
-
 			buildZipDir := taskObj.BuildType+".tar.gz"
 			zipCmd := exec.Command("tar", "-czf", buildZipDir, "-C",buildPath,".")
 			zipCmd.Dir = unZipProjectPath

@@ -25,8 +25,82 @@ export const parseProject = async (project: any): Promise<string> => {
       file = file + nodes.res + nodes.nodes;
     }
     console.log(file);
+    await writeFile(tmpDir.name + "/" + s.name + ".tscn", file);
   }
-  execSync(`tar -czf ${zipDir}.tar.gz ${tmpDir.name}`);
+
+  await writeFile(
+    tmpDir.name + "/project.godot",
+    `
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+
+config_version=5
+
+[application]
+
+config/name="${project.name}"
+run/main_scene="res://Node2D.tscn"
+config/features=PackedStringArray("4.4", "GL Compatibility")
+; config/icon="res://icon.svg"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
+`
+  );
+
+  await writeFile(
+    tmpDir.name + "/export_presets.cfg",
+    `[preset.0]
+
+name="Web"
+platform="Web"
+runnable=true
+advanced_options=false
+dedicated_server=false
+custom_features=""
+export_filter="all_resources"
+include_filter=""
+exclude_filter=""
+export_path="Web/index.html"
+patches=PackedStringArray()
+encryption_include_filters=""
+encryption_exclude_filters=""
+seed=0
+encrypt_pck=false
+encrypt_directory=false
+script_export_mode=2
+
+[preset.0.options]
+
+custom_template/debug=""
+custom_template/release=""
+variant/extensions_support=false
+variant/thread_support=false
+vram_texture_compression/for_desktop=true
+vram_texture_compression/for_mobile=true
+html/export_icon=true
+html/custom_html_shell=""
+html/head_include=""
+html/canvas_resize_policy=2
+html/focus_canvas_on_start=true
+html/experimental_virtual_keyboard=false
+progressive_web_app/enabled=false
+progressive_web_app/ensure_cross_origin_isolation_headers=true
+progressive_web_app/offline_page=""
+progressive_web_app/display=1
+progressive_web_app/orientation=0
+progressive_web_app/icon_144x144=""
+progressive_web_app/icon_180x180=""
+progressive_web_app/icon_512x512=""
+progressive_web_app/background_color=Color(0, 0, 0, 1)`
+  );
+
+  console.log(`tar -czf ${zipDir} -C ${tmpDir.name} .`);
+  execSync(`tar -czf ${zipDir} -C ${tmpDir.name} .`);
   tmpDir.removeCallback();
   return zipDir;
 };

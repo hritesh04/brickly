@@ -16,7 +16,7 @@ export default class BuildQueue {
     if (this.channel) return this.channel;
     this.connection = await connect(process.env.RABBITMQ_URL || "");
     this.channel = await this.connection.createChannel();
-    await this.channel.assertQueue("queue", { durable: false });
+    await this.channel.assertQueue("build", { durable: true });
     console.log("Rabbit MQ Channel Created");
     return this.channel;
   }
@@ -24,6 +24,6 @@ export default class BuildQueue {
   async push(data: BuildTask) {
     const channel = await this.getChannel();
     const bufferData = JSON.stringify(data);
-    channel.sendToQueue("queue", Buffer.from(bufferData));
+    channel.sendToQueue("build", Buffer.from(bufferData));
   }
 }

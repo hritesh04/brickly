@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { failedResponse, successResponse } from "./utils";
 import BuildQueue from "./lib/rabbitmq";
-import { readFileSync } from "fs";
+import { readFileSync, unlinkSync } from "fs";
 import { DB } from "./db";
 import { BuildMessage } from "./types";
 import { parseProject } from "./parser";
@@ -27,8 +27,10 @@ export const buildHandler = async (req: Request, res: Response) => {
 
     const zipDir = await parseProject(project);
     const zipData = readFileSync(zipDir);
-    await objStore.uploadDir(zipDir, zipData);
-    await queue.push({ key: zipDir, buildType });
+    const objKey = zipDir.split("/")[2];
+    await objStore.uploadDir(objKey, zipData);
+    unlinkSync(zipDir);
+    await queue.push({ key: objKey, buildType });
     return successResponse(200, "Build Started", res);
   } catch (error: any) {
     return failedResponse(400, error, res);
