@@ -7,17 +7,32 @@ export class ResourceStore {
   resources: Map<number, Resource> = new Map();
   activeResource: Resource | null = null;
   saveTimer: NodeJS.Timeout | null = null;
+  dirty: boolean = false;
   constructor() {
     makeAutoObservable(this);
+    this.autoSave();
   }
 
   autoSave() {
-    if (!this.activeResource) return;
+    if (this.saveTimer) clearInterval(this.saveTimer);
+
+    this.saveTimer = setInterval(() => {
+      try {
+        this.save();
+      } catch (error) {
+        console.error("Failed to save node:", error);
+      }
+    }, 3000);
+  }
+
+  save() {
+    if (!this.activeResource || !this.activeResource.id || !this.dirty) return;
     try {
       updateResource({
         id: this.activeResource.id,
         property: JSON.stringify({ ...this.activeResource.property }),
       });
+      this.dirty = false;
     } catch (error) {
       console.error("Failed to save node:", error);
     }
@@ -28,6 +43,7 @@ export class ResourceStore {
   }
 
   setActiveResource(resource: Resource) {
+    this.save();
     this.activeResource = resource;
   }
 
@@ -36,7 +52,7 @@ export class ResourceStore {
   }
 
   clearActive() {
-    this.autoSave();
+    this.save();
     this.activeResource = null;
   }
 
@@ -63,5 +79,6 @@ export class ResourceStore {
     }
     (this.activeResource.property as ResourceProperty)[property][subProperty] =
       value;
+    this.dirty = true;
   }
 }

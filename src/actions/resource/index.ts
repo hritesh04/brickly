@@ -10,6 +10,7 @@ import {
 import { prisma } from "@/lib/prisma";
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
+import { ObjectStore } from "@/lib/objectStore";
 
 async function createResourceHandler(
   data: CreateResourceInput
@@ -17,10 +18,12 @@ async function createResourceHandler(
   try {
     // if (data.type === ResourceType.SubResource) {
     if (data.file) {
-      const filePath = path.join(process.cwd(), "public", data.file.name);
+      const objStore = ObjectStore.getInstance();
+      // const filePath = path.join(process.cwd(), "public", data.file.name);
       const arrayBuffer = await data.file.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
-      await writeFile(filePath, buffer);
+      await objStore.uploadFile(buffer, data.file.name, data.file.type);
+      // await writeFile(filePath, buffer);
     }
 
     const res = await prisma.resource.create({
