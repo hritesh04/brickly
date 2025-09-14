@@ -12,6 +12,10 @@ import { Property } from "@/types/property";
 import { AssetType, ResourceType } from "@prisma/client";
 import { Plus } from "lucide-react";
 import { observer } from "mobx-react-lite";
+import { PhysicsProperty } from "./PhysicsProperty";
+import { Switch } from "@/components/ui/switch";
+import { useScroll } from "motion/react";
+import { useState } from "react";
 
 interface optionsType {
   name: string;
@@ -26,9 +30,10 @@ const options: optionsType[] = [
   { name: "Polygon", type: AssetType.CollisionPolygon2D },
 ];
 
-export const CollisionProperty = observer(() => {
+export const CollisionShape2DProperty = observer(() => {
   const editor = useEditor();
   const project = useProjectManager();
+  const [physics, setPhysics] = useState(false);
   const properties = editor.activeNode?.property as Property;
   const { execute } = useAction(createResource, {
     onSuccess(data) {
@@ -40,36 +45,38 @@ export const CollisionProperty = observer(() => {
     },
   });
   return (
-    <div>
-      <p className=" font-semibold">Collision</p>
-      <div className="flex flex-col p-2">
-        <div className="flex items-center">
-          <span className="text-md font-medium text-sidebar-foreground/80">
-            Priority:
-          </span>
-          <div className="flex w-full p-2 justify-around">
-            <input />
+    <div className="space-y-4">
+      <h3 className="text-sm font-semibold text-gray-900">Collision</h3>
+      
+      <div className="space-y-4">
+        {/* Priority */}
+        <div className="space-y-3">
+          <span className="text-sm font-medium text-gray-700">Priority</span>
+          <div className="flex items-center gap-2">
+            <input 
+              type="number"
+              className="w-20 px-2 py-1 text-sm border rounded text-center"
+              placeholder="0"
+            />
           </div>
         </div>
-        <div className="flex items-center">
-          <span className="text-md font-medium text-sidebar-foreground/80">
-            Shape:
-          </span>
-          <div className="flex w-full p-2 justify-around">
+
+        {/* Shape */}
+        <div className="space-y-3">
+          <span className="text-sm font-medium text-gray-700">Shape</span>
+          <div className="flex items-center gap-2">
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <div className="flex items-center gap-4">
-                  <p>
-                    {
-                      editor.activeNode?.resource?.find(
-                        (r) => r.id == properties?.collison?.shape?.value
-                      )?.name
-                    }
-                  </p>
-                  <Plus className=" size-4" />
+                <div className="flex items-center gap-3 p-2 border rounded-md bg-white hover:bg-gray-50 cursor-pointer">
+                  <span className="text-sm text-gray-600">
+                    {editor.activeNode?.resource?.find(
+                      (r) => r.id == properties?.collison?.shape?.value
+                    )?.name || "Select shape"}
+                  </span>
+                  <Plus className="size-4 text-gray-500" />
                 </div>
               </DropdownMenuTrigger>
-              <DropdownMenuContent className=" w-40">
+              <DropdownMenuContent className="w-40">
                 {options.map((o: optionsType) => (
                   <DropdownMenuCheckboxItem
                     key={o.name}
@@ -81,6 +88,7 @@ export const CollisionProperty = observer(() => {
                         parentID: editor.activeNode!.id,
                       })
                     }
+                    className="text-sm"
                   >
                     {o.name}
                   </DropdownMenuCheckboxItem>
@@ -89,6 +97,7 @@ export const CollisionProperty = observer(() => {
             </DropdownMenu>
           </div>
         </div>
+        {/* {physics && <PhysicsProperty />} */}
       </div>
     </div>
   );

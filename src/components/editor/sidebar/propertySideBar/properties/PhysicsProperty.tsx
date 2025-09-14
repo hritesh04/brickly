@@ -30,6 +30,7 @@ export const PhysicsProperty = observer(() => {
     onSuccess(data) {
       editor.addResource(data);
       editor.setProperty("sprite_2d", "texture", {
+        name: "texture",
         type: ResourceType.ExtResource,
         value: data.id,
       });
@@ -67,9 +68,9 @@ export const PhysicsProperty = observer(() => {
     });
   };
   return (
-    <div className="">
+    <div className="space-y-3">
       <p className=" font-semibold">Physics</p>
-      <div className="flex flex-col p-2 gap-1">
+      <div className="space-y-2">
         <div className="flex">
           <RadioGroup
             className="flex"

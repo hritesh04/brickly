@@ -1,13 +1,13 @@
 import { CanvasProperty } from "./properties/CanvasProperty";
-import { OptionsProperty } from "./properties/OptionsProperty";
+import { NodeBasedProperty } from "./NodeBasedProperty";
 import { TransformProperty } from "./properties/TransformProperty";
 
 export default function Node2DProperty() {
   return (
-    <>
-      <OptionsProperty />
+    <div className="space-y-6">
+      <NodeBasedProperty />
       <TransformProperty />
       <CanvasProperty />
-    </>
+    </div>
   );
 }

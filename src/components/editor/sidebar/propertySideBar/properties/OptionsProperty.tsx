@@ -8,7 +8,6 @@ import { Property } from "@/types/property";
 import { NodeType } from "@prisma/client";
 import { observer } from "mobx-react-lite";
 import React, { useEffect, useState } from "react";
-import { CollisionProperty } from "./CollisionProperty";
 import { PhysicsProperty } from "./PhysicsProperty";
 
 type OptionType = {
@@ -17,8 +16,9 @@ type OptionType = {
 };
 
 const options: OptionType[] = [
-  { name: "Collision", component: CollisionProperty },
-  { name: "Physics", component: PhysicsProperty },
+  // { name: "Visual", component: VisualProperty },
+  // { name: "Collision", component: CollisionProperty },
+  // { name: "Physics", component: PhysicsProperty },
 ];
 //physics
 // const physicsBodyTypes = [
@@ -27,7 +27,7 @@ const options: OptionType[] = [
 //   { value: NodeType.CharacterBody2D, label: "CharacterBody2D" },
 // ];
 
-export const OptionsProperty = observer(() => {
+export const NodeBasedProperty = observer(() => {
   const [selectedOptions, setSelectedOptions] = useState<Set<string>>(
     new Set()
   );
@@ -189,10 +189,10 @@ export const OptionsProperty = observer(() => {
   }
 
   return (
-    <div className="grid gap-4">
+    <div className="space-y-4">
       <div>
         <p className="font-semibold mb-2">Node Options</p>
-        <div className="flex items-center gap-4 p-2">
+        <div className="flex items-center gap-4 flex-wrap">
           {options.map((option, idx) => {
             const isChecked = selectedOptions.has(option.name);
             const isDisabled =

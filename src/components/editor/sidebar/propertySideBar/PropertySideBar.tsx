@@ -5,6 +5,7 @@ import { createContext, useContext, useState } from "react";
 import { NodeTypeProperty } from "./properties/NodeTypeProperty";
 import { NodeType } from "@prisma/client";
 import Node2DProperty from "./Node2DProperty";
+import { ScrollArea } from "@/components/ui/scroll-area";
 // import { Sprite2DProperty } from "./properties/Sprite2DProperty";
 
 type PropertySideBarProps = {
@@ -42,26 +43,27 @@ const PropertySideBar = observer(() => {
   if (!activeNode) {
     return (
       <div
-        className={`h-full w-1/6 bg-white absolute right-0 rounded-lg border shadow-sm p-4 z-50 mt-2
+        className={`h-full w-1/6 bg-white absolute right-0 rounded-lg border shadow-sm p-6 z-50 mt-2
         ${!open && "hidden"}
         `}
       >
-        Please select a Node to see its Property
+        <p className="text-sm text-gray-600">Please select a Node to see its Property</p>
       </div>
     );
   }
 
   return (
     <div
-      className={`h-full w-1/6 bg-white absolute right-0 rounded-lg border shadow-sm p-4 z-50 mt-2
+      className={`h-full w-1/6 bg-white absolute right-0 rounded-lg border shadow-sm z-50 mt-2
         ${!open && "hidden"}
         `}
     >
-      <NodeTypeProperty />
-      {/* {activeNode.type === NodeType.Sprite2D && <Sprite2DProperty />} */}
-      {/* <div className=" grid gap-2 mt-4"> */}
-      {activeNode.type !== NodeType.Node && <Node2DProperty />}
-      {/* </div> */}
+      <ScrollArea className="h-full">
+        <div className="p-6 space-y-6">
+          <NodeTypeProperty />
+          {activeNode.type !== NodeType.Node && <Node2DProperty />}
+        </div>
+      </ScrollArea>
     </div>
   );
 });

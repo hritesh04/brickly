@@ -23,30 +23,35 @@ export const NodeTypeProperty = observer(() => {
     return <p>node not active</p>;
   }
   return (
-    <div className="flex gap-2 items-center">
-      <span>Node Type : </span>
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="outline"
-            onClick={(e) => e.stopPropagation()}
-            onMouseDown={(e) => e.stopPropagation()}
-          >
-            {activeNode.type}
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56">
-          {nodeType.options.map((n) => (
-            <DropdownMenuCheckboxItem
-              key={n}
-              checked={activeNode.type == n}
-              onCheckedChange={() => execute({ id: activeNode.id, type: n })}
+    <div className="space-y-3">
+      <div className="flex items-center gap-3">
+        <span className="text-sm font-medium text-gray-700">Node Type:</span>
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={(e) => e.stopPropagation()}
+              onMouseDown={(e) => e.stopPropagation()}
+              className="text-sm"
             >
-              {n}
-            </DropdownMenuCheckboxItem>
-          ))}
-        </DropdownMenuContent>
-      </DropdownMenu>
+              {activeNode.type}
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className="w-56">
+            {nodeType.options.map((n) => (
+              <DropdownMenuCheckboxItem
+                key={n}
+                checked={activeNode.type == n}
+                onCheckedChange={() => execute({ id: activeNode.id, type: n })}
+                className="text-sm"
+              >
+                {n}
+              </DropdownMenuCheckboxItem>
+            ))}
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
     </div>
   );
 });
