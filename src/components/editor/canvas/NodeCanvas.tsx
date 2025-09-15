@@ -22,9 +22,9 @@ export const NodeCanvas = observer(({ node }: { node: node }) => {
       {node?.children &&
         node.children.map((n) => (
           // <Layer key={n.id}>
-          <Group key={n.id}>
-            <NodeCanvas node={n} key={n.id} />
-          </Group>
+          // <Group key={n.id}>
+          <NodeCanvas node={n} key={n.id} />
+          // </Group>
           // </Layer>
         ))}
     </>

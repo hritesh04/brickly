@@ -60,7 +60,7 @@ export const SideBar = observer(
       <Sidebar
         collapsible="icon"
         variant="floating"
-        className="relative h-full overflow-hidden *:data-[sidebar=sidebar]:flex-row"
+        className="relative h-full overflow-hidden *:data-[sidebar=sidebar]:flex-row w-full"
       >
         <Sidebar collapsible="none" className="w-fit border-r py-2">
           <SidebarHeader className="h-fit m-auto">
@@ -108,7 +108,7 @@ export const SideBar = observer(
             </div>
             <Separator />
           </SidebarHeader>
-          <SidebarContent className=" h-full px-2">
+          <SidebarContent className=" h-full px-2 w-full">
             <ActiveSideBar activeTitle={activeItem?.title} />
           </SidebarContent>
         </Sidebar>

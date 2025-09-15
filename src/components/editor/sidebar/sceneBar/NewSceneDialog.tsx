@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+// import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useAction } from "@/hooks/useAction";
 import { useEditor } from "@/store/editor";
@@ -30,9 +31,7 @@ export const NewSceneDialog = () => {
     ui: false,
   });
   const [hasPhysics, setHasPhysics] = useState(false);
-  const [physicsType, setPhysicsType] = useState<NodeType>(
-    NodeType.StaticBody2D
-  );
+  const [physicsType, setPhysicsType] = useState<NodeType | null>(null);
   const [hasAnimation, setHasAnimation] = useState(false);
   const editor = useEditor();
   const { execute } = useAction(createNode, {
@@ -46,7 +45,7 @@ export const NewSceneDialog = () => {
     if (newSelection.has(feature)) {
       newSelection.delete(feature);
       if (feature === "Collision") {
-        setHasPhysics(false); // Reset Physics when Collision is turned off
+        setHasPhysics(false);
       }
     } else {
       newSelection.add(feature);
@@ -72,7 +71,6 @@ export const NewSceneDialog = () => {
     });
   };
 
-  // Simplified physics toggle without auto-enabling visual/texture
   const handlePhysicsToggle = (checked: boolean) => {
     setHasPhysics(checked);
   };
@@ -82,47 +80,52 @@ export const NewSceneDialog = () => {
       type: NodeType;
       projectID: number;
       children?: { type: NodeType }[];
+      name?: string;
     } = {
-      type: NodeType.Node,
+      type: NodeType.Node, // Default to Node
       projectID: 6,
       children: [],
+      name: sceneName || "New Scene",
     };
 
-    if (hasPhysics) result.type = NodeType.Node2D;
-
-    if (hasPhysics && selection.has("Collision")) result.type = physicsType;
-
-    result.children = [{ type: NodeType.CollisionShape2D }];
-
-    // Add visual children if Visual is selected
-    if (selection.has("Visual")) {
-      if (visualOptions.texture) {
-        result.children.push({
-          type: hasAnimation ? NodeType.AnimatedSprite2D : NodeType.Sprite2D,
-        });
+    // If has physics and collision
+    if (hasPhysics && selection.has("Collision")) {
+      if (!physicsType) {
+        result.type = NodeType.Node2D;
+        result.children = [];
+      } else {
+        result.type = physicsType;
+        result.children = [{ type: NodeType.CollisionShape2D }];
       }
-      if (visualOptions.ui) {
-        result.children.push({ type: NodeType.Control });
+
+      // Add visual children if Visual is selected
+      if (selection.has("Visual")) {
+        if (visualOptions.texture) {
+          result.children.push({
+            type: hasAnimation ? NodeType.AnimatedSprite2D : NodeType.Sprite2D,
+          });
+        }
+        if (visualOptions.ui) {
+          result.children.push({ type: NodeType.Control });
+        }
       }
     }
     // If has collision but no physics
-    else if (selection.has("Collision") && selection.has("Visual")) {
-      result.type = NodeType.Area2D;
+    else if (selection.has("Collision") && !hasPhysics) {
+      result.type = NodeType.Node2D;
       result.children = [{ type: NodeType.CollisionShape2D }];
 
-      if (visualOptions.texture) {
-        result.children.push({
-          type: hasAnimation ? NodeType.AnimatedSprite2D : NodeType.Sprite2D,
-        });
+      // Add visual children if Visual is selected
+      if (selection.has("Visual")) {
+        if (visualOptions.texture) {
+          result.children.push({
+            type: hasAnimation ? NodeType.AnimatedSprite2D : NodeType.Sprite2D,
+          });
+        }
+        if (visualOptions.ui) {
+          result.children.push({ type: NodeType.Control });
+        }
       }
-      if (visualOptions.ui) {
-        result.children.push({ type: NodeType.Control });
-      }
-    }
-    // If has collision only (no visual)
-    else if (selection.has("Collision")) {
-      result.type = NodeType.Area2D;
-      result.children = [{ type: NodeType.CollisionShape2D }];
     }
     // If has visual only (no collision)
     else if (selection.has("Visual")) {
@@ -178,7 +181,7 @@ export const NewSceneDialog = () => {
             {selection.has("Visual") && (
               <div className="ml-6 grid gap-2">
                 <div className="flex gap-2 items-center">
-                  <label>
+                  <label className="flex items-center">
                     <Checkbox
                       id="texture"
                       checked={visualOptions.texture}
@@ -188,7 +191,7 @@ export const NewSceneDialog = () => {
                     />
                     <span className="ml-2">Texture</span>
                   </label>
-                  <label>
+                  <label className="flex items-center">
                     <Checkbox
                       id="ui"
                       checked={visualOptions.ui}
@@ -232,7 +235,7 @@ export const NewSceneDialog = () => {
                   <div className="ml-6 grid gap-2">
                     <span className="text-sm font-medium">Physics Type:</span>
                     <RadioGroup
-                      value={physicsType}
+                      // value={physicsType}
                       onValueChange={(value: NodeType) => setPhysicsType(value)}
                       className="flex flex-col gap-2"
                     >
@@ -241,21 +244,21 @@ export const NewSceneDialog = () => {
                           value={NodeType.StaticBody2D}
                           id="static"
                         />
-                        <span>Static Body</span>
+                        <label htmlFor="static">Static Body</label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem
                           value={NodeType.RigidBody2D}
                           id="rigid"
                         />
-                        <span>Rigid Body</span>
+                        <label htmlFor="rigid">Rigid Body</label>
                       </div>
                       <div className="flex items-center space-x-2">
                         <RadioGroupItem
                           value={NodeType.CharacterBody2D}
                           id="character"
                         />
-                        <span>Character Body</span>
+                        <label htmlFor="character">Character Body</label>
                       </div>
                     </RadioGroup>
                   </div>

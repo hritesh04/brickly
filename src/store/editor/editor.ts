@@ -71,6 +71,36 @@ export class Editor {
     if (!this.activeScene) this.activeScene = this.scene[0];
   }
 
+  addChild(id: number, parentID: number) {
+    if (!this.activeNode) return;
+    const parent = this.findNodeById(this.activeNode, parentID);
+    // const;
+    let child;
+    for (const s of this.scene) {
+      child = this.findNodeById(s, parentID);
+    }
+    if (!parent || !child) return;
+    parent.children ??= [];
+    parent.children.push(child);
+  }
+
+  findNodeById(root: node, id: number): node | null {
+    if (root.id === id) {
+      return root;
+    }
+
+    if (root.children) {
+      for (const child of root.children) {
+        const result = this.findNodeById(child, id);
+        if (result) {
+          return result;
+        }
+      }
+    }
+
+    return null;
+  }
+
   updateNode(data: Partial<node>) {
     if (!this.activeNode) return;
     Object.assign(this.activeNode, data);

@@ -10,11 +10,7 @@ import { usePropertySideBar } from "../propertySideBar/PropertySideBar";
 import { useProjectManager } from "@/store/project";
 import { NodeType } from "@prisma/client";
 import { NewSceneDialog } from "./NewSceneDialog";
-
-interface AllScenesProps {
-  scenes: node[] | null;
-  // setScene: React.Dispatch<SetStateAction<node | null>>;
-}
+import { DraggableScene } from "./DraggableScene";
 
 export const AllScenes = observer(() => {
   const project = useProjectManager();
@@ -50,12 +46,7 @@ export const AllScenes = observer(() => {
         <p className="text-sm font-medium text-sidebar-foreground/80">
           All Scenes
         </p>
-        <div
-          className="p-1 hover:bg-secondary rounded-md cursor-pointer"
-          // onClick={() =>
-          //   execute({ type: NodeType.Node2D, projectID: project.project?.id })
-          // }
-        >
+        <div className="p-1 hover:bg-secondary rounded-md cursor-pointer">
           <NewSceneDialog />
         </div>
       </div>
@@ -63,17 +54,7 @@ export const AllScenes = observer(() => {
         <ScrollArea className="h-full rounded-md">
           {editor.scene.map((s, index) => (
             <div key={index}>
-              <div
-                className="flex items-center gap-2 text-sm py-2 cursor-pointer hover:bg-secondary/50 px-2 rounded-md"
-                onClick={() => {
-                  editor.setActiveScene(s);
-                  editor.setActiveNode(s);
-                  setOpen(true);
-                }}
-              >
-                <Image className="size-5" />
-                {s.name}
-              </div>
+              <DraggableScene scene={s} />
               {index < editor.scene.length - 1 && (
                 <Separator className="my-1" />
               )}
