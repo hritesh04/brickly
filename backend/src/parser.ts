@@ -20,14 +20,13 @@ export const parseProject = async (project: any): Promise<string> => {
   }
   for (const s of scenes) {
     let file = "[gd_scene format=3]";
-    if (!s.parentID) {
+    if (s.projectID) {
       const nodes = parseNode(s);
       file = file + nodes.res + nodes.nodes;
     }
-    console.log(file);
+    console.log(`${s.name} content :\n`, file);
     await writeFile(tmpDir.name + "/" + s.name + ".tscn", file);
   }
-
   await writeFile(
     tmpDir.name + "/project.godot",
     `
@@ -99,18 +98,23 @@ progressive_web_app/icon_512x512=""
 progressive_web_app/background_color=Color(0, 0, 0, 1)`
   );
 
-  console.log(`tar -czf ${zipDir} -C ${tmpDir.name} .`);
   execSync(`tar -czf ${zipDir} -C ${tmpDir.name} .`);
   tmpDir.removeCallback();
   return zipDir;
 };
 
 function parseNode(node: any, parent?: string) {
-  const parentAttr = parent ? `parent="${parent}"` : "";
+  const parentAttr = parent ? ` parent="${parent}"` : "";
+  const isExtRes = node.parentID
+    ? ` instance=ExtResource("scene-${node.id}")`
+    : "";
   let nodes = `\n\n[node name="${node.name}" type="${node.type}"${
-    parentAttr ?? parentAttr
+    parentAttr ?? parentAttr + isExtRes
   }]`;
-  let res = "";
+  let res =
+    isExtRes && parent
+      ? `\n[ext_resource type="PackedScene" path="res://${node.name}.tscn" id="scene-${node.id}"]`
+      : "\n";
 
   if (node.property) {
     const { property, resource } = parseProperty(node);
@@ -136,7 +140,9 @@ function parseProperty(node: any): { property: any; resource: any } {
       if (node.resource) {
         for (const res of node.resource) {
           resource += parseResource(res);
-          property += `\n${res.name.toLowerCase()} = ${res.type}("${res.id}")`;
+          property += `\n${res.name.toLowerCase()} = ${res.type}("res-${
+            res.id
+          }")`;
         }
       }
       return { property, resource };
@@ -151,7 +157,9 @@ function parseProperty(node: any): { property: any; resource: any } {
       if (node.resource) {
         for (const res of node.resource) {
           resource += parseResource(res);
-          property += `\n${res.name.toLowerCase()} = ${res.type}("${res.id}")`;
+          property += `\n${res.name.toLowerCase()} = ${res.type}("res-${
+            res.id
+          }")`;
         }
       }
       return { property, resource };
@@ -177,7 +185,7 @@ function parseProperty(node: any): { property: any; resource: any } {
         resource += parseResource(res);
         // console.log(res);
         property +=
-          `\n${texture.name.toLowerCase()} = ${res.type}("${res.id}")` +
+          `\n${texture.name.toLowerCase()} = ${res.type}("res-${res.id}")` +
           parseProperty(res).property;
         // }
       }
@@ -188,9 +196,9 @@ function parseProperty(node: any): { property: any; resource: any } {
 function parseResource(resource: any) {
   let res = "";
   if (resource.type === "ExtResource") {
-    res += `\n\n[ext_resource type="${resource.assetType}" path="${resource.path}" id="${resource.id}"]`;
+    res += `\n\n[ext_resource type="${resource.assetType}" path="${resource.path}" id="res-${resource.id}"]`;
   } else {
-    res += `\n\n[sub_resource type="${resource.assetType}" id="${resource.id}"]`;
+    res += `\n\n[sub_resource type="${resource.assetType}" id="res-${resource.id}"]`;
     // + this.parseProperty(resource.property)
   }
   return res;
