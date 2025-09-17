@@ -6,11 +6,9 @@ import { resourceSchema } from "../resource/schema";
 
 export const createProjectSchema = z.object({
   name: z.string(),
-  userID: z.number(),
   height: z.number(),
   width: z.number(),
-}) satisfies z.ZodType<Prisma.ProjectCreateManyInput>;
-
+});
 export const projectSchema = z.object({
   id: z.number(),
   name: z.string(),

@@ -15,6 +15,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Switch } from "@/components/ui/switch";
 import { useAction } from "@/hooks/useAction";
 import { useEditor } from "@/store/editor";
+import { useProjectManager } from "@/store/project";
 import { NodeType } from "@prisma/client";
 import { Plus } from "lucide-react";
 import { useState } from "react";
@@ -34,6 +35,7 @@ export const NewSceneDialog = () => {
   const [physicsType, setPhysicsType] = useState<NodeType | null>(null);
   const [hasAnimation, setHasAnimation] = useState(false);
   const editor = useEditor();
+  const project = useProjectManager();
   const { execute } = useAction(createNode, {
     onSuccess(data) {
       editor.addNode(data);
@@ -83,7 +85,7 @@ export const NewSceneDialog = () => {
       name?: string;
     } = {
       type: NodeType.Node, // Default to Node
-      projectID: 6,
+      projectID: project.project?.id!,
       children: [],
       name: sceneName || "New Scene",
     };
@@ -270,6 +272,7 @@ export const NewSceneDialog = () => {
             variant="default"
             onClick={() => {
               const result = generateNodeStructure();
+              console.log(result);
               execute(result);
             }}
           >

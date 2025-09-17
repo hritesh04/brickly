@@ -38,7 +38,8 @@ export const CollisionShape2DProperty = observer(() => {
   const { execute } = useAction(createResource, {
     onSuccess(data) {
       editor.attachResource(data);
-      editor.setProperty("collison", "shape", {
+      editor.setProperty("collision", "shape", {
+        name: "shape",
         type: ResourceType.SubResource,
         value: data.id,
       });
@@ -47,13 +48,13 @@ export const CollisionShape2DProperty = observer(() => {
   return (
     <div className="space-y-4">
       <h3 className="text-sm font-semibold text-gray-900">Collision</h3>
-      
+
       <div className="space-y-4">
         {/* Priority */}
         <div className="space-y-3">
           <span className="text-sm font-medium text-gray-700">Priority</span>
           <div className="flex items-center gap-2">
-            <input 
+            <input
               type="number"
               className="w-20 px-2 py-1 text-sm border rounded text-center"
               placeholder="0"
@@ -70,7 +71,7 @@ export const CollisionShape2DProperty = observer(() => {
                 <div className="flex items-center gap-3 p-2 border rounded-md bg-white hover:bg-gray-50 cursor-pointer">
                   <span className="text-sm text-gray-600">
                     {editor.activeNode?.resource?.find(
-                      (r) => r.id == properties?.collison?.shape?.value
+                      (r) => r.id == properties?.collision?.shape?.value
                     )?.name || "Select shape"}
                   </span>
                   <Plus className="size-4 text-gray-500" />

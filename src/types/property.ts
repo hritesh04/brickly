@@ -11,7 +11,7 @@ export type Property = {
   transform: TransformProperty;
   canvas: CanvasItemProperty;
   sprite_2d: SpriteProperty;
-  collison: { shape: { type: ResourceType; value: number } };
+  collision: { shape: { name: "shape"; type: ResourceType; value: number } };
   animated_sprite_2d: AnimatedSprite2DProperty;
   area_2d: Area2DProperty;
   character_body_2d: CharacterBody2DProperty;
@@ -87,7 +87,11 @@ export interface RigidBody2DProperty extends Node2DProperty {
 }
 
 export interface StaticBody2DProperty extends Node2DProperty {
-  physics_material_override?: { name: "physics_material_override"; type: ResourceType; value: number };
+  physics_material_override?: {
+    name: "physics_material_override";
+    type: ResourceType;
+    value: number;
+  };
   constant_linear_velocity?: { x: number; y: number };
   constant_angular_velocity?: number;
   sync_to_physics?: boolean;

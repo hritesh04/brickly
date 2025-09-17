@@ -11,15 +11,29 @@ import { node } from "@/actions/node/schema";
 import { revalidatePath } from "next/cache";
 import { createSafeAction } from "@/lib/actionState";
 import { Prisma } from "@prisma/client";
+import { cookies } from "next/headers";
+import jwt from "jsonwebtoken";
+
+const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
 async function createProjectHandler(
   data: CreateProjectInput
 ): Promise<ReturnTypeCreateProject> {
   try {
-    const res = await prisma.project.create({ data });
+    const token = (await cookies()).get("brickly");
+    if (!token) return { error: "Token Missing" };
+    const session = jwt.verify(token.value, JWT_SECRET) as { userId: number };
+    console.log(session);
+    const res = await prisma.project.create({
+      data: {
+        ...data,
+        userID: session.userId,
+      },
+    });
     revalidatePath("/dashboard");
     return { data: res };
   } catch (e: any) {
+    console.log(e);
     return { error: "Error creating project" };
   }
 }
@@ -85,6 +99,7 @@ export async function getProject(id: number): Promise<ReturnTypeGetProject> {
     const scene = buildTree(nodes);
     return { data: { ...project, scene } };
   } catch (e: any) {
+    console.log(e);
     return { error: "Error fetching project details" };
   }
 }
@@ -104,7 +119,8 @@ function buildTree(nodes: node[]) {
         if (!parent.children) parent.children = [];
         parent.children.push(node);
       }
-    } else {
+    }
+    if (node.projectID) {
       rootNodes.push(node);
     }
   });

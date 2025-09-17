@@ -3,6 +3,8 @@ import Link from "next/link";
 import { checkAuth } from "@/actions/user";
 import { Button } from "../ui/button";
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
+import { SaveProgress } from "./SaveProgress";
 
 export default function UserProfile() {
   const [user, setUser] = useState<{
@@ -11,13 +13,17 @@ export default function UserProfile() {
     email: string;
   } | null>(null);
 
+  const path = usePathname();
+  const segments = path.split("/");
+
   useEffect(() => {
     const fetchUser = async function () {
       const data = await checkAuth();
       if (data) setUser(data);
+      console.log(data);
     };
     fetchUser();
-  }, []);
+  }, [path]);
 
   if (!user) {
     return (
@@ -30,6 +36,10 @@ export default function UserProfile() {
         </Link>
       </div>
     );
+  }
+
+  if (segments[1] == "editor") {
+    return <SaveProgress />;
   }
 
   return (

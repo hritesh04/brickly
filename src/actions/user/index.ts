@@ -62,6 +62,8 @@ export const signupHandler = async ({
     expiresIn: "7d",
   });
 
+  (await cookies()).set("brickly", token);
+
   return { data: { success: true, data: { ...user, token } } };
 };
 
@@ -86,6 +88,8 @@ export const signinHandler = async ({
   const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
     expiresIn: "7d",
   });
+
+  (await cookies()).set("brickly", token);
 
   return {
     data: {

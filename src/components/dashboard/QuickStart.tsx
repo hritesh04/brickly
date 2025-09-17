@@ -23,9 +23,7 @@ export default function QuickStart() {
         <Card className="h-50 w-45">
           <CardContent
             className="flex h-full items-center flex-col gap-4"
-            onClick={() =>
-              execute({ name: "test", userID: 1, height: 810, width: 1440 })
-            }
+            onClick={() => execute({ name: "test", height: 810, width: 1440 })}
           >
             <div className=" bg-accent flex justify-center items-center h-full w-full">
               <PlusIcon size={40} />
