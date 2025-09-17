@@ -23,83 +23,101 @@ export class DB {
   async userProject(projectID: number, userID: number): Promise<any | null> {
     try {
       const conn = await this.getConnection();
-      const res = await conn.query(
+      const project = await conn.query(
         `
         SELECT p.*,
-        COALESCE(nodes.children, '[]'::json) as scenes,
-        COALESCE(resources.resource, '[]'::json) as resources
-        FROM public."Project" p LEFT JOIN (
-            WITH RECURSIVE node_hierarchy AS (
-                SELECT n.id, n.name, n.type, n.property, n."parentID", n."projectID"
-                FROM "Node" n
-                WHERE n."projectID" = $1 AND n."parentID" IS NULL
-                
-                UNION ALL
-        
-                SELECT
-                n.id, n.name, n.type, n.property, n."parentID", n."projectID" FROM "Node" n INNER JOIN node_hierarchy nh ON n."parentID" = nh.id
-        )
-        SELECT
-            nh."projectID",
-            json_agg(
-                json_build_object(
-                    'id', nh.id,
-                    'name', nh.name,
-                    'type', nh.type,
-                    'property', nh.property,
-                    'parentID', nh."parentID",
-                    'projectID', nh."projectID",
-                    'resources', COALESCE(node_resources.resources, '[]'::json)
-                )ORDER BY nh.id
-            ) as children FROM node_hierarchy nh
-        LEFT JOIN (
-            SELECT r."parentID",
-            json_agg(
-                json_build_object(
-                    'id', r.id,
-                    'name', r.name,
-                    'type', r.type,
-                    'assetType', r."assetType",
-                    'path', r.path,
-                    'property', r.property
-                )
-                ORDER BY r.id
-            ) as resources
-        FROM "Resource" r
-        WHERE r."parentID" IS NOT NULL
-        GROUP BY r."parentID"
-    ) node_resources ON node_resources."parentID" = nh.id
-    GROUP BY nh."projectID"
-) nodes ON nodes."projectID" = p.id
-LEFT JOIN (
-    -- Get all project resources
-    SELECT 
-        r."projectID",
-        json_agg(
-            json_build_object(
-                'id', r.id,
-                'name', r.name,
-                'type', r.type,
-                'assetType', r."assetType",
-                'path', r.path,
-                'property', r.property,
-                'parentID', r."parentID"
-            )
-            ORDER BY r.id
-        ) as resource
-    FROM "Resource" r
-    WHERE r."projectID" = $1
-    GROUP BY r."projectID"
-) resources ON resources."projectID" = p.id
-WHERE p.id = $1 AND p."userID" = $2;
+COALESCE(
+	json_agg(r), '[]'
+) as resources
+FROM "Project" p
+LEFT JOIN "Resource" r 
+  ON p.id = r."projectID"
+WHERE p.id=$1 AND p."userID"=$2
+GROUP BY p.id,p.name,p.icon,p.width,p.height,p.property,p."userID";
         `,
         [projectID, userID]
       );
-      if (res.rows.length === 0) throw new Error("Project Not Found");
-      return res.rows[0];
+      if (project.rows.length === 0) throw new Error("Project Not Found");
+
+      const nodes = await conn.query(
+        `
+        WITH RECURSIVE node_hierarchy AS (
+      SELECT 
+        n.id,
+        n.name,
+        n.type,
+        n.property,
+        n."parentID",
+        n."projectID"
+      FROM "Node" n
+      WHERE n."projectID" = $1 AND n."parentID" IS NULL
+      
+      UNION ALL
+      
+      SELECT 
+        n.id,
+        n.name,
+        n.type,
+        n.property,
+        n."parentID",
+        n."projectID"
+      FROM "Node" n
+      INNER JOIN node_hierarchy nh ON n."parentID" = nh.id
+    )
+    SELECT 
+      nh.id,
+      nh.name,
+      nh.type,
+      nh.property,
+      nh."parentID",
+      nh."projectID",
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'id', r.id,
+            'name', r.name,
+            'type', r.type,
+            'assetType', r."assetType",
+            'path', r.path,
+            'property', r.property
+          )
+        ) FILTER (WHERE r.id IS NOT NULL), '[]'::json
+      ) as resource
+    FROM node_hierarchy nh
+    LEFT JOIN "Resource" r ON r."parentID" = nh.id
+    GROUP BY nh.id, nh.name, nh.type, nh.property, nh."parentID", nh."projectID";
+        `,
+        [projectID]
+      );
+      const scenes = buildTree(nodes.rows);
+      const out = { ...project.rows[0], scenes };
+      return out;
     } catch (error: any) {
       console.error("Failed to fetch project deatils of a user");
       return null;
     }
   }
+}
+
+function buildTree(nodes: any[]) {
+  const map = new Map<number, any>();
+  const rootNodes: any[] = [];
+
+  nodes.forEach((node) => {
+    map.set(node.id, node);
+  });
+
+  nodes.forEach((node) => {
+    if (node.parentID) {
+      const parent = map.get(node.parentID);
+      if (parent) {
+        if (!parent.children) parent.children = [];
+        parent.children.push(node);
+      }
+    }
+    if (node.projectID) {
+      rootNodes.push(node);
+    }
+  });
+  return rootNodes;
 }
