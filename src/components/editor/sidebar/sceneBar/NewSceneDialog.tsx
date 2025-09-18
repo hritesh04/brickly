@@ -272,7 +272,6 @@ export const NewSceneDialog = () => {
             variant="default"
             onClick={() => {
               const result = generateNodeStructure();
-              console.log(result);
               execute(result);
             }}
           >
