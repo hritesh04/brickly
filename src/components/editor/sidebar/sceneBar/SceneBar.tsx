@@ -56,7 +56,6 @@ export const SceneBar = observer(() => {
     }
 
     if (!active.data.current || !over.data.current) return;
-    console.log(active.data.current.scene, over.data.current.scene);
 
     execute({
       id: active.data.current.scene.id,

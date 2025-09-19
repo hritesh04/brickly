@@ -72,12 +72,12 @@ export class Editor {
   }
 
   addChild(id: number, parentID: number) {
-    if (!this.activeNode) return;
-    const parent = this.findNodeById(this.activeNode, parentID);
-    // const;
+    if (!this.activeScene) return;
+    const parent = this.findNodeById(this.activeScene, parentID);
     let child;
     for (const s of this.scene) {
-      child = this.findNodeById(s, parentID);
+      child = this.findNodeById(s, id);
+      if (child) break;
     }
     if (!parent || !child) return;
     parent.children ??= [];

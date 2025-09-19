@@ -115,14 +115,12 @@ function parseNode(node: any, parent?: string) {
     res += `\n[ext_resource type="PackedScene" path="res://${node.name}.tscn" id="scene-${node.id}"]`;
     return { nodes, res };
   }
-  // Handle node property
   if (node.property) {
     const { property, resource } = parseProperty(node);
     nodes += property;
     res += resource;
   }
 
-  // Recursively handle children
   if (node.children) {
     for (const n of node.children) {
       const result = parseNode(n, parent ? node.name : ".");
@@ -180,18 +178,14 @@ function parseProperty(node: any): { property: any; resource: any } {
       }
       if (sprite?.property?.sprite_2d?.texture) {
         const texture = sprite.property.sprite_2d.texture;
-        // for (const res of node.resources) {
-        // console.log(sprite);
-        // console.log(texture);
+
         const res = sprite.resource.find(
           (r: any) => r.id == Number(texture.value)
         );
         resource += parseResource(res);
-        // console.log(res);
         property +=
           `\n${texture.name.toLowerCase()} = ${res.type}("res-${res.id}")` +
           parseProperty(res).property;
-        // }
       }
       if (sprite?.property?.collision?.shape) {
         const shape = sprite.property.collision.shape;
@@ -199,21 +193,6 @@ function parseProperty(node: any): { property: any; resource: any } {
           (r: any) => r.id == Number(shape.value)
         );
         resource += parseResource(res);
-        const resProperty = res?.property?.collision?.shape;
-        if (resProperty) {
-          let propRes = "";
-          if (resProperty.value.a) {
-            propRes += `\na = ${resProperty.type}(${Number(
-              resProperty.value.a.x
-            )}, ${Number(resProperty.value.a.y)})`;
-          }
-          if (resProperty.value.b) {
-            propRes += `\nb = ${resProperty.type}(${Number(
-              resProperty.value.b.x
-            )}, ${Number(resProperty.value.b.y)})`;
-          }
-          resource = resource + propRes;
-        }
         property +=
           `\n${shape.name.toLowerCase()} = ${res.type}("res-${res.id}")` +
           parseProperty(res).property;
@@ -222,13 +201,48 @@ function parseProperty(node: any): { property: any; resource: any } {
   return { property, resource };
 }
 
+function parseResourceProperty(resource: any): string {
+  let property = "";
+  if (!resource.property) return property;
+
+  switch (resource.assetType) {
+    case "RectangleShape2D":
+    case "CircleShape2D":
+    case "CapsuleShape2D":
+    case "SegmentShape2D":
+      if (resource.property?.collision?.shape) {
+        const shape = resource.property.collision.shape;
+        if (shape.value.a) {
+          property += `\na = ${shape.type}(${Number(shape.value.a.x)}, ${Number(shape.value.a.y)})`;
+        }
+        if (shape.value.b) {
+          property += `\nb = ${shape.type}(${Number(shape.value.b.x)}, ${Number(shape.value.b.y)})`;
+        }
+        if (shape.value.radius) {
+          property += `\nradius = ${Number(shape.value.radius)}`;
+        }
+        if (shape.value.size) {
+          property += `\nsize = ${shape.type}(${Number(shape.value.size.x)}, ${Number(shape.value.size.y)})`;
+        }
+        if (shape.value.height) {
+          property += `\nheight = ${Number(shape.value.height)}`;
+        }
+      }
+      break;
+      
+    default:
+      break;
+  }
+  return property;
+}
+
 function parseResource(resource: any) {
   let res = "";
   if (resource.type === "ExtResource") {
-    res += `\n\n[ext_resource type="${resource.assetType}" path="${resource.path}" id="res-${resource.id}"]`;
+    res += `\n\n[ext_resource type="${resource.assetType}" path="res://${resource.path}" id="res-${resource.id}"]`;
   } else {
     res += `\n\n[sub_resource type="${resource.assetType}" id="res-${resource.id}"]`;
-    // + this.parseProperty(resource.property)
+    res += parseResourceProperty(resource);
   }
   return res;
 }

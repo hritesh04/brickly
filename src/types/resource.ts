@@ -20,6 +20,31 @@ export interface SegmentShape2D {
   };
 }
 
+export interface CircleShape2D {
+  name: "CircleShape2D";
+  type: variant.Float;
+  value: {
+    radius: number;
+  };
+}
+
+export interface RectangleShape2D {
+  name: "RectangleShape2D";
+  type: variant.Vector2;
+  value: {
+    size: { x: number; y: number };
+  };
+}
+
+export interface CapsuleShape2D {
+  name: "CapsuleShape2D";
+  type: variant.Float;
+  value: {
+    radius: number;
+    height: number;
+  };
+}
+
 export interface CollisionPolygon2D {
   name: "CollisionPolygon2D";
   type: variant.Text;
@@ -45,6 +70,9 @@ export interface CollisionPolygon2D {
 export type ExtResource = Script | Texture2D;
 export type SubResource = {
   line: SegmentShape2D;
+  circle: CircleShape2D;
+  rectangle: RectangleShape2D;
+  capsule: CapsuleShape2D;
   polygon: CollisionPolygon2D;
   // transform: TransformProperty;
   // canvas: CanvasItemProperty;
