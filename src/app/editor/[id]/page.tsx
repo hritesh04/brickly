@@ -1,13 +1,14 @@
 import DotBackGround from "@/components/editor/DotBackGround";
 import { MainCanvas } from "@/components/editor/canvas/MainCanvas";
 import {
-  PropertySideBar,
-  PropertySideBarProvider,
-} from "@/components/editor/sidebar/propertySideBar/PropertySideBar";
+  RightSidebar,
+  RightSidebarProvider,
+} from "@/components/editor/sidebar/RightSidebar";
 import { SideBar } from "@/components/editor/sidebar/SideBar";
 import TopDock from "@/components/editor/TopDock";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import SideBarTrigger from "@/components/editor/sidebar/SideBarTrigger";
+import RightSidebarTrigger from "@/components/editor/sidebar/RightSidebarTrigger";
 import { getProject } from "@/actions/project";
 import { Suspense } from "react";
 import SpinnerLoading from "@/components/editor/loading";
@@ -22,11 +23,11 @@ export default function EditorPage({ params }: { params: { id: string } }) {
   return (
     <DotBackGround>
       <SidebarProvider className="min-h-full absolute" defaultOpen={false}>
-        <PropertySideBarProvider>
+        <RightSidebarProvider>
           <Suspense fallback={<SpinnerLoading />}>
             <Main id={projectId} />
           </Suspense>
-        </PropertySideBarProvider>
+        </RightSidebarProvider>
       </SidebarProvider>
     </DotBackGround>
   );
@@ -43,7 +44,8 @@ async function Main({ id }: { id: number }) {
       <SideBarTrigger className="mt-4 z-50" />
       <SidebarInset className=" bg-transparent overflow-hidden absolute h-full">
         <TopDock />
-        <PropertySideBar />
+        <RightSidebarTrigger className="absolute top-4 right-4 z-50" />
+        <RightSidebar />
         <MainCanvas />
       </SidebarInset>
     </>

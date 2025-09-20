@@ -1,7 +1,7 @@
 import { useDraggable } from "@dnd-kit/core";
 import { node } from "@/actions/node/schema";
 import { Grip, Image } from "lucide-react";
-import { usePropertySideBar } from "../propertySideBar/PropertySideBar";
+import { useRightSidebar } from "../RightSidebar";
 import { useEditor } from "@/store/editor";
 import { observer } from "mobx-react-lite";
 import { CSS } from "@dnd-kit/utilities";
@@ -12,7 +12,7 @@ interface DraggableSceneProps {
 
 export const DraggableScene = observer(({ scene }: DraggableSceneProps) => {
   const editor = useEditor();
-  const { setOpen } = usePropertySideBar();
+  const { setOpen } = useRightSidebar();
 
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({

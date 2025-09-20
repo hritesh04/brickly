@@ -3,7 +3,7 @@ import { node } from "@/actions/node/schema";
 import { File, Folder } from "@/components/magicui/file-tree";
 import { useEditor } from "@/store/editor";
 import { CircleIcon } from "lucide-react";
-import { usePropertySideBar } from "../propertySideBar/PropertySideBar";
+import { useRightSidebar } from "../RightSidebar";
 import { observer } from "mobx-react-lite";
 
 interface DroppableTreeProps {
@@ -12,7 +12,7 @@ interface DroppableTreeProps {
 
 export const FileTree = observer(({ scene }: DroppableTreeProps) => {
   const editor = useEditor();
-  const { setOpen } = usePropertySideBar();
+  const { setOpen } = useRightSidebar();
 
   const { setNodeRef, isOver } = useDroppable({
     id: `drop-${scene.id}`,

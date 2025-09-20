@@ -6,7 +6,7 @@ import { useAction } from "@/hooks/useAction";
 import { useEditor } from "@/store/editor";
 import { Image, Plus } from "lucide-react";
 import { observer } from "mobx-react-lite";
-import { usePropertySideBar } from "../propertySideBar/PropertySideBar";
+import { useRightSidebar } from "../RightSidebar";
 import { useProjectManager } from "@/store/project";
 import { NodeType } from "@prisma/client";
 import { NewSceneDialog } from "./NewSceneDialog";
@@ -15,7 +15,7 @@ import { DraggableScene } from "./DraggableScene";
 export const AllScenes = observer(() => {
   const project = useProjectManager();
   const editor = useEditor();
-  const { setOpen } = usePropertySideBar();
+  const { setOpen } = useRightSidebar();
   const { execute, error } = useAction(createNode, {
     onSuccess(data) {
       editor.addNode(data as node);

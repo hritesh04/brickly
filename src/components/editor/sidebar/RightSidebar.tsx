@@ -2,32 +2,31 @@
 import { useEditor } from "@/store/editor";
 import { observer } from "mobx-react-lite";
 import { createContext, useContext, useState } from "react";
-import { NodeTypeProperty } from "./properties/NodeTypeProperty";
+import { NodeTypeProperty } from "./propertySideBar/properties/NodeTypeProperty";
 import { NodeType } from "@prisma/client";
-import Node2DProperty from "./Node2DProperty";
+import Node2DProperty from "./propertySideBar/Node2DProperty";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import ScriptSideBar from "./ScriptSideBar";
-// import { Sprite2DProperty } from "./properties/Sprite2DProperty";
+import ScriptSideBar from "./scriptSideBar/ScriptSideBar";
 
-type PropertySideBarProps = {
+type RightSidebarProps = {
   open: boolean;
   setOpen: (open: boolean) => void;
 };
 
-const SidebarContext = createContext<PropertySideBarProps | null>(null);
+const SidebarContext = createContext<RightSidebarProps | null>(null);
 
-function usePropertySideBar() {
+function useRightSidebar() {
   const context = useContext(SidebarContext);
   if (!context) {
     throw new Error(
-      "usePropertySideBar must be used within a SidebarProvider."
+      "useRightSidebar must be used within a RightSidebarProvider."
     );
   }
   return context;
 }
 
-function PropertySideBarProvider({ children }: { children: React.ReactNode }) {
+function RightSidebarProvider({ children }: { children: React.ReactNode }) {
   const [open, setOpen] = useState(false);
 
   return (
@@ -37,10 +36,11 @@ function PropertySideBarProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-const PropertySideBar = observer(() => {
-  const { open } = usePropertySideBar();
+const RightSidebar = observer(() => {
+  const { open } = useRightSidebar();
   const editor = useEditor();
   const activeNode = editor.activeNode;
+  const [activeTab, setActiveTab] = useState("properties");
 
   if (!activeNode) {
     return (
@@ -49,18 +49,28 @@ const PropertySideBar = observer(() => {
         ${!open && "hidden"}
         `}
       >
-        <p className="text-sm text-gray-600">Please select a Node to see its Property</p>
+        <p className="text-sm text-gray-600">Please select a Node to see its Properties and Script</p>
       </div>
     );
   }
 
+  // Dynamic width based on active tab
+  const sidebarWidth = activeTab === "script" 
+    ? "w-1/3 min-w-[400px] max-w-[500px]" 
+    : "w-1/6";
+
   return (
     <div
-      className={`h-full w-1/6 bg-white absolute right-0 rounded-lg border shadow-sm z-50 mt-2
+      className={`h-full ${sidebarWidth} bg-white absolute right-0 rounded-lg border shadow-sm z-50 mt-2 transition-all duration-300
         ${!open && "hidden"}
         `}
     >
-      <Tabs defaultValue="properties" className="h-full flex flex-col">
+      <Tabs 
+        defaultValue="properties" 
+        value={activeTab}
+        onValueChange={setActiveTab}
+        className="h-full flex flex-col"
+      >
         <div className="p-4 pb-0">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="properties">Properties</TabsTrigger>
@@ -76,9 +86,13 @@ const PropertySideBar = observer(() => {
             </div>
           </ScrollArea>
         </TabsContent>
+        
+        <TabsContent value="script" className="flex-1 overflow-hidden">
+          <ScriptSideBar />
+        </TabsContent>
       </Tabs>
     </div>
   );
 });
 
-export { PropertySideBar, PropertySideBarProvider, usePropertySideBar };
+export { RightSidebar, RightSidebarProvider, useRightSidebar };

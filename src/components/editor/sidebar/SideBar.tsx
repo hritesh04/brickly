@@ -14,7 +14,7 @@ import GameTab from "./GameTab";
 import { ImagePlayIcon, Layers, LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import ActiveSideBar from "./ActiveSideBar";
-import { usePropertySideBar } from "./propertySideBar/PropertySideBar";
+import { useRightSidebar } from "./RightSidebar";
 import { Separator } from "@/components/ui/separator";
 import { ProjectWithRelation } from "@/actions/project/schema";
 import { useProjectManager } from "@/store/project";
