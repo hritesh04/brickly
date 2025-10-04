@@ -3,7 +3,6 @@ import { useEditor } from "@/store/editor";
 import { observer } from "mobx-react-lite";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Play, Save, Code } from "lucide-react";
 import { useState } from "react";
@@ -14,11 +13,10 @@ import {
   DragStartEvent,
 } from "@dnd-kit/core";
 import { ActionsSection } from "./ActionsSection";
-import { Action } from "./types/ActionTypes";
+import { Action } from "@brickly/types";
 import { MainLoopSection } from "./MainLoopSection";
 import { TriggerSection } from "./TriggerSection";
-import { NodeType } from "./types/NodeSpecificMappings";
-import { Textarea } from "@/components/ui/textarea";
+import { NodeType } from "@brickly/types";
 
 interface DroppedAction {
   id: string;
@@ -57,25 +55,25 @@ const ScriptSideBar = observer(() => {
   const getNodeType = (nodeType: string): NodeType => {
     switch (nodeType.toLowerCase()) {
       case "node2d":
-        return NodeType.NODE2D;
+        return NodeType.Node2D;
       case "sprite2d":
-        return NodeType.SPRITE2D;
+        return NodeType.Sprite2D;
       case "animatedsprite2d":
-        return NodeType.ANIMATED_SPRITE2D;
+        return NodeType.AnimatedSprite2D;
       case "rigidbody2d":
-        return NodeType.RIGIDBODY2D;
+        return NodeType.RigidBody2D;
       case "staticbody2d":
-        return NodeType.STATICBODY2D;
+        return NodeType.StaticBody2D;
       case "area2d":
-        return NodeType.AREA2D;
+        return NodeType.Area2D;
       case "characterbody2d":
-        return NodeType.CHARACTERBODY2D;
+        return NodeType.CharacterBody2D;
       case "collisionshape2d":
-        return NodeType.COLLISION_SHAPE2D;
+        return NodeType.CollisionShape2D;
       case "collisionpolygon2d":
-        return NodeType.COLLISION_POLYGON2D;
+        return NodeType.CollisionPolygon2D;
       default:
-        return NodeType.NODE;
+        return NodeType.Node;
     }
   };
 

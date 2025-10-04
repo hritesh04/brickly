@@ -5,7 +5,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useAction } from "@/hooks/useAction";
 import { useEditor } from "@/store/editor";
 import { useProjectManager } from "@/store/project";
-import { Property } from "@/types/property";
+import { Property } from "@brickly/types";
 import { AssetType, NodeType, ResourceType } from "@prisma/client";
 import { observer } from "mobx-react-lite";
 import { useState } from "react";

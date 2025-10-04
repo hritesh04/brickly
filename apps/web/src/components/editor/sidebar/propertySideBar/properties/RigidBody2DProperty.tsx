@@ -1,6 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useEditor } from "@/store/editor";
-import { Property } from "@/types/property";
+import { Property } from "@brickly/types";
 import { Input } from "@/components/ui/input";
 
 export const RigidBody2DProperty = observer(() => {

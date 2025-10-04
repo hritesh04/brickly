@@ -1,6 +1,5 @@
 import { useEditor } from "@/store/editor";
-import { BaseProperty } from "@/types/property";
-import { variant } from "@/types/variant";
+import { BaseProperty, variant } from "@brickly/types";
 import { observer } from "mobx-react-lite";
 
 export const CanvasProperty = observer(() => {

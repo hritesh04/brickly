@@ -201,7 +201,7 @@ export interface TweenPropertyAction extends BaseAction {
 export interface EmitSignalAction extends BaseAction {
   type: ActionType.EMIT_SIGNAL;
   signalName: string;
-  parameters: SignalParameter[];
+  parameters: ActionSignalParameter[];
 }
 
 export interface WaitAction extends BaseAction {
@@ -640,7 +640,7 @@ export enum ComparisonOperator {
   OR = 'or'
 }
 
-export interface SignalParameter {
+export interface ActionSignalParameter {
   name: string;
   value: string;
   type: PropertyValueType;

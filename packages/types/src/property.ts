@@ -1,7 +1,23 @@
-import { Resource } from "@/actions/resource/schema";
 import { variant } from "./variant";
-import { ResourceType } from "@prisma/client";
 import { CapsuleShape2D, CircleShape2D, CollisionPolygon2D, RectangleShape2D, SegmentShape2D } from "./resource";
+
+// Define ResourceType enum locally to avoid Prisma dependency
+export enum ResourceType {
+  ExtResource = "ExtResource",
+  SubResource = "SubResource",
+}
+
+// Define Resource interface locally to avoid Prisma dependency
+export interface Resource {
+  id: number;
+  name: string;
+  type: ResourceType;
+  assetType: string;
+  path: string | null;
+  property: any | null;
+  parentID: number | null;
+  projectID: number | null;
+}
 
 export interface BaseProperty {
   canvas: CanvasItemProperty;

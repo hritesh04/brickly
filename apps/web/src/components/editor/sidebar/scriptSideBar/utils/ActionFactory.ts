@@ -72,7 +72,7 @@ import {
   SetOneWayCollisionAction,
   SetPolygonAction,
   SetBuildModeAction
-} from "../types/ActionTypes";
+} from "@brickly/types";
 
 export class ActionFactory {
   static createAction(type: ActionType, name: string): Action {

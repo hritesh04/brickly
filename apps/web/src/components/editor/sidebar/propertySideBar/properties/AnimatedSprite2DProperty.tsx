@@ -4,8 +4,8 @@ import { useEditor } from "@/store/editor";
 import { useProjectManager } from "@/store/project";
 import { useAction } from "@/hooks/useAction";
 import { createResource } from "@/actions/resource";
-import { Property } from "@/types/property";
-import { AssetType, ResourceType } from "@prisma/client";
+import { Property, ResourceType } from "@brickly/types";
+import { AssetType } from "@prisma/client";
 import { Input } from "@/components/ui/input";
 
 export const AnimatedSprite2DProperty = observer(() => {
@@ -50,7 +50,7 @@ export const AnimatedSprite2DProperty = observer(() => {
   return (
     <div className="space-y-4">
       <h3 className="text-sm font-semibold text-gray-900">AnimatedSprite2D</h3>
-      
+
       {/* Sprite Frames */}
       <div className="space-y-3">
         <span className="text-sm font-medium text-gray-700">Sprite Frames</span>
@@ -60,13 +60,16 @@ export const AnimatedSprite2DProperty = observer(() => {
               <div className="text-sm text-gray-600 mb-1">Current frames:</div>
               <div className="text-sm font-medium text-gray-900">
                 {project.project?.resource?.find(
-                  (r) => r.id == property.animated_sprite_2d?.sprite_frames?.value
+                  (r) =>
+                    r.id == property.animated_sprite_2d?.sprite_frames?.value
                 )?.path || "Unknown frames"}
               </div>
             </div>
           ) : (
             <div className="p-3 border-2 border-dashed border-gray-300 rounded-md">
-              <div className="text-sm text-gray-600 mb-2">No frames assigned</div>
+              <div className="text-sm text-gray-600 mb-2">
+                No frames assigned
+              </div>
               <input
                 type="file"
                 onChange={handleUpload}
@@ -84,7 +87,13 @@ export const AnimatedSprite2DProperty = observer(() => {
         <Input
           placeholder="Animation name"
           value={property?.animated_sprite_2d?.animation || ""}
-          onChange={(e) => editor.setProperty("animated_sprite_2d", "animation", e.target.value)}
+          onChange={(e) =>
+            editor.setProperty(
+              "animated_sprite_2d",
+              "animation",
+              e.target.value
+            )
+          }
           className="text-sm"
         />
       </div>
@@ -98,7 +107,13 @@ export const AnimatedSprite2DProperty = observer(() => {
             step="0.1"
             className="w-20 text-sm"
             value={property?.animated_sprite_2d?.speed_scale || 1.0}
-            onChange={(e) => editor.setProperty("animated_sprite_2d", "speed_scale", parseFloat(e.target.value) || 1.0)}
+            onChange={(e) =>
+              editor.setProperty(
+                "animated_sprite_2d",
+                "speed_scale",
+                parseFloat(e.target.value) || 1.0
+              )
+            }
           />
         </div>
       </div>
@@ -112,30 +127,54 @@ export const AnimatedSprite2DProperty = observer(() => {
               type="checkbox"
               id="centered"
               checked={property?.animated_sprite_2d?.centered || false}
-              onChange={(e) => editor.setProperty("animated_sprite_2d", "centered", e.target.checked)}
+              onChange={(e) =>
+                editor.setProperty(
+                  "animated_sprite_2d",
+                  "centered",
+                  e.target.checked
+                )
+              }
               className="w-4 h-4"
             />
-            <label htmlFor="centered" className="text-sm text-gray-600">Centered</label>
+            <label htmlFor="centered" className="text-sm text-gray-600">
+              Centered
+            </label>
           </div>
           <div className="flex items-center gap-3">
             <input
               type="checkbox"
               id="flip_h"
               checked={property?.animated_sprite_2d?.flip_h || false}
-              onChange={(e) => editor.setProperty("animated_sprite_2d", "flip_h", e.target.checked)}
+              onChange={(e) =>
+                editor.setProperty(
+                  "animated_sprite_2d",
+                  "flip_h",
+                  e.target.checked
+                )
+              }
               className="w-4 h-4"
             />
-            <label htmlFor="flip_h" className="text-sm text-gray-600">Flip H</label>
+            <label htmlFor="flip_h" className="text-sm text-gray-600">
+              Flip H
+            </label>
           </div>
           <div className="flex items-center gap-3">
             <input
               type="checkbox"
               id="flip_v"
               checked={property?.animated_sprite_2d?.flip_v || false}
-              onChange={(e) => editor.setProperty("animated_sprite_2d", "flip_v", e.target.checked)}
+              onChange={(e) =>
+                editor.setProperty(
+                  "animated_sprite_2d",
+                  "flip_v",
+                  e.target.checked
+                )
+              }
               className="w-4 h-4"
             />
-            <label htmlFor="flip_v" className="text-sm text-gray-600">Flip V</label>
+            <label htmlFor="flip_v" className="text-sm text-gray-600">
+              Flip V
+            </label>
           </div>
         </div>
       </div>

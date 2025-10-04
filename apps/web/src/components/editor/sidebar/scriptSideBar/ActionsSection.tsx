@@ -19,13 +19,13 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useDraggable } from "@dnd-kit/core";
-import { Action, ActionType, ACTION_CATEGORIES } from "./types/ActionTypes";
+import { Action, ActionType, ACTION_CATEGORIES } from "@brickly/types";
 import { ActionFormRenderer } from "./forms/ActionForms";
 import { ActionFactory } from "./utils/ActionFactory";
 import {
   NodeType,
   getAvailableActionsForNode,
-} from "./types/NodeSpecificMappings";
+} from "@brickly/types";
 
 interface ActionsSectionProps {
   actions: Action[];
