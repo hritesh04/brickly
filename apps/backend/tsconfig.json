@@ -1,0 +1,9 @@
+{
+  "extends": "@brickly/tsconfig/node.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "."
+  },
+  "include": ["index.ts", "src", "express.d.ts"],
+  "exclude": ["node_modules", "dist"]
+}

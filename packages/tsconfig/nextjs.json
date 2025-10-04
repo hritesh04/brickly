@@ -1,0 +1,16 @@
+{
+  "extends": "./base.json",
+  "compilerOptions": {
+    "jsx": "preserve",
+    "allowJs": true,
+    "noEmit": true,
+    "incremental": true,
+    "isolatedModules": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "lib": ["dom", "dom.iterable", "esnext"]
+  }
+}
