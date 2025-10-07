@@ -60,6 +60,19 @@ model Node{
   children Node[] @relation("children")
   projectID Int?
   project Project? @relation(references: [id],fields: [projectID])
+  signalsFrom Signal[] @relation("signalFrom")
+  signalsTo Signal[] @relation("signalTo")
+  script Script?
+}
+
+model Signal{
+  id Int @id @default(autoincrement())
+  name String
+  fromID Int
+  toID Int
+  from Node @relation("signalFrom", references: [id], fields: [fromID])
+  to Node @relation("signalTo", references: [id], fields: [toID])
+  script String
 }
 
 enum ResourceType {
@@ -92,4 +105,222 @@ model Resource{
   parent Node? @relation(references: [id],fields: [parentID])
   projectID Int?
   project Project? @relation(references: [id],fields: [projectID])
+}
+
+// Script-related enums
+enum ActionType {
+  // Transform Actions (Node2D)
+  MOVE_TO
+  MOVE_BY
+  TRANSLATE
+  ROTATE_TO
+  ROTATE_BY
+  ROTATE
+  SCALE_TO
+  SCALE_BY
+  LOOK_AT
+  GET_ANGLE_TO
+  TO_LOCAL
+  TO_GLOBAL
+  
+  // Node Core Functions
+  ADD_CHILD
+  REMOVE_CHILD
+  QUEUE_FREE
+  GET_NODE
+  GET_PARENT
+  GET_CHILDREN
+  SET_PROCESS
+  SET_PHYSICS_PROCESS
+  
+  // Sprite2D Actions
+  SET_TEXTURE
+  GET_TEXTURE
+  SET_REGION_ENABLED
+  SET_REGION_RECT
+  SET_FLIP_H
+  SET_FLIP_V
+  
+  // AnimatedSprite2D Actions
+  PLAY_ANIMATION
+  STOP_ANIMATION
+  PAUSE_ANIMATION
+  SET_ANIMATION
+  GET_ANIMATION
+  SET_FRAME
+  GET_FRAME
+  SET_SPEED_SCALE
+  
+  // RigidBody2D Actions
+  APPLY_IMPULSE
+  APPLY_FORCE
+  SET_GRAVITY_SCALE
+  FREEZE_BODY
+  SET_FREEZE_ENABLED
+  SET_MASS
+  SET_LINEAR_VELOCITY
+  SET_ANGULAR_VELOCITY
+  SET_LOCK_ROTATION
+  
+  // StaticBody2D Actions
+  MOVE_AND_COLLIDE
+  SET_CONSTANT_LINEAR_VELOCITY
+  SET_CONSTANT_ANGULAR_VELOCITY
+  
+  // Area2D Actions
+  GET_OVERLAPPING_BODIES
+  GET_OVERLAPPING_AREAS
+  OVERLAPS_BODY
+  OVERLAPS_AREA
+  SET_MONITORING
+  SET_MONITORABLE
+  SET_GRAVITY
+  SET_GRAVITY_VECTOR
+  
+  // CharacterBody2D Actions
+  MOVE_AND_SLIDE
+  IS_ON_FLOOR
+  IS_ON_CEILING
+  IS_ON_WALL
+  GET_FLOOR_NORMAL
+  SET_VELOCITY
+  SET_FLOOR_MAX_ANGLE
+  SET_UP_DIRECTION
+  
+  // CollisionShape2D Actions
+  SET_SHAPE
+  GET_SHAPE
+  SET_COLLISION_DISABLED
+  SET_ONE_WAY_COLLISION
+  
+  // CollisionPolygon2D Actions
+  SET_POLYGON
+  GET_POLYGON
+  SET_BUILD_MODE
+  
+  // Property Actions
+  SET_VISIBLE
+  SET_MODULATE
+  SET_PROPERTY
+  
+  // Animation Actions
+  TWEEN_PROPERTY
+  
+  // Signal Actions
+  EMIT_SIGNAL
+  CONNECT_SIGNAL
+  
+  // Flow Control
+  WAIT
+  CONDITION
+  LOOP
+  
+  // Scene Actions
+  CHANGE_SCENE
+  INSTANTIATE_SCENE
+  
+  // Audio Actions
+  PLAY_SOUND
+  STOP_SOUND
+  
+  // Input Actions
+  CHECK_INPUT
+  
+  // Debug Actions
+  PRINT
+  
+  // Advanced
+  CUSTOM_CODE
+}
+
+enum EaseType {
+  LINEAR
+  EASE_IN
+  EASE_OUT
+  EASE_IN_OUT
+  EASE_OUT_IN
+}
+
+enum TransitionType {
+  SINE
+  QUINT
+  QUART
+  QUAD
+  EXPO
+  ELASTIC
+  CUBIC
+  CIRC
+  BOUNCE
+  BACK
+}
+
+enum PropertyValueType {
+  STRING
+  NUMBER
+  BOOLEAN
+  VECTOR2
+  COLOR
+}
+
+enum WaitType {
+  SECONDS
+  FRAMES
+  SIGNAL
+}
+
+enum ComparisonOperator {
+  EQUALS
+  NOT_EQUALS
+  GREATER
+  LESS
+  GREATER_EQUAL
+  LESS_EQUAL
+  AND
+  OR
+}
+
+enum BuildMode {
+  SOLIDS
+  SEGMENTS
+}
+
+// Script models
+model Script {
+  id Int @id @default(autoincrement())
+  name String
+  content String? // Raw script content
+  nodeID Int @unique
+  node Node @relation(references: [id], fields: [nodeID])
+  actions Action[]
+  triggers Trigger[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Action {
+  id Int @id @default(autoincrement())
+  name String
+  type ActionType
+  enabled Boolean @default(true)
+  order Int @default(0)
+  parameters Json? // Action-specific parameters
+  scriptID Int
+  script Script @relation(references: [id], fields: [scriptID])
+  triggerID Int?
+  trigger Trigger? @relation(references: [id], fields: [triggerID])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Trigger {
+  id Int @id @default(autoincrement())
+  name String
+  type String // e.g., "ready", "input", "collision", etc.
+  enabled Boolean @default(true)
+  conditions Json? // Trigger conditions
+  scriptID Int
+  script Script @relation(references: [id], fields: [scriptID])
+  actions Action[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }

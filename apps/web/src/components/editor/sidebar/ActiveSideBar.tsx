@@ -1,4 +1,5 @@
 import { SceneBar } from "./sceneBar/SceneBar";
+import AiChat from "./AiChat";
 export default function ActiveSideBar({
   activeTitle,
 }: // project,
@@ -11,5 +12,7 @@ export default function ActiveSideBar({
       return <SceneBar />;
     case "Animations":
       return <div>ANIMATION</div>;
+    case "AI Assistant":
+      return <AiChat />;
   }
 }

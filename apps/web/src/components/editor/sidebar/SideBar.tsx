@@ -11,7 +11,7 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 import GameTab from "./GameTab";
-import { ImagePlayIcon, Layers, LucideIcon } from "lucide-react";
+import { ImagePlayIcon, Layers, LucideIcon, Bot } from "lucide-react";
 import { useEffect, useState } from "react";
 import ActiveSideBar from "./ActiveSideBar";
 import { useRightSidebar } from "./RightSidebar";
@@ -30,6 +30,10 @@ const navMain = [
   {
     title: "Animations",
     icon: ImagePlayIcon,
+  },
+  {
+    title: "AI Assistant",
+    icon: Bot,
   },
   //   {
   // title: "Code Editor",
@@ -69,12 +73,14 @@ export const SideBar = observer(
           <SidebarContent>
             <SidebarGroup>
               <SidebarGroupContent className="px-1.5 md:px-0">
-                <SidebarMenu className=" gap-2">
+                <SidebarMenu className=" gap-4">
                   {navMain.map((nav) => (
                     <SidebarMenuItem key={nav.title}>
                       <SidebarMenuButton
                         size="lg"
-                        className="[&>svg]:size-6 group-data-[collapsible=icon]:[&>svg]:ml-1"
+                        className={`[&>svg]:size-6 group-data-[collapsible=icon]:[&>svg]:ml-1 ${
+                          nav.title === "AI Assistant" ? "[&>svg]:size-7 -ml-0.5" : ""
+                        }`}
                         onClick={() => {
                           if (activeItem?.title === nav.title) {
                             setOpen(false);

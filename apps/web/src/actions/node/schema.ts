@@ -17,11 +17,13 @@ export const nodeWithRelations: z.ZodType<
   z.infer<typeof nodeSchema> & {
     resource?: Array<z.infer<typeof resourceSchema>> | null;
     children?: Array<any> | null;
+    signals?: Array<any> | null;
   }
 > = z.lazy(() =>
   nodeSchema.extend({
     resource: z.array(resourceSchema).nullable().optional(),
     children: z.array(nodeWithRelations).nullable().optional(),
+    signals: z.array(z.any()).nullable().optional(),
   })
 );
 export const createNodeSchema = z.object({

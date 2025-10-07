@@ -1,572 +1,167 @@
-import { 
-  Action, 
-  ActionType, 
-  MoveToAction, 
-  MoveByAction, 
-  RotateToAction,
-  RotateByAction,
-  ScaleToAction,
-  SetVisibleAction,
-  SetModulateAction,
-  TweenPropertyAction,
-  WaitAction,
-  PrintAction,
-  PlaySoundAction,
-  CustomCodeAction,
-  EaseType,
-  TransitionType,
-  WaitType,
-  BuildMode,
-  // New Godot Action imports
-  TranslateAction,
-  RotateAction,
-  LookAtAction,
-  GetAngleToAction,
-  ToLocalAction,
-  ToGlobalAction,
-  AddChildAction,
-  RemoveChildAction,
-  GetNodeAction,
-  SetProcessAction,
-  SetPhysicsProcessAction,
-  SetTextureAction,
-  SetRegionEnabledAction,
-  SetRegionRectAction,
-  SetFlipHAction,
-  SetFlipVAction,
-  StopAnimationAction,
-  PauseAnimationAction,
-  SetAnimationAction,
-  SetFrameAction,
-  SetSpeedScaleAction,
-  ApplyImpulseAction,
-  ApplyForceAction,
-  SetGravityScaleAction,
-  FreezeBodyAction,
-  SetFreezeEnabledAction,
-  SetMassAction,
-  SetLinearVelocityAction,
-  SetAngularVelocityAction,
-  SetLockRotationAction,
-  MoveAndCollideAction,
-  SetConstantLinearVelocityAction,
-  SetConstantAngularVelocityAction,
-  GetOverlappingBodiesAction,
-  GetOverlappingAreasAction,
-  OverlapsBodyAction,
-  OverlapsAreaAction,
-  SetMonitoringAction,
-  SetMonitorableAction,
-  SetGravityAction,
-  SetGravityVectorAction,
-  MoveAndSlideAction,
-  IsOnFloorAction,
-  IsOnCeilingAction,
-  IsOnWallAction,
-  GetFloorNormalAction,
-  SetVelocityAction,
-  SetFloorMaxAngleAction,
-  SetUpDirectionAction,
-  SetShapeAction,
-  SetCollisionDisabledAction,
-  SetOneWayCollisionAction,
-  SetPolygonAction,
-  SetBuildModeAction
-} from "@brickly/types";
+import { ActionType, EaseType, TransitionType, WaitType, BuildMode } from "@prisma/client";
+import { action } from "@/actions/action/schema";
 
 export class ActionFactory {
-  static createAction(type: ActionType, name: string): Action {
+  static createAction(type: ActionType, name: string): action {
     const baseAction = {
-      id: Date.now().toString() + Math.random().toString(36).substr(2, 9),
+      id: Date.now() + Math.floor(Math.random() * 1000), // Generate a unique number ID
       name,
       type,
-      enabled: true
+      enabled: true,
+      order: 0,
+      parameters: {},
+      scriptID: 0, // Will be set when creating the action
+      triggerID: null,
+      createdAt: new Date(),
+      updatedAt: new Date(),
     };
 
+    // Set default parameters based on action type
     switch (type) {
       case ActionType.MOVE_TO:
         return {
           ...baseAction,
-          type: ActionType.MOVE_TO,
-          targetX: 0,
-          targetY: 0,
-          duration: 1,
-          easeType: EaseType.LINEAR
-        } as MoveToAction;
+          parameters: {
+            targetX: 0,
+            targetY: 0,
+            duration: 1,
+            easeType: EaseType.LINEAR
+          }
+        };
 
       case ActionType.MOVE_BY:
         return {
           ...baseAction,
-          type: ActionType.MOVE_BY,
-          deltaX: 10,
-          deltaY: 0,
-          duration: 1,
-          easeType: EaseType.LINEAR
-        } as MoveByAction;
+          parameters: {
+            deltaX: 10,
+            deltaY: 0,
+            duration: 1,
+            easeType: EaseType.LINEAR
+          }
+        };
 
       case ActionType.ROTATE_TO:
         return {
           ...baseAction,
-          type: ActionType.ROTATE_TO,
-          targetRotation: 0,
-          duration: 1,
-          easeType: EaseType.LINEAR
-        } as RotateToAction;
+          parameters: {
+            targetRotation: 0,
+            duration: 1,
+            easeType: EaseType.LINEAR
+          }
+        };
 
       case ActionType.ROTATE_BY:
         return {
           ...baseAction,
-          type: ActionType.ROTATE_BY,
-          deltaRotation: 90,
-          duration: 1,
-          easeType: EaseType.LINEAR
-        } as RotateByAction;
+          parameters: {
+            deltaRotation: 90,
+            duration: 1,
+            easeType: EaseType.LINEAR
+          }
+        };
 
       case ActionType.SCALE_TO:
         return {
           ...baseAction,
-          type: ActionType.SCALE_TO,
-          targetScaleX: 1,
-          targetScaleY: 1,
-          duration: 1,
-          easeType: EaseType.LINEAR
-        } as ScaleToAction;
+          parameters: {
+            targetScaleX: 1,
+            targetScaleY: 1,
+            duration: 1,
+            easeType: EaseType.LINEAR
+          }
+        };
 
       case ActionType.SET_VISIBLE:
         return {
           ...baseAction,
-          type: ActionType.SET_VISIBLE,
-          visible: true
-        } as SetVisibleAction;
+          parameters: {
+            visible: true
+          }
+        };
 
       case ActionType.SET_MODULATE:
         return {
           ...baseAction,
-          type: ActionType.SET_MODULATE,
-          color: "#ffffff",
-          alpha: 1
-        } as SetModulateAction;
+          parameters: {
+            color: "#ffffff",
+            alpha: 1
+          }
+        };
 
       case ActionType.TWEEN_PROPERTY:
         return {
           ...baseAction,
-          type: ActionType.TWEEN_PROPERTY,
-          propertyPath: "position",
-          targetValue: "Vector2(100, 100)",
-          duration: 1,
-          easeType: EaseType.LINEAR,
-          transitionType: TransitionType.SINE
-        } as TweenPropertyAction;
+          parameters: {
+            property: "position",
+            targetValue: { x: 0, y: 0 },
+            duration: 1,
+            easeType: EaseType.LINEAR
+          }
+        };
+
+      case ActionType.EMIT_SIGNAL:
+        return {
+          ...baseAction,
+          parameters: {
+            signalName: "custom_signal",
+            args: []
+          }
+        };
 
       case ActionType.WAIT:
         return {
           ...baseAction,
-          type: ActionType.WAIT,
-          duration: 1,
-          waitType: WaitType.SECONDS
-        } as WaitAction;
+          parameters: {
+            duration: 1,
+            waitType: WaitType.SECONDS
+          }
+        };
+
+      case ActionType.CONDITION:
+        return {
+          ...baseAction,
+          parameters: {
+            leftOperand: "true",
+            operator: "==",
+            rightOperand: "true",
+            trueActions: [],
+            falseActions: []
+          }
+        };
 
       case ActionType.PRINT:
         return {
           ...baseAction,
-          type: ActionType.PRINT,
-          message: "Debug message",
-          includeNodeName: true
-        } as PrintAction;
+          parameters: {
+            message: "Hello World",
+            includeNodeName: false
+          }
+        };
 
       case ActionType.PLAY_SOUND:
         return {
           ...baseAction,
-          type: ActionType.PLAY_SOUND,
-          soundPath: "res://audio/sound.ogg",
-          volume: 1,
-          pitch: 1,
-          loop: false
-        } as PlaySoundAction;
+          parameters: {
+            soundPath: "res://sounds/click.wav",
+            volume: 1.0,
+            pitch: 1.0
+          }
+        };
 
       case ActionType.CUSTOM_CODE:
         return {
           ...baseAction,
-          type: ActionType.CUSTOM_CODE,
-          code: "# Custom GDScript code\nprint('Hello World')"
-        } as CustomCodeAction;
+          parameters: {
+            code: "// Custom GDScript code here"
+          }
+        };
 
-      // New Godot Actions
-      case ActionType.TRANSLATE:
-        return {
-          ...baseAction,
-          type: ActionType.TRANSLATE,
-          vector: { x: 10, y: 0 }
-        } as TranslateAction;
-
-      case ActionType.ROTATE:
-        return {
-          ...baseAction,
-          type: ActionType.ROTATE,
-          angle: 0.1
-        } as RotateAction;
-
-      case ActionType.LOOK_AT:
-        return {
-          ...baseAction,
-          type: ActionType.LOOK_AT,
-          point: { x: 0, y: 0 }
-        } as LookAtAction;
-
-      case ActionType.GET_ANGLE_TO:
-        return {
-          ...baseAction,
-          type: ActionType.GET_ANGLE_TO,
-          point: { x: 0, y: 0 }
-        } as GetAngleToAction;
-
-      case ActionType.TO_LOCAL:
-        return {
-          ...baseAction,
-          type: ActionType.TO_LOCAL,
-          globalPoint: { x: 0, y: 0 }
-        } as ToLocalAction;
-
-      case ActionType.TO_GLOBAL:
-        return {
-          ...baseAction,
-          type: ActionType.TO_GLOBAL,
-          localPoint: { x: 0, y: 0 }
-        } as ToGlobalAction;
-
-      case ActionType.ADD_CHILD:
-        return {
-          ...baseAction,
-          type: ActionType.ADD_CHILD,
-          childPath: "res://scenes/Child.tscn"
-        } as AddChildAction;
-
-      case ActionType.REMOVE_CHILD:
-        return {
-          ...baseAction,
-          type: ActionType.REMOVE_CHILD,
-          childPath: "$ChildNode"
-        } as RemoveChildAction;
-
-      case ActionType.GET_NODE:
-        return {
-          ...baseAction,
-          type: ActionType.GET_NODE,
-          nodePath: "$NodeName"
-        } as GetNodeAction;
-
-      case ActionType.SET_PROCESS:
-        return {
-          ...baseAction,
-          type: ActionType.SET_PROCESS,
-          enabled: true
-        } as SetProcessAction;
-
-      case ActionType.SET_PHYSICS_PROCESS:
-        return {
-          ...baseAction,
-          type: ActionType.SET_PHYSICS_PROCESS,
-          enabled: true
-        } as SetPhysicsProcessAction;
-
-      case ActionType.SET_TEXTURE:
-        return {
-          ...baseAction,
-          type: ActionType.SET_TEXTURE,
-          texturePath: "res://textures/sprite.png"
-        } as SetTextureAction;
-
-      case ActionType.SET_REGION_ENABLED:
-        return {
-          ...baseAction,
-          type: ActionType.SET_REGION_ENABLED,
-          enabled: true
-        } as SetRegionEnabledAction;
-
-      case ActionType.SET_REGION_RECT:
-        return {
-          ...baseAction,
-          type: ActionType.SET_REGION_RECT,
-          x: 0,
-          y: 0,
-          width: 32,
-          height: 32
-        } as SetRegionRectAction;
-
-      case ActionType.SET_FLIP_H:
-        return {
-          ...baseAction,
-          type: ActionType.SET_FLIP_H,
-          flip: false
-        } as SetFlipHAction;
-
-      case ActionType.SET_FLIP_V:
-        return {
-          ...baseAction,
-          type: ActionType.SET_FLIP_V,
-          flip: false
-        } as SetFlipVAction;
-
-      case ActionType.STOP_ANIMATION:
-        return {
-          ...baseAction,
-          type: ActionType.STOP_ANIMATION
-        } as StopAnimationAction;
-
-      case ActionType.PAUSE_ANIMATION:
-        return {
-          ...baseAction,
-          type: ActionType.PAUSE_ANIMATION
-        } as PauseAnimationAction;
-
-      case ActionType.SET_ANIMATION:
-        return {
-          ...baseAction,
-          type: ActionType.SET_ANIMATION,
-          animationName: "default"
-        } as SetAnimationAction;
-
-      case ActionType.SET_FRAME:
-        return {
-          ...baseAction,
-          type: ActionType.SET_FRAME,
-          frame: 0
-        } as SetFrameAction;
-
-      case ActionType.SET_SPEED_SCALE:
-        return {
-          ...baseAction,
-          type: ActionType.SET_SPEED_SCALE,
-          speedScale: 1.0
-        } as SetSpeedScaleAction;
-
-      case ActionType.APPLY_IMPULSE:
-        return {
-          ...baseAction,
-          type: ActionType.APPLY_IMPULSE,
-          impulse: { x: 100, y: 0 },
-          position: { x: 0, y: 0 }
-        } as ApplyImpulseAction;
-
-      case ActionType.APPLY_FORCE:
-        return {
-          ...baseAction,
-          type: ActionType.APPLY_FORCE,
-          force: { x: 50, y: 0 },
-          position: { x: 0, y: 0 }
-        } as ApplyForceAction;
-
-      case ActionType.SET_GRAVITY_SCALE:
-        return {
-          ...baseAction,
-          type: ActionType.SET_GRAVITY_SCALE,
-          scale: 1.0
-        } as SetGravityScaleAction;
-
-      case ActionType.FREEZE_BODY:
-        return {
-          ...baseAction,
-          type: ActionType.FREEZE_BODY
-        } as FreezeBodyAction;
-
-      case ActionType.SET_FREEZE_ENABLED:
-        return {
-          ...baseAction,
-          type: ActionType.SET_FREEZE_ENABLED,
-          enabled: false
-        } as SetFreezeEnabledAction;
-
-      case ActionType.SET_MASS:
-        return {
-          ...baseAction,
-          type: ActionType.SET_MASS,
-          mass: 1.0
-        } as SetMassAction;
-
-      case ActionType.SET_LINEAR_VELOCITY:
-        return {
-          ...baseAction,
-          type: ActionType.SET_LINEAR_VELOCITY,
-          velocity: { x: 0, y: 0 }
-        } as SetLinearVelocityAction;
-
-      case ActionType.SET_ANGULAR_VELOCITY:
-        return {
-          ...baseAction,
-          type: ActionType.SET_ANGULAR_VELOCITY,
-          velocity: 0
-        } as SetAngularVelocityAction;
-
-      case ActionType.SET_LOCK_ROTATION:
-        return {
-          ...baseAction,
-          type: ActionType.SET_LOCK_ROTATION,
-          locked: false
-        } as SetLockRotationAction;
-
-      case ActionType.MOVE_AND_COLLIDE:
-        return {
-          ...baseAction,
-          type: ActionType.MOVE_AND_COLLIDE,
-          velocity: { x: 10, y: 0 }
-        } as MoveAndCollideAction;
-
-      case ActionType.SET_CONSTANT_LINEAR_VELOCITY:
-        return {
-          ...baseAction,
-          type: ActionType.SET_CONSTANT_LINEAR_VELOCITY,
-          velocity: { x: 0, y: 0 }
-        } as SetConstantLinearVelocityAction;
-
-      case ActionType.SET_CONSTANT_ANGULAR_VELOCITY:
-        return {
-          ...baseAction,
-          type: ActionType.SET_CONSTANT_ANGULAR_VELOCITY,
-          velocity: 0
-        } as SetConstantAngularVelocityAction;
-
-      case ActionType.GET_OVERLAPPING_BODIES:
-        return {
-          ...baseAction,
-          type: ActionType.GET_OVERLAPPING_BODIES
-        } as GetOverlappingBodiesAction;
-
-      case ActionType.GET_OVERLAPPING_AREAS:
-        return {
-          ...baseAction,
-          type: ActionType.GET_OVERLAPPING_AREAS
-        } as GetOverlappingAreasAction;
-
-      case ActionType.OVERLAPS_BODY:
-        return {
-          ...baseAction,
-          type: ActionType.OVERLAPS_BODY,
-          bodyPath: "$Body"
-        } as OverlapsBodyAction;
-
-      case ActionType.OVERLAPS_AREA:
-        return {
-          ...baseAction,
-          type: ActionType.OVERLAPS_AREA,
-          areaPath: "$Area"
-        } as OverlapsAreaAction;
-
-      case ActionType.SET_MONITORING:
-        return {
-          ...baseAction,
-          type: ActionType.SET_MONITORING,
-          enabled: true
-        } as SetMonitoringAction;
-
-      case ActionType.SET_MONITORABLE:
-        return {
-          ...baseAction,
-          type: ActionType.SET_MONITORABLE,
-          enabled: true
-        } as SetMonitorableAction;
-
-      case ActionType.SET_GRAVITY:
-        return {
-          ...baseAction,
-          type: ActionType.SET_GRAVITY,
-          gravity: 980
-        } as SetGravityAction;
-
-      case ActionType.SET_GRAVITY_VECTOR:
-        return {
-          ...baseAction,
-          type: ActionType.SET_GRAVITY_VECTOR,
-          vector: { x: 0, y: 1 }
-        } as SetGravityVectorAction;
-
-      case ActionType.MOVE_AND_SLIDE:
-        return {
-          ...baseAction,
-          type: ActionType.MOVE_AND_SLIDE
-        } as MoveAndSlideAction;
-
-      case ActionType.IS_ON_FLOOR:
-        return {
-          ...baseAction,
-          type: ActionType.IS_ON_FLOOR
-        } as IsOnFloorAction;
-
-      case ActionType.IS_ON_CEILING:
-        return {
-          ...baseAction,
-          type: ActionType.IS_ON_CEILING
-        } as IsOnCeilingAction;
-
-      case ActionType.IS_ON_WALL:
-        return {
-          ...baseAction,
-          type: ActionType.IS_ON_WALL
-        } as IsOnWallAction;
-
-      case ActionType.GET_FLOOR_NORMAL:
-        return {
-          ...baseAction,
-          type: ActionType.GET_FLOOR_NORMAL
-        } as GetFloorNormalAction;
-
-      case ActionType.SET_VELOCITY:
-        return {
-          ...baseAction,
-          type: ActionType.SET_VELOCITY,
-          velocity: { x: 0, y: 0 }
-        } as SetVelocityAction;
-
-      case ActionType.SET_FLOOR_MAX_ANGLE:
-        return {
-          ...baseAction,
-          type: ActionType.SET_FLOOR_MAX_ANGLE,
-          angle: 0.785398
-        } as SetFloorMaxAngleAction;
-
-      case ActionType.SET_UP_DIRECTION:
-        return {
-          ...baseAction,
-          type: ActionType.SET_UP_DIRECTION,
-          direction: { x: 0, y: -1 }
-        } as SetUpDirectionAction;
-
-      case ActionType.SET_SHAPE:
-        return {
-          ...baseAction,
-          type: ActionType.SET_SHAPE,
-          shapePath: "res://shapes/rectangle.tres"
-        } as SetShapeAction;
-
-      case ActionType.SET_COLLISION_DISABLED:
-        return {
-          ...baseAction,
-          type: ActionType.SET_COLLISION_DISABLED,
-          disabled: false
-        } as SetCollisionDisabledAction;
-
-      case ActionType.SET_ONE_WAY_COLLISION:
-        return {
-          ...baseAction,
-          type: ActionType.SET_ONE_WAY_COLLISION,
-          enabled: false
-        } as SetOneWayCollisionAction;
-
-      case ActionType.SET_POLYGON:
-        return {
-          ...baseAction,
-          type: ActionType.SET_POLYGON,
-          points: [{ x: 0, y: 0 }, { x: 32, y: 0 }, { x: 32, y: 32 }, { x: 0, y: 32 }]
-        } as SetPolygonAction;
-
-      case ActionType.SET_BUILD_MODE:
-        return {
-          ...baseAction,
-          type: ActionType.SET_BUILD_MODE,
-          mode: BuildMode.SOLIDS
-        } as SetBuildModeAction;
-
+      // Add more cases as needed for other action types
       default:
-        throw new Error(`Unknown action type: ${type}`);
+        return {
+          ...baseAction,
+          parameters: {}
+        };
     }
   }
 
@@ -635,11 +230,9 @@ export class ActionFactory {
       [ActionType.SET_FLOOR_MAX_ANGLE]: "Set Floor Max Angle",
       [ActionType.SET_UP_DIRECTION]: "Set Up Direction",
       [ActionType.SET_SHAPE]: "Set Collision Shape",
-      [ActionType.GET_SHAPE]: "Get Collision Shape",
       [ActionType.SET_COLLISION_DISABLED]: "Set Collision Disabled",
       [ActionType.SET_ONE_WAY_COLLISION]: "Set One Way Collision",
       [ActionType.SET_POLYGON]: "Set Polygon Points",
-      [ActionType.GET_POLYGON]: "Get Polygon Points",
       [ActionType.SET_BUILD_MODE]: "Set Build Mode",
       [ActionType.SET_VISIBLE]: "Set Visibility",
       [ActionType.SET_MODULATE]: "Set Color/Alpha",
@@ -650,12 +243,9 @@ export class ActionFactory {
       [ActionType.WAIT]: "Wait",
       [ActionType.CONDITION]: "If Condition",
       [ActionType.LOOP]: "Loop",
-      [ActionType.CHANGE_SCENE]: "Change Scene",
-      [ActionType.INSTANTIATE_SCENE]: "Instantiate Scene",
+      [ActionType.PRINT]: "Print Debug",
       [ActionType.PLAY_SOUND]: "Play Sound",
       [ActionType.STOP_SOUND]: "Stop Sound",
-      [ActionType.CHECK_INPUT]: "Check Input",
-      [ActionType.PRINT]: "Print Debug",
       [ActionType.CUSTOM_CODE]: "Custom Code"
     };
 
@@ -727,11 +317,9 @@ export class ActionFactory {
       [ActionType.SET_FLOOR_MAX_ANGLE]: "Maximum floor slope",
       [ActionType.SET_UP_DIRECTION]: "Which direction is up",
       [ActionType.SET_SHAPE]: "Set collision shape",
-      [ActionType.GET_SHAPE]: "Get current shape",
       [ActionType.SET_COLLISION_DISABLED]: "Enable/disable collision",
       [ActionType.SET_ONE_WAY_COLLISION]: "Allow one-way collision",
       [ActionType.SET_POLYGON]: "Set polygon points",
-      [ActionType.GET_POLYGON]: "Get polygon points array",
       [ActionType.SET_BUILD_MODE]: "Set how polygon is built",
       [ActionType.SET_VISIBLE]: "Show or hide the node",
       [ActionType.SET_MODULATE]: "Change node color and transparency",
@@ -742,12 +330,9 @@ export class ActionFactory {
       [ActionType.WAIT]: "Pause execution for specified time",
       [ActionType.CONDITION]: "Execute actions based on condition",
       [ActionType.LOOP]: "Repeat actions multiple times",
-      [ActionType.CHANGE_SCENE]: "Switch to different scene",
-      [ActionType.INSTANTIATE_SCENE]: "Create instance of scene",
+      [ActionType.PRINT]: "Output debug message to console",
       [ActionType.PLAY_SOUND]: "Play audio file",
       [ActionType.STOP_SOUND]: "Stop playing audio",
-      [ActionType.CHECK_INPUT]: "Check for user input",
-      [ActionType.PRINT]: "Output debug message to console",
       [ActionType.CUSTOM_CODE]: "Write custom GDScript code"
     };
 

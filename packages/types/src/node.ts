@@ -8,6 +8,7 @@ import { Resource } from "./property";
 // Node type enumeration
 export enum NodeType {
   Node = "Node",
+  Control = "Control",
   Node2D = "Node2D",
   Sprite2D = "Sprite2D",
   AnimatedSprite2D = "AnimatedSprite2D",

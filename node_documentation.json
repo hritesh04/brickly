@@ -1,0 +1,304 @@
+{
+  "nodes": [
+    {
+      "type": "Node",
+      "description": "Base node type that all other nodes inherit from",
+      "properties": [],
+      "signals": [
+        "ready", "enter_tree", "exit_tree", "tree_entered", "tree_exiting", 
+        "tree_exited", "child_entered_tree", "child_exiting_tree", 
+        "child_order_changed", "renamed", "script_changed", "process", 
+        "physics_process"
+      ],
+      "actions": [
+        "ADD_CHILD", "REMOVE_CHILD", "QUEUE_FREE", "GET_NODE", 
+        "GET_PARENT", "GET_CHILDREN", "SET_PROCESS", "SET_PHYSICS_PROCESS"
+      ]
+    },
+    {
+      "type": "Node2D",
+      "description": "Base node for 2D rendering and positioning",
+      "inherits": "Node",
+      "properties": [
+        "transform.position", "transform.rotation", "transform.scale", 
+        "transform.skew", "canvas.visible", "canvas.z_index"
+      ],
+      "signals": [
+        "transform_changed", "visibility_changed", "draw"
+      ],
+      "actions": [
+        "MOVE_TO", "MOVE_BY", "TRANSLATE", "ROTATE_TO", "ROTATE_BY", 
+        "ROTATE", "SCALE_TO", "SCALE_BY", "LOOK_AT", "GET_ANGLE_TO", 
+        "TO_LOCAL", "TO_GLOBAL"
+      ]
+    },
+    {
+      "type": "Sprite2D",
+      "description": "Node for displaying 2D textures",
+      "inherits": "Node2D",
+      "properties": [
+        "texture", "region_enabled", "region_rect", "flip_h", "flip_v"
+      ],
+      "signals": [
+        "texture_changed", "region_changed"
+      ],
+      "actions": [
+        "SET_TEXTURE", "GET_TEXTURE", "SET_REGION_ENABLED", 
+        "SET_REGION_RECT", "SET_FLIP_H", "SET_FLIP_V"
+      ]
+    },
+    {
+      "type": "AnimatedSprite2D",
+      "description": "Node for playing sprite sheet animations",
+      "inherits": "Node2D",
+      "properties": [
+        "sprite_frames", "animation", "autoplay", "centered", "flip_h", 
+        "flip_v", "frame", "speed_scale", "offset"
+      ],
+      "signals": [
+        "animation_finished", "animation_looped", "frame_changed", 
+        "sprite_frames_changed"
+      ],
+      "actions": [
+        "PLAY_ANIMATION", "STOP_ANIMATION", "PAUSE_ANIMATION", 
+        "SET_ANIMATION", "GET_ANIMATION", "SET_FRAME", "GET_FRAME", 
+        "SET_SPEED_SCALE"
+      ]
+    },
+    {
+      "type": "RigidBody2D",
+      "description": "2D physics body that simulates physics properties",
+      "inherits": "Node2D",
+      "properties": [
+        "mode", "mass", "weight", "friction", "bounce", "gravity_scale",
+        "linear_velocity", "angular_velocity", "linear_damp", "angular_damp",
+        "custom_integrator", "contact_monitor", "continuous_cd", "freeze",
+        "max_contacts_reported"
+      ],
+      "signals": [
+        "body_entered", "body_exited", "body_shape_entered", 
+        "body_shape_exited", "sleep_state_changed", "collision"
+      ],
+      "actions": [
+        "APPLY_IMPULSE", "APPLY_FORCE", "SET_GRAVITY_SCALE", "FREEZE_BODY",
+        "SET_FREEZE_ENABLED", "SET_MASS", "SET_LINEAR_VELOCITY",
+        "SET_ANGULAR_VELOCITY", "SET_LOCK_ROTATION"
+      ]
+    },
+    {
+      "type": "StaticBody2D",
+      "description": "2D physics body that can't be moved by forces",
+      "inherits": "Node2D",
+      "properties": [
+        "physics_material_override", "constant_linear_velocity",
+        "constant_angular_velocity", "sync_to_physics"
+      ],
+      "signals": [
+        "body_entered", "body_exited", "body_shape_entered", "body_shape_exited"
+      ],
+      "actions": [
+        "MOVE_AND_COLLIDE", "SET_CONSTANT_LINEAR_VELOCITY",
+        "SET_CONSTANT_ANGULAR_VELOCITY"
+      ]
+    },
+    {
+      "type": "Area2D",
+      "description": "2D area for detection and area-based effects",
+      "inherits": "Node2D",
+      "properties": [
+        "monitoring", "monitorable", "gravity_override", "gravity",
+        "gravity_direction", "gravity_point", "gravity_point_center",
+        "linear_damp", "angular_damp", "space_override"
+      ],
+      "signals": [
+        "body_entered", "body_exited", "body_shape_entered",
+        "body_shape_exited", "area_entered", "area_exited",
+        "area_shape_entered", "area_shape_exited", "monitoring_toggled",
+        "monitorable_toggled"
+      ],
+      "actions": [
+        "GET_OVERLAPPING_BODIES", "GET_OVERLAPPING_AREAS", "OVERLAPS_BODY",
+        "OVERLAPS_AREA", "SET_MONITORING", "SET_MONITORABLE", "SET_GRAVITY",
+        "SET_GRAVITY_VECTOR"
+      ]
+    },
+    {
+      "type": "CharacterBody2D",
+      "description": "2D physics body specialized for character movement",
+      "inherits": "Node2D",
+      "properties": [
+        "motion_mode", "velocity", "up_direction", "floor_max_angle",
+        "wall_min_slide_angle", "max_slides", "floor_snap_length",
+        "safe_margin", "floor_stop_on_slope"
+      ],
+      "signals": [
+        "velocity_changed", "collision"
+      ],
+      "actions": [
+        "MOVE_AND_SLIDE", "IS_ON_FLOOR", "IS_ON_CEILING", "IS_ON_WALL",
+        "GET_FLOOR_NORMAL", "SET_VELOCITY", "SET_FLOOR_MAX_ANGLE",
+        "SET_UP_DIRECTION"
+      ]
+    },
+    {
+      "type": "CollisionShape2D",
+      "description": "2D collision shape for physics bodies",
+      "inherits": "Node2D",
+      "properties": [
+        "shape", "disabled", "one_way_collision"
+      ],
+      "signals": [
+        "shape_changed"
+      ],
+      "actions": [
+        "SET_SHAPE", "GET_SHAPE", "SET_COLLISION_DISABLED",
+        "SET_ONE_WAY_COLLISION"
+      ]
+    },
+    {
+      "type": "CollisionPolygon2D",
+      "description": "2D polygon collision shape",
+      "inherits": "Node2D",
+      "properties": [
+        "polygon", "build_mode"
+      ],
+      "signals": [
+        "polygon_changed"
+      ],
+      "actions": [
+        "SET_POLYGON", "GET_POLYGON", "SET_BUILD_MODE"
+      ]
+    },
+    {
+      "type": "PackedScene",
+      "description": "Represents a scene that can be instantiated",
+      "inherits": "Node",
+      "properties": [],
+      "signals": [],
+      "actions": [
+        "CHANGE_SCENE", "INSTANTIATE_SCENE"
+      ]
+    }
+  ],
+  "common_actions": [
+    {
+      "name": "SET_VISIBLE",
+      "description": "Set the visibility of a node",
+      "parameters": ["visible: boolean"]
+    },
+    {
+      "name": "SET_MODULATE",
+      "description": "Set the color and alpha modulation of a node",
+      "parameters": ["color: string", "alpha: number"]
+    },
+    {
+      "name": "SET_PROPERTY",
+      "description": "Set a property value on a node",
+      "parameters": ["propertyPath: string", "value: any", "valueType: string"]
+    },
+    {
+      "name": "TWEEN_PROPERTY",
+      "description": "Animate a property value over time",
+      "parameters": [
+        "propertyPath: string",
+        "targetValue: any",
+        "duration: number",
+        "easeType: string",
+        "transitionType: string"
+      ]
+    },
+    {
+      "name": "EMIT_SIGNAL",
+      "description": "Emit a signal with optional parameters",
+      "parameters": ["signalName: string", "...args: any[]"]
+    },
+    {
+      "name": "CONNECT_SIGNAL",
+      "description": "Connect a signal to a method",
+      "parameters": [
+        "signalName: string",
+        "targetNode: Node",
+        "methodName: string"
+      ]
+    },
+    {
+      "name": "WAIT",
+      "description": "Wait for a specified duration or condition",
+      "parameters": ["duration: number", "waitType: string"]
+    },
+    {
+      "name": "CONDITION",
+      "description": "Execute different actions based on a condition",
+      "parameters": [
+        "leftOperand: any",
+        "operator: string",
+        "rightOperand: any",
+        "trueActions: Action[]",
+        "falseActions: Action[]"
+      ]
+    },
+    {
+      "name": "LOOP",
+      "description": "Repeat actions a number of times or infinitely",
+      "parameters": ["count: number | null", "actions: Action[]"]
+    },
+    {
+      "name": "PRINT",
+      "description": "Print a message to the console",
+      "parameters": ["message: string", "includeNodeName: boolean"]
+    },
+    {
+      "name": "PLAY_SOUND",
+      "description": "Play a sound effect",
+      "parameters": [
+        "soundPath: string",
+        "volume: number",
+        "pitch: number",
+        "loop: boolean"
+      ]
+    },
+    {
+      "name": "CUSTOM_CODE",
+      "description": "Execute custom code",
+      "parameters": ["code: string"]
+    }
+  ],
+  "signal_parameters": {
+    "body_entered": [
+      { "name": "body", "type": "Node", "description": "The body that entered" }
+    ],
+    "body_exited": [
+      { "name": "body", "type": "Node", "description": "The body that exited" }
+    ],
+    "body_shape_entered": [
+      { "name": "body_rid", "type": "RID", "description": "The RID of the body" },
+      { "name": "body", "type": "Node", "description": "The body that entered" },
+      { "name": "body_shape_index", "type": "number", "description": "The index of the body's shape" },
+      { "name": "local_shape_index", "type": "number", "description": "The index of the local shape" }
+    ],
+    "animation_finished": [
+      { "name": "animation_name", "type": "string", "description": "The name of the finished animation" }
+    ],
+    "animation_looped": [
+      { "name": "animation_name", "type": "string", "description": "The name of the animation that looped" }
+    ]
+  },
+  "property_types": {
+    "position": { "type": "Vector2", "description": "2D position (x, y)" },
+    "rotation": { "type": "float", "description": "Rotation in radians" },
+    "scale": { "type": "Vector2", "description": "Scale factors (x, y)" },
+    "skew": { "type": "float", "description": "Skew amount in radians" },
+    "visible": { "type": "boolean", "description": "Whether the node is visible" },
+    "z_index": { "type": "integer", "description": "Rendering order (higher is in front)" },
+    "texture": { "type": "Resource", "description": "The texture resource to display" },
+    "animation": { "type": "string", "description": "Current animation name" },
+    "speed_scale": { "type": "float", "description": "Playback speed multiplier" },
+    "velocity": { "type": "Vector2", "description": "Movement velocity (x, y)" },
+    "gravity_scale": { "type": "float", "description": "Multiplier for gravity" },
+    "mass": { "type": "float", "description": "Physics mass" },
+    "friction": { "type": "float", "description": "Physics friction coefficient" },
+    "bounce": { "type": "float", "description": "Physics bounce coefficient" },
+    "monitoring": { "type": "boolean", "description": "Whether the node is detecting collisions/areas" },
+    "monitorable": { "type": "boolean", "description": "Whether the node can be detected by others" }
+  }
+}

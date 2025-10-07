@@ -30,6 +30,7 @@ export function getNodeTriggers(nodeType: NodeType): string[] {
 
 // Legacy NODE_TRIGGERS for backward compatibility
 export const NODE_TRIGGERS = {
+  [NodeType.Control]: getNodeTriggers(NodeType.Control),
   [NodeType.Node]: getNodeTriggers(NodeType.Node),
   [NodeType.Node2D]: getNodeTriggers(NodeType.Node2D),
   [NodeType.Sprite2D]: getNodeTriggers(NodeType.Sprite2D),
@@ -89,6 +90,7 @@ const BASE_NODE2D_ACTIONS = [
 
 // Actions available for each node type
 export const NODE_ACTIONS: Record<NodeType, ActionType[]> = {
+  [NodeType.Control]: BASE_NODE_ACTIONS,
   [NodeType.Node]: BASE_NODE_ACTIONS,
   [NodeType.Node2D]: BASE_NODE2D_ACTIONS,
   [NodeType.Sprite2D]: [

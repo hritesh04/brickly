@@ -8,6 +8,8 @@ import Node2DProperty from "./propertySideBar/Node2DProperty";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import ScriptSideBar from "./scriptSideBar/ScriptSideBar";
+import { createContext as createScriptContext, useContext as useScriptContext } from "react";
+import { ScriptEditor } from "@/store/scriptEditor/scriptEditor";
 
 type RightSidebarProps = {
   open: boolean;
@@ -15,6 +17,10 @@ type RightSidebarProps = {
 };
 
 const SidebarContext = createContext<RightSidebarProps | null>(null);
+
+// Create script editor context
+const scriptEditor = new ScriptEditor();
+const ScriptEditorContext = createScriptContext(scriptEditor);
 
 function useRightSidebar() {
   const context = useContext(SidebarContext);
@@ -31,7 +37,9 @@ function RightSidebarProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <SidebarContext.Provider value={{ open, setOpen }}>
-      {children}
+      <ScriptEditorContext.Provider value={scriptEditor}>
+        {children}
+      </ScriptEditorContext.Provider>
     </SidebarContext.Provider>
   );
 }

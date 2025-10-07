@@ -1,6 +1,6 @@
 import { ObjectStore } from "./lib/objectStore";
 import tmp from "tmp";
-import { writeFile } from "fs/promises";
+import { writeFile, mkdir } from "fs/promises";
 import BuildQueue from "./lib/rabbitmq";
 import { execSync } from "child_process";
 
@@ -27,6 +27,9 @@ export const parseProject = async (project: any): Promise<string> => {
     console.log(`${s.name} content :\n`, file);
     await writeFile(tmpDir.name + "/" + s.name + ".tscn", file);
   }
+
+  // Write script files
+  await writeScriptFiles(project, tmpDir.name);
   await writeFile(
     tmpDir.name + "/project.godot",
     `
@@ -119,6 +122,20 @@ function parseNode(node: any, parent?: string) {
     const { property, resource } = parseProperty(node);
     nodes += property;
     res += resource;
+  }
+
+  // Parse signals
+  if (node.signals && node.signals.length > 0) {
+    const { signalConnections, signalResources } = parseSignals(node.signals, node.name);
+    nodes += signalConnections;
+    res += signalResources;
+  }
+
+  // Parse scripts
+  if (node.scripts && node.scripts.length > 0) {
+    const { scriptConnections, scriptResources } = parseScripts(node.scripts, node.name);
+    nodes += scriptConnections;
+    res += scriptResources;
   }
 
   if (node.children) {
@@ -281,4 +298,199 @@ function getCanvasProperty(canvas: any) {
     property += `\n${canvas.ZIndex.name} = ${canvas.ZIndex.value}`;
   }
   return property;
+}
+
+function parseSignals(signals: any[], nodeName: string): { signalConnections: string; signalResources: string } {
+  let signalConnections = "";
+  let signalResources = "";
+
+  for (const signal of signals) {
+    if (!signal || !signal.name) continue;
+
+    // Add signal connection
+    signalConnections += `\n[connection signal="${signal.name}" from="${nodeName}" to="${getNodeNameById(signal.toID)}" method="${signal.script}"]`;
+
+    // If the signal has a script, add it as a resource
+    if (signal.script && signal.script.trim()) {
+      const scriptId = `signal_script_${signal.id}`;
+      signalResources += `\n\n[ext_resource type="Script" path="res://scripts/${signal.script}.gd" id="${scriptId}"]`;
+    }
+  }
+
+  return { signalConnections, signalResources };
+}
+
+function parseScripts(scripts: any[], nodeName: string): { scriptConnections: string; scriptResources: string } {
+  let scriptConnections = "";
+  let scriptResources = "";
+
+  for (const script of scripts) {
+    if (!script || !script.name) continue;
+
+    // Add script resource
+    const scriptId = `script_${script.id}`;
+    scriptResources += `\n\n[ext_resource type="Script" path="res://scripts/${script.name}.gd" id="${scriptId}"]`;
+    
+    // Add script connection to the node
+    scriptConnections += `\nscript = ExtResource("${scriptId}")`;
+
+    // Generate GDScript content from actions and triggers
+    const gdScriptContent = generateGDScript(script);
+    if (gdScriptContent) {
+      // Write the script file (this would be handled by the file writing logic)
+      // For now, we'll just add the script reference
+    }
+  }
+
+  return { scriptConnections, scriptResources };
+}
+
+function generateGDScript(script: any): string {
+  let gdScript = `extends Node2D\n\n`;
+  
+  // Add signal declarations
+  if (script.triggers && script.triggers.length > 0) {
+    for (const trigger of script.triggers) {
+      if (trigger.type === 'ready') {
+        gdScript += `func _ready():\n`;
+        gdScript += generateActionCode(script.actions, trigger.id);
+        gdScript += `\n`;
+      } else if (trigger.type === 'input') {
+        gdScript += `func _input(event):\n`;
+        gdScript += generateActionCode(script.actions, trigger.id);
+        gdScript += `\n`;
+      } else if (trigger.type === 'process') {
+        gdScript += `func _process(delta):\n`;
+        gdScript += generateActionCode(script.actions, trigger.id);
+        gdScript += `\n`;
+      } else if (trigger.type === 'physics_process') {
+        gdScript += `func _physics_process(delta):\n`;
+        gdScript += generateActionCode(script.actions, trigger.id);
+        gdScript += `\n`;
+      }
+    }
+  }
+
+  // Add custom functions for actions
+  if (script.actions && script.actions.length > 0) {
+    gdScript += generateActionFunctions(script.actions);
+  }
+
+  return gdScript;
+}
+
+function generateActionCode(actions: any[], triggerId: number): string {
+  let code = "";
+  const triggerActions = actions.filter((action: any) => action.triggerID === triggerId);
+  
+  for (const action of triggerActions) {
+    if (!action.enabled) continue;
+    
+    code += `\t${generateActionStatement(action)}\n`;
+  }
+  
+  return code;
+}
+
+function generateActionFunctions(actions: any[]): string {
+  let functions = "";
+  const uniqueActions = actions.filter((action: any, index: number, self: any[]) => 
+    self.findIndex(a => a.type === action.type) === index
+  );
+
+  for (const action of uniqueActions) {
+    if (!action.enabled) continue;
+    
+    functions += `func ${action.name.toLowerCase().replace(/\s+/g, '_')}():\n`;
+    functions += `\t${generateActionStatement(action)}\n\n`;
+  }
+
+  return functions;
+}
+
+function generateActionStatement(action: any): string {
+  const params = action.parameters || {};
+  
+  switch (action.type) {
+    case 'MOVE_TO':
+      return `tween_property(self, "position", Vector2(${params.targetX || 0}, ${params.targetY || 0}), ${params.duration || 1.0})`;
+    
+    case 'MOVE_BY':
+      return `position += Vector2(${params.deltaX || 0}, ${params.deltaY || 0})`;
+    
+    case 'ROTATE_TO':
+      return `rotation = ${params.targetRotation || 0}`;
+    
+    case 'ROTATE_BY':
+      return `rotation += ${params.deltaRotation || 0}`;
+    
+    case 'SCALE_TO':
+      return `scale = Vector2(${params.targetScaleX || 1}, ${params.targetScaleY || 1})`;
+    
+    case 'SCALE_BY':
+      return `scale *= Vector2(${params.scaleX || 1}, ${params.scaleY || 1})`;
+    
+    case 'SET_VISIBLE':
+      return `visible = ${params.visible || true}`;
+    
+    case 'PRINT':
+      return `print("${params.message || 'Hello World'}")`;
+    
+    case 'WAIT':
+      return `await get_tree().create_timer(${params.duration || 1.0}).timeout`;
+    
+    case 'EMIT_SIGNAL':
+      return `emit_signal("${params.signalName || 'custom_signal'}")`;
+    
+    case 'CUSTOM_CODE':
+      return params.code || 'pass';
+    
+    default:
+      return `# ${action.type} - ${action.name}`;
+  }
+}
+
+function getNodeNameById(nodeId: number): string {
+  // This would need to be implemented to map node IDs to names
+  // For now, return a placeholder
+  return `Node_${nodeId}`;
+}
+
+async function writeScriptFiles(project: any, tmpDir: string): Promise<void> {
+  // Create scripts directory
+  const scriptsDir = `${tmpDir}/scripts`;
+  await mkdir(scriptsDir, { recursive: true });
+
+  // Collect all scripts from all scenes
+  const allScripts: any[] = [];
+  
+  for (const scene of project.scenes) {
+    if (scene.scripts) {
+      allScripts.push(...scene.scripts);
+    }
+    
+    // Also collect scripts from child nodes
+    const collectScriptsFromNode = (node: any) => {
+      if (node.scripts) {
+        allScripts.push(...node.scripts);
+      }
+      if (node.children) {
+        for (const child of node.children) {
+          collectScriptsFromNode(child);
+        }
+      }
+    };
+    
+    collectScriptsFromNode(scene);
+  }
+
+  // Write each script file
+  for (const script of allScripts) {
+    if (!script || !script.name) continue;
+    
+    const gdScriptContent = generateGDScript(script);
+    const scriptPath = `${scriptsDir}/${script.name}.gd`;
+    await writeFile(scriptPath, gdScriptContent);
+    console.log(`Generated script: ${scriptPath}`);
+  }
 }

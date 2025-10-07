@@ -8,7 +8,7 @@ import { Action } from "@brickly/types";
 
 interface DroppedAction {
   id: string;
-  actionId: string;
+  actionId: number;
   actionName: string;
   order: number;
 }
@@ -18,11 +18,11 @@ interface MainLoopSectionProps {
   onDroppedActionsChange: (actions: DroppedAction[]) => void;
 }
 
-const DroppedActionItem = ({ 
-  droppedAction, 
-  onRemove 
-}: { 
-  droppedAction: DroppedAction; 
+const DroppedActionItem = ({
+  droppedAction,
+  onRemove,
+}: {
+  droppedAction: DroppedAction;
   onRemove: (id: string) => void;
 }) => {
   return (
@@ -46,16 +46,21 @@ const DroppedActionItem = ({
   );
 };
 
-export const MainLoopSection = ({ droppedActions, onDroppedActionsChange }: MainLoopSectionProps) => {
+export const MainLoopSection = ({
+  droppedActions,
+  onDroppedActionsChange,
+}: MainLoopSectionProps) => {
   const { setNodeRef, isOver } = useDroppable({
-    id: 'main-loop-droppable',
+    id: "main-loop-droppable",
     data: {
-      type: 'main-loop'
-    }
+      type: "main-loop",
+    },
   });
 
   const handleRemoveAction = (actionId: string) => {
-    onDroppedActionsChange(droppedActions.filter(action => action.id !== actionId));
+    onDroppedActionsChange(
+      droppedActions.filter((action) => action.id !== actionId)
+    );
   };
 
   return (
@@ -68,23 +73,26 @@ export const MainLoopSection = ({ droppedActions, onDroppedActionsChange }: Main
       </CardHeader>
       <CardContent className="space-y-3">
         <p className="text-xs text-muted-foreground">
-          Actions that run every frame while the node is active. Drag actions here from the Actions section.
+          Actions that run every frame while the node is active. Drag actions
+          here from the Actions section.
         </p>
-        
+
         {/* Droppable Area */}
         <div
           ref={setNodeRef}
           className={`min-h-[120px] border-2 border-dashed rounded-lg p-4 transition-colors duration-200 ${
-            isOver 
-              ? 'border-blue-400 bg-blue-50 dark:bg-blue-950/20' 
-              : 'border-gray-300 bg-gray-50 dark:bg-gray-900/20'
+            isOver
+              ? "border-blue-400 bg-blue-50 dark:bg-blue-950/20"
+              : "border-gray-300 bg-gray-50 dark:bg-gray-900/20"
           }`}
         >
           {droppedActions.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-full text-center">
               <Settings className="h-8 w-8 text-gray-400 mb-2" />
               <p className="text-sm text-muted-foreground">
-                {isOver ? 'Drop action here' : 'Drag actions here to add to main loop'}
+                {isOver
+                  ? "Drop action here"
+                  : "Drag actions here to add to main loop"}
               </p>
               <p className="text-xs text-muted-foreground mt-1">
                 Actions will execute in order every frame
@@ -100,7 +108,10 @@ export const MainLoopSection = ({ droppedActions, onDroppedActionsChange }: Main
               {droppedActions
                 .sort((a, b) => a.order - b.order)
                 .map((droppedAction, index) => (
-                  <div key={droppedAction.id} className="flex items-center gap-2">
+                  <div
+                    key={droppedAction.id}
+                    className="flex items-center gap-2"
+                  >
                     <span className="text-xs text-muted-foreground w-4">
                       {index + 1}.
                     </span>
@@ -114,7 +125,9 @@ export const MainLoopSection = ({ droppedActions, onDroppedActionsChange }: Main
                 ))}
               {isOver && (
                 <div className="p-2 border-2 border-dashed border-blue-400 rounded-md bg-blue-100 dark:bg-blue-950/30">
-                  <p className="text-sm text-blue-600 text-center">Drop here to add action</p>
+                  <p className="text-sm text-blue-600 text-center">
+                    Drop here to add action
+                  </p>
                 </div>
               )}
             </div>

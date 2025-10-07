@@ -82,9 +82,56 @@ GROUP BY p.id,p.name,p.icon,p.width,p.height,p.property,p."userID";
             'property', r.property
           )
         ) FILTER (WHERE r.id IS NOT NULL), '[]'::json
-      ) as resource
+      ) as resource,
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'id', s.id,
+            'name', s.name,
+            'fromID', s."fromID",
+            'toID', s."toID",
+            'script', s.script
+          )
+        ) FILTER (WHERE s.id IS NOT NULL), '[]'::json
+      ) as signals,
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'id', sc.id,
+            'name', sc.name,
+            'content', sc.content,
+            'actions', COALESCE(
+              json_agg(
+                json_build_object(
+                  'id', a.id,
+                  'name', a.name,
+                  'type', a.type,
+                  'enabled', a.enabled,
+                  'order', a.order,
+                  'parameters', a.parameters
+                )
+              ) FILTER (WHERE a.id IS NOT NULL), '[]'::json
+            ),
+            'triggers', COALESCE(
+              json_agg(
+                json_build_object(
+                  'id', t.id,
+                  'name', t.name,
+                  'type', t.type,
+                  'enabled', t.enabled,
+                  'conditions', t.conditions
+                )
+              ) FILTER (WHERE t.id IS NOT NULL), '[]'::json
+            )
+          )
+        ) FILTER (WHERE sc.id IS NOT NULL), '[]'::json
+      ) as scripts
     FROM node_hierarchy nh
     LEFT JOIN "Resource" r ON r."parentID" = nh.id
+    LEFT JOIN "Signal" s ON s."fromID" = nh.id OR s."toID" = nh.id
+    LEFT JOIN "Script" sc ON sc."nodeID" = nh.id
+    LEFT JOIN "Action" a ON a."scriptID" = sc.id
+    LEFT JOIN "Trigger" t ON t."scriptID" = sc.id
     GROUP BY nh.id, nh.name, nh.type, nh.property, nh."parentID", nh."projectID";
         `,
         [projectID]

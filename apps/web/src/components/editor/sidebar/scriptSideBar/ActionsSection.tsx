@@ -19,13 +19,15 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { useDraggable } from "@dnd-kit/core";
-import { Action, ActionType, ACTION_CATEGORIES } from "@brickly/types";
+import { NodeType } from "@prisma/client";
 import { ActionFormRenderer } from "./forms/ActionForms";
 import { ActionFactory } from "./utils/ActionFactory";
-import {
-  NodeType,
-  getAvailableActionsForNode,
-} from "@brickly/types";
+import { getAvailableActionsForNode } from "@brickly/types";
+import { action } from "@/actions/action/schema";
+import { ActionType } from "@prisma/client";
+
+// Use Prisma action type directly
+type Action = action;
 
 interface ActionsSectionProps {
   actions: Action[];
@@ -39,7 +41,7 @@ const DraggableAction = ({
   onUpdate,
 }: {
   action: Action;
-  onDelete: (id: string) => void;
+  onDelete: (id: number) => void;
   onUpdate: (action: Action) => void;
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
@@ -59,23 +61,23 @@ const DraggableAction = ({
     : undefined;
 
   const getCategoryColor = (actionType: ActionType) => {
-    for (const [key, category] of Object.entries(ACTION_CATEGORIES)) {
-      if (category.actions.includes(actionType)) {
-        const colors: Record<string, string> = {
-          TRANSFORM: "bg-blue-100 text-blue-800",
-          PROPERTIES: "bg-green-100 text-green-800",
-          ANIMATION: "bg-purple-100 text-purple-800",
-          SIGNALS: "bg-orange-100 text-orange-800",
-          FLOW_CONTROL: "bg-yellow-100 text-yellow-800",
-          SCENE: "bg-red-100 text-red-800",
-          AUDIO: "bg-pink-100 text-pink-800",
-          DEBUG: "bg-gray-100 text-gray-800",
-          ADVANCED: "bg-indigo-100 text-indigo-800",
-        };
-        return colors[key] || "bg-gray-100 text-gray-800";
-      }
-    }
-    return "bg-gray-100 text-gray-800";
+    // You can define your own color mapping based on Prisma ActionType
+    const colors: Record<string, string> = {
+      MOVE_TO: "bg-blue-100 text-blue-800",
+      MOVE_BY: "bg-blue-100 text-blue-800",
+      ROTATE_TO: "bg-blue-100 text-blue-800",
+      ROTATE_BY: "bg-blue-100 text-blue-800",
+      SCALE_TO: "bg-blue-100 text-blue-800",
+      SCALE_BY: "bg-blue-100 text-blue-800",
+      SET_VISIBLE: "bg-green-100 text-green-800",
+      SET_MODULATE: "bg-green-100 text-green-800",
+      PLAY_ANIMATION: "bg-purple-100 text-purple-800",
+      STOP_ANIMATION: "bg-purple-100 text-purple-800",
+      EMIT_SIGNAL: "bg-orange-100 text-orange-800",
+      WAIT: "bg-yellow-100 text-yellow-800",
+      PRINT: "bg-gray-100 text-gray-800",
+    };
+    return colors[actionType] || "bg-gray-100 text-gray-800";
   };
 
   return (
@@ -144,15 +146,17 @@ const DraggableAction = ({
 export const ActionsSection = ({
   actions,
   onActionsChange,
-  nodeType = NodeType.NODE,
+  nodeType = NodeType.Node,
 }: ActionsSectionProps) => {
+  console.log(actions, nodeType);
   const [selectedActionType, setSelectedActionType] = useState<ActionType | "">(
     ""
   );
   const [selectedCategory, setSelectedCategory] = useState<string>("TRANSFORM");
 
   // Get available actions for the current node type
-  const availableActionsForNode = getAvailableActionsForNode(nodeType);
+  const availableActionsForNode = getAvailableActionsForNode(nodeType as any);
+  console.log(availableActionsForNode);
 
   // Filter categories to only show those with available actions
   const getFilteredCategories = () => {
@@ -161,9 +165,64 @@ export const ActionsSection = ({
       { name: string; actions: ActionType[] }
     > = {};
 
-    Object.entries(ACTION_CATEGORIES).forEach(([key, category]) => {
+    // Define categories based on Prisma ActionType
+    const categories = {
+      TRANSFORM: {
+        name: "Transform",
+        actions: [
+          ActionType.MOVE_TO,
+          ActionType.MOVE_BY,
+          ActionType.TRANSLATE,
+          ActionType.ROTATE_TO,
+          ActionType.ROTATE_BY,
+          ActionType.ROTATE,
+          ActionType.SCALE_TO,
+          ActionType.SCALE_BY,
+          ActionType.LOOK_AT,
+          ActionType.GET_ANGLE_TO,
+          ActionType.TO_LOCAL,
+          ActionType.TO_GLOBAL,
+        ],
+      },
+      PROPERTIES: {
+        name: "Properties",
+        actions: [
+          ActionType.SET_VISIBLE,
+          ActionType.SET_MODULATE,
+          ActionType.SET_PROPERTY,
+          ActionType.TWEEN_PROPERTY,
+        ],
+      },
+      ANIMATION: {
+        name: "Animation",
+        actions: [
+          ActionType.PLAY_ANIMATION,
+          ActionType.STOP_ANIMATION,
+          ActionType.PAUSE_ANIMATION,
+          ActionType.SET_ANIMATION,
+          ActionType.GET_ANIMATION,
+          ActionType.SET_FRAME,
+          ActionType.GET_FRAME,
+          ActionType.SET_SPEED_SCALE,
+        ],
+      },
+      SIGNALS: {
+        name: "Signals",
+        actions: [ActionType.EMIT_SIGNAL, ActionType.CONNECT_SIGNAL],
+      },
+      FLOW_CONTROL: {
+        name: "Flow Control",
+        actions: [ActionType.WAIT, ActionType.CONDITION, ActionType.LOOP],
+      },
+      DEBUG: {
+        name: "Debug",
+        actions: [ActionType.PRINT],
+      },
+    };
+
+    Object.entries(categories).forEach(([key, category]) => {
       const availableActions = category.actions.filter((action) =>
-        availableActionsForNode.includes(action)
+        availableActionsForNode.includes(action as any)
       );
 
       if (availableActions.length > 0) {
@@ -173,7 +232,7 @@ export const ActionsSection = ({
         };
       }
     });
-
+    console.log(filteredCategories);
     return filteredCategories;
   };
 
@@ -191,7 +250,7 @@ export const ActionsSection = ({
     }
   };
 
-  const handleDeleteAction = (actionId: string) => {
+  const handleDeleteAction = (actionId: number) => {
     onActionsChange(actions.filter((action) => action.id !== actionId));
   };
 
@@ -310,7 +369,7 @@ export const ActionsSection = ({
               ActionType.PRINT,
             ]
               .filter((actionType) =>
-                availableActionsForNode.includes(actionType)
+                availableActionsForNode.includes(actionType as any)
               )
               .map((actionType) => (
                 <Button

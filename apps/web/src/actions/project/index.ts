@@ -91,9 +91,21 @@ export async function getProject(id: number): Promise<ReturnTypeGetProject> {
           )
         ) FILTER (WHERE r.id IS NOT NULL), '[]'::json
       ) as resource,
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'id', s.id,
+            'name', s.name,
+            'fromID', s."fromID",
+            'toID', s."toID",
+            'script', s.script
+          )
+        ) FILTER (WHERE s.id IS NOT NULL), '[]'::json
+      ) as signals,
       null as children
     FROM node_hierarchy nh
     LEFT JOIN "Resource" r ON r."parentID" = nh.id
+    LEFT JOIN "Signal" s ON s."fromID" = nh.id OR s."toID" = nh.id
     GROUP BY nh.id, nh.name, nh.type, nh.property, nh."parentID", nh."projectID"
     ORDER BY nh.id;`);
     const scene = buildTree(nodes);

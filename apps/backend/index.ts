@@ -1,12 +1,12 @@
 import express from "express";
 import { buildHandler } from "./src/controller";
+import { aiChatHandler } from "./src/aiController";
 import { authMiddleware, buildValidation } from "./src/middleware";
 import dotenv from "dotenv";
 import cors from "cors";
 dotenv.config();
 const app = express();
 app.use(cors());
-
 app.use(express.json());
 
 app.get("/health", buildHandler);
@@ -16,6 +16,8 @@ app.get("/assets", (req, res) => {
 });
 
 app.post("/build", authMiddleware, buildValidation, buildHandler);
+
+app.post("/ai/chat", aiChatHandler);
 
 app.listen(3001, () => {
   console.log("Server started");
