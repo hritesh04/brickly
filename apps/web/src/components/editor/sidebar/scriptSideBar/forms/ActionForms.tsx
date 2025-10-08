@@ -78,7 +78,7 @@ import {
   SetOneWayCollisionAction,
   SetPolygonAction,
   SetBuildModeAction
-} from "../types/ActionTypes";
+} from "@brickly/types";
 
 interface ActionFormProps {
   action: Action;

@@ -1,6 +1,5 @@
 import { Editor } from "./editor";
-import { NodeType } from "@/types/node";
-import { variant } from "@/types/variant";
+import { NodeType, variant } from "@brickly/types";
 import { node } from "@/actions/node/schema";
 import { AssetType, ResourceType } from "@prisma/client";
 

@@ -8,7 +8,7 @@ import {
 import { useAction } from "@/hooks/useAction";
 import { useEditor } from "@/store/editor";
 import { useProjectManager } from "@/store/project";
-import { Property } from "@/types/property";
+import { Property } from "@brickly/types";
 import { AssetType, ResourceType } from "@prisma/client";
 import { ChevronDown, Plus } from "lucide-react";
 import { observer } from "mobx-react-lite";

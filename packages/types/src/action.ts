@@ -1,5 +1,3 @@
-// Action Types for Visual Scripting System
-
 export interface BaseAction {
   id: string;
   name: string;
@@ -9,127 +7,127 @@ export interface BaseAction {
 
 export enum ActionType {
   // Transform Actions (Node2D)
-  MOVE_TO = 'move_to',
-  MOVE_BY = 'move_by',
-  TRANSLATE = 'translate',
-  ROTATE_TO = 'rotate_to',
-  ROTATE_BY = 'rotate_by',
-  ROTATE = 'rotate',
-  SCALE_TO = 'scale_to',
-  SCALE_BY = 'scale_by',
-  LOOK_AT = 'look_at',
-  GET_ANGLE_TO = 'get_angle_to',
-  TO_LOCAL = 'to_local',
-  TO_GLOBAL = 'to_global',
-  
+  MOVE_TO = "move_to",
+  MOVE_BY = "move_by",
+  TRANSLATE = "translate",
+  ROTATE_TO = "rotate_to",
+  ROTATE_BY = "rotate_by",
+  ROTATE = "rotate",
+  SCALE_TO = "scale_to",
+  SCALE_BY = "scale_by",
+  LOOK_AT = "look_at",
+  GET_ANGLE_TO = "get_angle_to",
+  TO_LOCAL = "to_local",
+  TO_GLOBAL = "to_global",
+
   // Node Core Functions
-  ADD_CHILD = 'add_child',
-  REMOVE_CHILD = 'remove_child',
-  QUEUE_FREE = 'queue_free',
-  GET_NODE = 'get_node',
-  GET_PARENT = 'get_parent',
-  GET_CHILDREN = 'get_children',
-  SET_PROCESS = 'set_process',
-  SET_PHYSICS_PROCESS = 'set_physics_process',
-  
+  ADD_CHILD = "add_child",
+  REMOVE_CHILD = "remove_child",
+  QUEUE_FREE = "queue_free",
+  GET_NODE = "get_node",
+  GET_PARENT = "get_parent",
+  GET_CHILDREN = "get_children",
+  SET_PROCESS = "set_process",
+  SET_PHYSICS_PROCESS = "set_physics_process",
+
   // Sprite2D Actions
-  SET_TEXTURE = 'set_texture',
-  GET_TEXTURE = 'get_texture',
-  SET_REGION_ENABLED = 'set_region_enabled',
-  SET_REGION_RECT = 'set_region_rect',
-  SET_FLIP_H = 'set_flip_h',
-  SET_FLIP_V = 'set_flip_v',
-  
+  SET_TEXTURE = "set_texture",
+  GET_TEXTURE = "get_texture",
+  SET_REGION_ENABLED = "set_region_enabled",
+  SET_REGION_RECT = "set_region_rect",
+  SET_FLIP_H = "set_flip_h",
+  SET_FLIP_V = "set_flip_v",
+
   // AnimatedSprite2D Actions
-  PLAY_ANIMATION = 'play_animation',
-  STOP_ANIMATION = 'stop_animation',
-  PAUSE_ANIMATION = 'pause_animation',
-  SET_ANIMATION = 'set_animation',
-  GET_ANIMATION = 'get_animation',
-  SET_FRAME = 'set_frame',
-  GET_FRAME = 'get_frame',
-  SET_SPEED_SCALE = 'set_speed_scale',
-  
+  PLAY_ANIMATION = "play_animation",
+  STOP_ANIMATION = "stop_animation",
+  PAUSE_ANIMATION = "pause_animation",
+  SET_ANIMATION = "set_animation",
+  GET_ANIMATION = "get_animation",
+  SET_FRAME = "set_frame",
+  GET_FRAME = "get_frame",
+  SET_SPEED_SCALE = "set_speed_scale",
+
   // RigidBody2D Actions
-  APPLY_IMPULSE = 'apply_impulse',
-  APPLY_FORCE = 'apply_force',
-  SET_GRAVITY_SCALE = 'set_gravity_scale',
-  FREEZE_BODY = 'freeze_body',
-  SET_FREEZE_ENABLED = 'set_freeze_enabled',
-  SET_MASS = 'set_mass',
-  SET_LINEAR_VELOCITY = 'set_linear_velocity',
-  SET_ANGULAR_VELOCITY = 'set_angular_velocity',
-  SET_LOCK_ROTATION = 'set_lock_rotation',
-  
+  APPLY_IMPULSE = "apply_impulse",
+  APPLY_FORCE = "apply_force",
+  SET_GRAVITY_SCALE = "set_gravity_scale",
+  FREEZE_BODY = "freeze_body",
+  SET_FREEZE_ENABLED = "set_freeze_enabled",
+  SET_MASS = "set_mass",
+  SET_LINEAR_VELOCITY = "set_linear_velocity",
+  SET_ANGULAR_VELOCITY = "set_angular_velocity",
+  SET_LOCK_ROTATION = "set_lock_rotation",
+
   // StaticBody2D Actions
-  MOVE_AND_COLLIDE = 'move_and_collide',
-  SET_CONSTANT_LINEAR_VELOCITY = 'set_constant_linear_velocity',
-  SET_CONSTANT_ANGULAR_VELOCITY = 'set_constant_angular_velocity',
-  
+  MOVE_AND_COLLIDE = "move_and_collide",
+  SET_CONSTANT_LINEAR_VELOCITY = "set_constant_linear_velocity",
+  SET_CONSTANT_ANGULAR_VELOCITY = "set_constant_angular_velocity",
+
   // Area2D Actions
-  GET_OVERLAPPING_BODIES = 'get_overlapping_bodies',
-  GET_OVERLAPPING_AREAS = 'get_overlapping_areas',
-  OVERLAPS_BODY = 'overlaps_body',
-  OVERLAPS_AREA = 'overlaps_area',
-  SET_MONITORING = 'set_monitoring',
-  SET_MONITORABLE = 'set_monitorable',
-  SET_GRAVITY = 'set_gravity',
-  SET_GRAVITY_VECTOR = 'set_gravity_vector',
-  
+  GET_OVERLAPPING_BODIES = "get_overlapping_bodies",
+  GET_OVERLAPPING_AREAS = "get_overlapping_areas",
+  OVERLAPS_BODY = "overlaps_body",
+  OVERLAPS_AREA = "overlaps_area",
+  SET_MONITORING = "set_monitoring",
+  SET_MONITORABLE = "set_monitorable",
+  SET_GRAVITY = "set_gravity",
+  SET_GRAVITY_VECTOR = "set_gravity_vector",
+
   // CharacterBody2D Actions
-  MOVE_AND_SLIDE = 'move_and_slide',
-  IS_ON_FLOOR = 'is_on_floor',
-  IS_ON_CEILING = 'is_on_ceiling',
-  IS_ON_WALL = 'is_on_wall',
-  GET_FLOOR_NORMAL = 'get_floor_normal',
-  SET_VELOCITY = 'set_velocity',
-  SET_FLOOR_MAX_ANGLE = 'set_floor_max_angle',
-  SET_UP_DIRECTION = 'set_up_direction',
-  
+  MOVE_AND_SLIDE = "move_and_slide",
+  IS_ON_FLOOR = "is_on_floor",
+  IS_ON_CEILING = "is_on_ceiling",
+  IS_ON_WALL = "is_on_wall",
+  GET_FLOOR_NORMAL = "get_floor_normal",
+  SET_VELOCITY = "set_velocity",
+  SET_FLOOR_MAX_ANGLE = "set_floor_max_angle",
+  SET_UP_DIRECTION = "set_up_direction",
+
   // CollisionShape2D Actions
-  SET_SHAPE = 'set_shape',
-  GET_SHAPE = 'get_shape',
-  SET_COLLISION_DISABLED = 'set_collision_disabled',
-  SET_ONE_WAY_COLLISION = 'set_one_way_collision',
-  
+  SET_SHAPE = "set_shape",
+  GET_SHAPE = "get_shape",
+  SET_COLLISION_DISABLED = "set_collision_disabled",
+  SET_ONE_WAY_COLLISION = "set_one_way_collision",
+
   // CollisionPolygon2D Actions
-  SET_POLYGON = 'set_polygon',
-  GET_POLYGON = 'get_polygon',
-  SET_BUILD_MODE = 'set_build_mode',
-  
+  SET_POLYGON = "set_polygon",
+  GET_POLYGON = "get_polygon",
+  SET_BUILD_MODE = "set_build_mode",
+
   // Property Actions
-  SET_VISIBLE = 'set_visible',
-  SET_MODULATE = 'set_modulate',
-  SET_PROPERTY = 'set_property',
-  
+  SET_VISIBLE = "set_visible",
+  SET_MODULATE = "set_modulate",
+  SET_PROPERTY = "set_property",
+
   // Animation Actions
-  TWEEN_PROPERTY = 'tween_property',
-  
+  TWEEN_PROPERTY = "tween_property",
+
   // Signal Actions
-  EMIT_SIGNAL = 'emit_signal',
-  CONNECT_SIGNAL = 'connect_signal',
-  
+  EMIT_SIGNAL = "emit_signal",
+  CONNECT_SIGNAL = "connect_signal",
+
   // Flow Control
-  WAIT = 'wait',
-  CONDITION = 'condition',
-  LOOP = 'loop',
-  
+  WAIT = "wait",
+  CONDITION = "condition",
+  LOOP = "loop",
+
   // Scene Actions
-  CHANGE_SCENE = 'change_scene',
-  INSTANTIATE_SCENE = 'instantiate_scene',
-  
+  CHANGE_SCENE = "change_scene",
+  INSTANTIATE_SCENE = "instantiate_scene",
+
   // Audio Actions
-  PLAY_SOUND = 'play_sound',
-  STOP_SOUND = 'stop_sound',
-  
+  PLAY_SOUND = "play_sound",
+  STOP_SOUND = "stop_sound",
+
   // Input Actions
-  CHECK_INPUT = 'check_input',
-  
+  CHECK_INPUT = "check_input",
+
   // Debug Actions
-  PRINT = 'print',
-  
+  PRINT = "print",
+
   // Advanced
-  CUSTOM_CODE = 'custom_code'
+  CUSTOM_CODE = "custom_code",
 }
 
 // Specific Action Interfaces
@@ -201,7 +199,7 @@ export interface TweenPropertyAction extends BaseAction {
 export interface EmitSignalAction extends BaseAction {
   type: ActionType.EMIT_SIGNAL;
   signalName: string;
-  parameters: SignalParameter[];
+  parameters: ActionSignalParameter[];
 }
 
 export interface WaitAction extends BaseAction {
@@ -516,16 +514,16 @@ export interface SetBuildModeAction extends BaseAction {
 }
 
 export enum BuildMode {
-  SOLIDS = 'solids',
-  SEGMENTS = 'segments'
+  SOLIDS = "solids",
+  SEGMENTS = "segments",
 }
 
 // Union type for all actions
-export type Action = 
-  | MoveToAction 
-  | MoveByAction 
-  | RotateToAction 
-  | RotateByAction 
+export type Action =
+  | MoveToAction
+  | MoveByAction
+  | RotateToAction
+  | RotateByAction
   | ScaleToAction
   | SetVisibleAction
   | SetModulateAction
@@ -595,52 +593,52 @@ export type Action =
 
 // Enums for options
 export enum EaseType {
-  LINEAR = 'linear',
-  EASE_IN = 'ease_in',
-  EASE_OUT = 'ease_out',
-  EASE_IN_OUT = 'ease_in_out',
-  EASE_OUT_IN = 'ease_out_in'
+  LINEAR = "linear",
+  EASE_IN = "ease_in",
+  EASE_OUT = "ease_out",
+  EASE_IN_OUT = "ease_in_out",
+  EASE_OUT_IN = "ease_out_in",
 }
 
 export enum TransitionType {
-  SINE = 'sine',
-  QUINT = 'quint',
-  QUART = 'quart',
-  QUAD = 'quad',
-  EXPO = 'expo',
-  ELASTIC = 'elastic',
-  CUBIC = 'cubic',
-  CIRC = 'circ',
-  BOUNCE = 'bounce',
-  BACK = 'back'
+  SINE = "sine",
+  QUINT = "quint",
+  QUART = "quart",
+  QUAD = "quad",
+  EXPO = "expo",
+  ELASTIC = "elastic",
+  CUBIC = "cubic",
+  CIRC = "circ",
+  BOUNCE = "bounce",
+  BACK = "back",
 }
 
 export enum PropertyValueType {
-  STRING = 'string',
-  NUMBER = 'number',
-  BOOLEAN = 'boolean',
-  VECTOR2 = 'vector2',
-  COLOR = 'color'
+  STRING = "string",
+  NUMBER = "number",
+  BOOLEAN = "boolean",
+  VECTOR2 = "vector2",
+  COLOR = "color",
 }
 
 export enum WaitType {
-  SECONDS = 'seconds',
-  FRAMES = 'frames',
-  SIGNAL = 'signal'
+  SECONDS = "seconds",
+  FRAMES = "frames",
+  SIGNAL = "signal",
 }
 
 export enum ComparisonOperator {
-  EQUALS = '==',
-  NOT_EQUALS = '!=',
-  GREATER = '>',
-  LESS = '<',
-  GREATER_EQUAL = '>=',
-  LESS_EQUAL = '<=',
-  AND = 'and',
-  OR = 'or'
+  EQUALS = "==",
+  NOT_EQUALS = "!=",
+  GREATER = ">",
+  LESS = "<",
+  GREATER_EQUAL = ">=",
+  LESS_EQUAL = "<=",
+  AND = "and",
+  OR = "or",
 }
 
-export interface SignalParameter {
+export interface ActionSignalParameter {
   name: string;
   value: string;
   type: PropertyValueType;
@@ -649,114 +647,157 @@ export interface SignalParameter {
 // Action Categories for UI organization
 export const ACTION_CATEGORIES = {
   TRANSFORM: {
-    name: 'Transform (Node2D)',
+    name: "Transform (Node2D)",
     actions: [
-      ActionType.MOVE_TO, ActionType.MOVE_BY, ActionType.TRANSLATE,
-      ActionType.ROTATE_TO, ActionType.ROTATE_BY, ActionType.ROTATE,
-      ActionType.SCALE_TO, ActionType.SCALE_BY,
-      ActionType.LOOK_AT, ActionType.GET_ANGLE_TO,
-      ActionType.TO_LOCAL, ActionType.TO_GLOBAL
-    ]
+      ActionType.MOVE_TO,
+      ActionType.MOVE_BY,
+      ActionType.TRANSLATE,
+      ActionType.ROTATE_TO,
+      ActionType.ROTATE_BY,
+      ActionType.ROTATE,
+      ActionType.SCALE_TO,
+      ActionType.SCALE_BY,
+      ActionType.LOOK_AT,
+      ActionType.GET_ANGLE_TO,
+      ActionType.TO_LOCAL,
+      ActionType.TO_GLOBAL,
+    ],
   },
   NODE_CORE: {
-    name: 'Node Core',
+    name: "Node Core",
     actions: [
-      ActionType.ADD_CHILD, ActionType.REMOVE_CHILD, ActionType.QUEUE_FREE,
-      ActionType.GET_NODE, ActionType.GET_PARENT, ActionType.GET_CHILDREN,
-      ActionType.SET_PROCESS, ActionType.SET_PHYSICS_PROCESS
-    ]
+      ActionType.ADD_CHILD,
+      ActionType.REMOVE_CHILD,
+      ActionType.QUEUE_FREE,
+      ActionType.GET_NODE,
+      ActionType.GET_PARENT,
+      ActionType.GET_CHILDREN,
+      ActionType.SET_PROCESS,
+      ActionType.SET_PHYSICS_PROCESS,
+    ],
   },
   SPRITE2D: {
-    name: 'Sprite2D',
+    name: "Sprite2D",
     actions: [
-      ActionType.SET_TEXTURE, ActionType.GET_TEXTURE,
-      ActionType.SET_REGION_ENABLED, ActionType.SET_REGION_RECT,
-      ActionType.SET_FLIP_H, ActionType.SET_FLIP_V
-    ]
+      ActionType.SET_TEXTURE,
+      ActionType.GET_TEXTURE,
+      ActionType.SET_REGION_ENABLED,
+      ActionType.SET_REGION_RECT,
+      ActionType.SET_FLIP_H,
+      ActionType.SET_FLIP_V,
+    ],
   },
   ANIMATED_SPRITE: {
-    name: 'AnimatedSprite2D',
+    name: "AnimatedSprite2D",
     actions: [
-      ActionType.PLAY_ANIMATION, ActionType.STOP_ANIMATION, ActionType.PAUSE_ANIMATION,
-      ActionType.SET_ANIMATION, ActionType.GET_ANIMATION,
-      ActionType.SET_FRAME, ActionType.GET_FRAME, ActionType.SET_SPEED_SCALE
-    ]
+      ActionType.PLAY_ANIMATION,
+      ActionType.STOP_ANIMATION,
+      ActionType.PAUSE_ANIMATION,
+      ActionType.SET_ANIMATION,
+      ActionType.GET_ANIMATION,
+      ActionType.SET_FRAME,
+      ActionType.GET_FRAME,
+      ActionType.SET_SPEED_SCALE,
+    ],
   },
   RIGIDBODY2D: {
-    name: 'RigidBody2D',
+    name: "RigidBody2D",
     actions: [
-      ActionType.APPLY_IMPULSE, ActionType.APPLY_FORCE,
-      ActionType.SET_GRAVITY_SCALE, ActionType.FREEZE_BODY, ActionType.SET_FREEZE_ENABLED,
-      ActionType.SET_MASS, ActionType.SET_LINEAR_VELOCITY, ActionType.SET_ANGULAR_VELOCITY,
-      ActionType.SET_LOCK_ROTATION
-    ]
+      ActionType.APPLY_IMPULSE,
+      ActionType.APPLY_FORCE,
+      ActionType.SET_GRAVITY_SCALE,
+      ActionType.FREEZE_BODY,
+      ActionType.SET_FREEZE_ENABLED,
+      ActionType.SET_MASS,
+      ActionType.SET_LINEAR_VELOCITY,
+      ActionType.SET_ANGULAR_VELOCITY,
+      ActionType.SET_LOCK_ROTATION,
+    ],
   },
   STATICBODY2D: {
-    name: 'StaticBody2D',
+    name: "StaticBody2D",
     actions: [
       ActionType.MOVE_AND_COLLIDE,
-      ActionType.SET_CONSTANT_LINEAR_VELOCITY, ActionType.SET_CONSTANT_ANGULAR_VELOCITY
-    ]
+      ActionType.SET_CONSTANT_LINEAR_VELOCITY,
+      ActionType.SET_CONSTANT_ANGULAR_VELOCITY,
+    ],
   },
   AREA2D: {
-    name: 'Area2D',
+    name: "Area2D",
     actions: [
-      ActionType.GET_OVERLAPPING_BODIES, ActionType.GET_OVERLAPPING_AREAS,
-      ActionType.OVERLAPS_BODY, ActionType.OVERLAPS_AREA,
-      ActionType.SET_MONITORING, ActionType.SET_MONITORABLE,
-      ActionType.SET_GRAVITY, ActionType.SET_GRAVITY_VECTOR
-    ]
+      ActionType.GET_OVERLAPPING_BODIES,
+      ActionType.GET_OVERLAPPING_AREAS,
+      ActionType.OVERLAPS_BODY,
+      ActionType.OVERLAPS_AREA,
+      ActionType.SET_MONITORING,
+      ActionType.SET_MONITORABLE,
+      ActionType.SET_GRAVITY,
+      ActionType.SET_GRAVITY_VECTOR,
+    ],
   },
   CHARACTERBODY2D: {
-    name: 'CharacterBody2D',
+    name: "CharacterBody2D",
     actions: [
-      ActionType.MOVE_AND_SLIDE, ActionType.IS_ON_FLOOR, ActionType.IS_ON_CEILING,
-      ActionType.IS_ON_WALL, ActionType.GET_FLOOR_NORMAL,
-      ActionType.SET_VELOCITY, ActionType.SET_FLOOR_MAX_ANGLE, ActionType.SET_UP_DIRECTION
-    ]
+      ActionType.MOVE_AND_SLIDE,
+      ActionType.IS_ON_FLOOR,
+      ActionType.IS_ON_CEILING,
+      ActionType.IS_ON_WALL,
+      ActionType.GET_FLOOR_NORMAL,
+      ActionType.SET_VELOCITY,
+      ActionType.SET_FLOOR_MAX_ANGLE,
+      ActionType.SET_UP_DIRECTION,
+    ],
   },
   COLLISION: {
-    name: 'Collision',
+    name: "Collision",
     actions: [
-      ActionType.SET_SHAPE, ActionType.GET_SHAPE,
-      ActionType.SET_COLLISION_DISABLED, ActionType.SET_ONE_WAY_COLLISION,
-      ActionType.SET_POLYGON, ActionType.GET_POLYGON, ActionType.SET_BUILD_MODE
-    ]
+      ActionType.SET_SHAPE,
+      ActionType.GET_SHAPE,
+      ActionType.SET_COLLISION_DISABLED,
+      ActionType.SET_ONE_WAY_COLLISION,
+      ActionType.SET_POLYGON,
+      ActionType.GET_POLYGON,
+      ActionType.SET_BUILD_MODE,
+    ],
   },
   PROPERTIES: {
-    name: 'Properties',
-    actions: [ActionType.SET_VISIBLE, ActionType.SET_MODULATE, ActionType.SET_PROPERTY]
+    name: "Properties",
+    actions: [
+      ActionType.SET_VISIBLE,
+      ActionType.SET_MODULATE,
+      ActionType.SET_PROPERTY,
+    ],
   },
   ANIMATION: {
-    name: 'Animation & Tweens',
-    actions: [ActionType.TWEEN_PROPERTY]
+    name: "Animation & Tweens",
+    actions: [ActionType.TWEEN_PROPERTY],
   },
   SIGNALS: {
-    name: 'Signals',
-    actions: [ActionType.EMIT_SIGNAL, ActionType.CONNECT_SIGNAL]
+    name: "Signals",
+    actions: [ActionType.EMIT_SIGNAL, ActionType.CONNECT_SIGNAL],
   },
   FLOW_CONTROL: {
-    name: 'Flow Control',
-    actions: [ActionType.WAIT, ActionType.CONDITION, ActionType.LOOP]
+    name: "Flow Control",
+    actions: [ActionType.WAIT, ActionType.CONDITION, ActionType.LOOP],
   },
   SCENE: {
-    name: 'Scene Management',
-    actions: [ActionType.CHANGE_SCENE, ActionType.INSTANTIATE_SCENE]
+    name: "Scene Management",
+    actions: [ActionType.CHANGE_SCENE, ActionType.INSTANTIATE_SCENE],
   },
   AUDIO: {
-    name: 'Audio',
-    actions: [ActionType.PLAY_SOUND, ActionType.STOP_SOUND]
+    name: "Audio",
+    actions: [ActionType.PLAY_SOUND, ActionType.STOP_SOUND],
   },
   INPUT: {
-    name: 'Input',
-    actions: [ActionType.CHECK_INPUT]
+    name: "Input",
+    actions: [ActionType.CHECK_INPUT],
   },
   DEBUG: {
-    name: 'Debug',
-    actions: [ActionType.PRINT]
+    name: "Debug",
+    actions: [ActionType.PRINT],
   },
   ADVANCED: {
-    name: 'Advanced',
-    actions: [ActionType.CUSTOM_CODE]
-  }
+    name: "Advanced",
+    actions: [ActionType.CUSTOM_CODE],
+  },
 };

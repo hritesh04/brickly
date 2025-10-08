@@ -13,7 +13,7 @@ import {
   PrintAction,
   PlaySoundAction,
   CustomCodeAction
-} from "../types/ActionTypes";
+} from "@brickly/types";
 
 export class CodeGenerator {
   static generateGDScript(actions: Action[]): string {

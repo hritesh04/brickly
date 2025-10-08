@@ -1,7 +1,6 @@
 import { useEditor } from "@/store/editor";
 import { useResourceStore } from "@/store/resource";
-import { Node2DProperty } from "@/types/property";
-import { variant } from "@/types/variant";
+import { Node2DProperty, variant } from "@brickly/types";
 import { Resource } from "@prisma/client";
 import { observer } from "mobx-react-lite";
 

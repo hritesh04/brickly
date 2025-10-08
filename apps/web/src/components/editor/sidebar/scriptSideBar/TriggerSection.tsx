@@ -6,8 +6,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Play, Trash2, Plus, Zap } from "lucide-react";
 import { useDroppable } from "@dnd-kit/core";
 import { useState } from "react";
-import { Action } from "./types/ActionTypes";
-import { NodeType, getAvailableTriggersForNode } from "./types/NodeSpecificMappings";
+import { Action } from "@brickly/types";
+import { getAvailableTriggersForNode, getTriggerOptionsForNode, NodeType } from "@brickly/types";
 
 interface DroppedAction {
   id: string;
@@ -29,37 +29,6 @@ interface TriggerSectionProps {
   nodeType?: NodeType;
 }
 
-const TRIGGER_TYPES = [
-  // Core Node Events
-  { value: 'onReady', label: 'On Ready', description: 'When node enters scene tree (_ready)' },
-  { value: 'onProcess', label: 'On Process', description: 'Called every frame (_process)' },
-  { value: 'onPhysicsProcess', label: 'On Physics Process', description: 'Called every physics frame (_physics_process)' },
-  { value: 'onDestroy', label: 'On Destroy', description: 'When node is being destroyed' },
-  
-  // AnimatedSprite2D Signals
-  { value: 'onAnimationFinished', label: 'Animation Finished', description: 'When animation completes' },
-  { value: 'onFrameChanged', label: 'Frame Changed', description: 'When animation frame changes' },
-  
-  // RigidBody2D Signals
-  { value: 'onBodyEntered', label: 'Body Entered', description: 'When another body enters this body' },
-  { value: 'onBodyExited', label: 'Body Exited', description: 'When another body exits this body' },
-  
-  // Area2D Signals
-  { value: 'onAreaBodyEntered', label: 'Area Body Entered', description: 'When body enters area' },
-  { value: 'onAreaBodyExited', label: 'Area Body Exited', description: 'When body exits area' },
-  { value: 'onAreaEntered', label: 'Area Entered', description: 'When area enters another area' },
-  { value: 'onAreaExited', label: 'Area Exited', description: 'When area exits another area' },
-  
-  // Input Events
-  { value: 'onInput', label: 'On Input', description: 'When user input is received' },
-  
-  // Timer Events
-  { value: 'onTimer', label: 'On Timer', description: 'At regular time intervals' },
-  
-  // Custom Events
-  { value: 'onSignal', label: 'On Custom Signal', description: 'When receiving a custom signal' },
-  { value: 'onCollision', label: 'On Collision', description: 'When node collides with another' },
-];
 
 const DroppedActionItem = ({ 
   droppedAction, 
@@ -92,11 +61,13 @@ const DroppedActionItem = ({
 const TriggerItem = ({ 
   trigger, 
   onRemove, 
-  onActionsChange 
+  onActionsChange,
+  nodeType
 }: { 
   trigger: Trigger; 
   onRemove: (id: string) => void;
   onActionsChange: (triggerId: string, actions: DroppedAction[]) => void;
+  nodeType: NodeType;
 }) => {
   const { setNodeRef, isOver } = useDroppable({
     id: `trigger-${trigger.id}`,
@@ -111,7 +82,9 @@ const TriggerItem = ({
     onActionsChange(trigger.id, updatedActions);
   };
 
-  const triggerType = TRIGGER_TYPES.find(t => t.value === trigger.type);
+  // Get trigger options for the current node type
+  const triggerOptions = getTriggerOptionsForNode(nodeType);
+  const triggerType = triggerOptions.find(t => t.value === trigger.type);
 
   return (
     <div className="border rounded-lg p-3 space-y-3">
@@ -182,18 +155,15 @@ const TriggerItem = ({
   );
 };
 
-export const TriggerSection = ({ triggers, onTriggersChange, nodeType = NodeType.NODE }: TriggerSectionProps) => {
+export const TriggerSection = ({ triggers, onTriggersChange, nodeType = NodeType.Node2D }: TriggerSectionProps) => {
   const [selectedTriggerType, setSelectedTriggerType] = useState<string>("");
 
-  // Filter triggers based on node type
-  const availableTriggers = getAvailableTriggersForNode(nodeType);
-  const filteredTriggerTypes = TRIGGER_TYPES.filter(trigger => 
-    availableTriggers.includes(trigger.value)
-  );
+  // Get trigger options based on node type
+  const triggerOptions = getTriggerOptionsForNode(nodeType);
 
   const handleAddTrigger = () => {
     if (selectedTriggerType) {
-      const triggerType = filteredTriggerTypes.find(t => t.value === selectedTriggerType);
+      const triggerType = triggerOptions.find(t => t.value === selectedTriggerType);
       if (triggerType) {
         const newTrigger: Trigger = {
           id: Date.now().toString(),
@@ -240,7 +210,7 @@ export const TriggerSection = ({ triggers, onTriggersChange, nodeType = NodeType
               <SelectValue placeholder="Select trigger type..." />
             </SelectTrigger>
             <SelectContent>
-              {filteredTriggerTypes.map((triggerType) => (
+              {triggerOptions.map((triggerType) => (
                 <SelectItem key={triggerType.value} value={triggerType.value}>
                   {triggerType.label}
                 </SelectItem>
@@ -265,6 +235,7 @@ export const TriggerSection = ({ triggers, onTriggersChange, nodeType = NodeType
                 trigger={trigger}
                 onRemove={handleRemoveTrigger}
                 onActionsChange={handleTriggerActionsChange}
+                nodeType={nodeType}
               />
             ))
           )}

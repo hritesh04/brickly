@@ -6,7 +6,7 @@ import { useProjectManager } from "@/store/project";
 import { useEditor } from "@/store/editor";
 import { useAction } from "@/hooks/useAction";
 import { createResource } from "@/actions/resource";
-import { Property } from "@/types/property";
+import { Property } from "@brickly/types";
 import { AssetType, ResourceType } from "@prisma/client";
 
 export const Sprite2DProperty = observer(() => {

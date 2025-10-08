@@ -1,10 +1,5 @@
 import { node } from "@/actions/node/schema";
-import { NodeType, Sprite2D } from "@/types/node";
-import {
-  CanvasItemProperty,
-  Property,
-  TransformProperty,
-} from "@/types/property";
+import { NodeType, Sprite2D, CanvasItemProperty, Property, TransformProperty } from "@brickly/types";
 import { Resource } from "@/actions/resource/schema";
 import { ResourceType } from "@prisma/client";
 // import { Property } from "@/types/property";

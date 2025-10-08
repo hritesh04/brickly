@@ -1,6 +1,6 @@
 import { makeAutoObservable } from "mobx";
 import { Resource } from "@/actions/resource/schema";
-import { ResourceProperty } from "@/types/property";
+import { ResourceProperty } from "@brickly/types";
 import { updateResource } from "@/actions/resource";
 
 export class ResourceStore {

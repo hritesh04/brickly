@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Settings, Trash2, Play } from "lucide-react";
 import { useDroppable } from "@dnd-kit/core";
-import { Action } from "./types/ActionTypes";
+import { Action } from "@brickly/types";
 
 interface DroppedAction {
   id: string;

@@ -1,6 +1,6 @@
 import { Image, Layers, Plus } from "lucide-react";
 import { FileTree } from "./FileTree";
-import { NodeType } from "@/types/node";
+import { NodeType } from "@brickly/types";
 import { Tree } from "@/components/magicui/file-tree";
 import { useAction } from "@/hooks/useAction";
 import { createNode } from "@/actions/node";
