@@ -1,5 +1,5 @@
 import { useEditor } from "@/store/editor";
-import { NodeType } from "@prisma/client";
+import { NodeType } from "@brickly/db";
 import { observer } from "mobx-react-lite";
 import { Area2DProperty } from "./properties/Area2DProperty";
 import { StaticBody2DProperty } from "./properties/StaticBody2DProperty";
@@ -12,7 +12,12 @@ import { CollisionShape2DProperty } from "./properties/CollisionShape2DProperty"
 export const NodeBasedProperty = observer(() => {
   const editor = useEditor();
   const activeNode = editor.activeNode;
-  if (!activeNode) return <p className="text-sm text-gray-600">Select a Scene or Node to see its properties</p>;
+  if (!activeNode)
+    return (
+      <p className="text-sm text-gray-600">
+        Select a Scene or Node to see its properties
+      </p>
+    );
   switch (activeNode?.type) {
     case NodeType.Sprite2D:
       return <Sprite2DProperty />;

@@ -1,7 +1,7 @@
 "use server";
 import { createSafeAction } from "@/lib/actionState";
 import { cookies } from "next/headers";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@brickly/db";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import {

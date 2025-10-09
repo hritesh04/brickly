@@ -16,7 +16,7 @@ import { Switch } from "@/components/ui/switch";
 import { useAction } from "@/hooks/useAction";
 import { useEditor } from "@/store/editor";
 import { useProjectManager } from "@/store/project";
-import { NodeType } from "@prisma/client";
+import { NodeType } from "@brickly/db";
 import { Plus } from "lucide-react";
 import { useState } from "react";
 

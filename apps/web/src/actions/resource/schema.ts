@@ -4,7 +4,7 @@ import {
   Prisma,
   Resource as ResourceDTO,
   ResourceType,
-} from "@prisma/client";
+} from "@brickly/db";
 import z from "zod";
 
 export const resourceType = z.enum(ResourceType);

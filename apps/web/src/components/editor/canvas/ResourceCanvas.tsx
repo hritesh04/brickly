@@ -1,8 +1,17 @@
 import { Resource } from "@/actions/resource/schema";
 import { useEditor } from "@/store/editor";
 import { useResourceStore } from "@/store/resource";
-import { ResourceProperty, Sprite2DProperty, SegmentShape2D, CircleShape2D, RectangleShape2D, CapsuleShape2D, CollisionPolygon2D, variant } from "@brickly/types";
-import { AssetType } from "@prisma/client";
+import {
+  ResourceProperty,
+  Sprite2DProperty,
+  SegmentShape2D,
+  CircleShape2D,
+  RectangleShape2D,
+  CapsuleShape2D,
+  CollisionPolygon2D,
+  variant,
+} from "@brickly/types";
+import { AssetType } from "@brickly/db";
 import { KonvaEventObject, Node, NodeConfig } from "konva/lib/Node";
 import { observer } from "mobx-react-lite";
 import { Circle, Image, Line, Text, Rect, Ellipse } from "react-konva";

@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@brickly/db";
 import {
   CreateProjectInput,
   createProjectSchema,
@@ -10,7 +10,7 @@ import {
 import { node } from "@/actions/node/schema";
 import { revalidatePath } from "next/cache";
 import { createSafeAction } from "@/lib/actionState";
-import { Prisma } from "@prisma/client";
+import { Prisma } from "@brickly/db";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 

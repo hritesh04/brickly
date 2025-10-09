@@ -4,7 +4,8 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"],
-      "@brickly/types": ["../../packages/types/src/index.ts"]
+      "@brickly/types": ["../../packages/types/src/index.ts"],
+      "@brickly/db": ["../../packahes/db/src/index.ts"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "next-env.d.ts", ".next/types/**/*.ts"],

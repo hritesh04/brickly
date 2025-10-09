@@ -1,7 +1,7 @@
 import { Editor } from "./editor";
 import { NodeType, variant } from "@brickly/types";
 import { node } from "@/actions/node/schema";
-import { AssetType, ResourceType } from "@prisma/client";
+import { AssetType, ResourceType } from "@brickly/db";
 
 describe("Editor", () => {
   const editor = new Editor();

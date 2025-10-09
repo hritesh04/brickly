@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@brickly/db";
 import {
   CreateNodeInput,
   createNodeSchema,

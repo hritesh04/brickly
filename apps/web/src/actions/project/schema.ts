@@ -1,5 +1,5 @@
 import z from "zod";
-import type { Prisma, Project as ProjectDTO } from "@prisma/client";
+import type { Prisma, Project as ProjectDTO } from "@brickly/db";
 import { ActionState } from "@/lib/actionState";
 import { nodeWithRelations } from "../node/schema";
 import { resourceSchema } from "../resource/schema";

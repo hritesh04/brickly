@@ -1,7 +1,13 @@
 import { node } from "@/actions/node/schema";
-import { NodeType, Sprite2D, CanvasItemProperty, Property, TransformProperty } from "@brickly/types";
+import {
+  NodeType,
+  Sprite2D,
+  CanvasItemProperty,
+  Property,
+  TransformProperty,
+} from "@brickly/types";
 import { Resource } from "@/actions/resource/schema";
-import { ResourceType } from "@prisma/client";
+import { ResourceType } from "@brickly/db";
 // import { Property } from "@/types/property";
 import { makeAutoObservable } from "mobx";
 import { updateNode } from "@/actions/node";

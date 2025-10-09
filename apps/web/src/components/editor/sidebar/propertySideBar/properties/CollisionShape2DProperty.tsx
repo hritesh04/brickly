@@ -9,7 +9,7 @@ import { useAction } from "@/hooks/useAction";
 import { useEditor } from "@/store/editor";
 import { useProjectManager } from "@/store/project";
 import { Property } from "@brickly/types";
-import { AssetType, ResourceType } from "@prisma/client";
+import { AssetType, ResourceType } from "@brickly/db";
 import { ChevronDown, Plus } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { PhysicsProperty } from "./PhysicsProperty";

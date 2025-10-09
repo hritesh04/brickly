@@ -3,7 +3,7 @@ import { useEditor } from "@/store/editor";
 import { observer } from "mobx-react-lite";
 import { createContext, useContext, useState } from "react";
 import { NodeTypeProperty } from "./properties/NodeTypeProperty";
-import { NodeType } from "@prisma/client";
+import { NodeType } from "@brickly/db";
 import Node2DProperty from "./Node2DProperty";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
@@ -49,7 +49,9 @@ const PropertySideBar = observer(() => {
         ${!open && "hidden"}
         `}
       >
-        <p className="text-sm text-gray-600">Please select a Node to see its Property</p>
+        <p className="text-sm text-gray-600">
+          Please select a Node to see its Property
+        </p>
       </div>
     );
   }
@@ -67,7 +69,7 @@ const PropertySideBar = observer(() => {
             <TabsTrigger value="script">Script</TabsTrigger>
           </TabsList>
         </div>
-        
+
         <TabsContent value="properties" className="flex-1 overflow-hidden">
           <ScrollArea className="h-full">
             <div className="p-6 space-y-6">

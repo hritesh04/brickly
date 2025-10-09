@@ -1,7 +1,7 @@
 import { useEditor } from "@/store/editor";
 import { useResourceStore } from "@/store/resource";
 import { Node2DProperty, variant } from "@brickly/types";
-import { Resource } from "@prisma/client";
+import { Resource } from "@brickly/db";
 import { observer } from "mobx-react-lite";
 
 export const TransformProperty = observer(() => {
@@ -15,7 +15,7 @@ export const TransformProperty = observer(() => {
   return (
     <div className="space-y-4">
       <h3 className="text-sm font-semibold text-gray-900">Transform</h3>
-      
+
       {/* Position */}
       <div className="space-y-3">
         <span className="text-sm font-medium text-gray-700">Position</span>
@@ -93,10 +93,10 @@ export const TransformProperty = observer(() => {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">
             <span className="text-sm font-medium text-gray-700">Rotation</span>
-            <input 
-              type="number" 
-              defaultValue={0} 
-              className="w-16 px-2 py-1 text-sm border rounded text-center" 
+            <input
+              type="number"
+              defaultValue={0}
+              className="w-16 px-2 py-1 text-sm border rounded text-center"
             />
           </div>
           <div className="flex items-center gap-2">

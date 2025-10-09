@@ -6,7 +6,7 @@ import { useAction } from "@/hooks/useAction";
 import { useEditor } from "@/store/editor";
 import { useProjectManager } from "@/store/project";
 import { Property } from "@brickly/types";
-import { AssetType, NodeType, ResourceType } from "@prisma/client";
+import { AssetType, NodeType, ResourceType } from "@brickly/db";
 import { observer } from "mobx-react-lite";
 import { useState } from "react";
 import { property } from "zod";

@@ -5,7 +5,7 @@ import { useProjectManager } from "@/store/project";
 import { useAction } from "@/hooks/useAction";
 import { createResource } from "@/actions/resource";
 import { Property, ResourceType } from "@brickly/types";
-import { AssetType } from "@prisma/client";
+import { AssetType } from "@brickly/db";
 import { Input } from "@/components/ui/input";
 
 export const AnimatedSprite2DProperty = observer(() => {

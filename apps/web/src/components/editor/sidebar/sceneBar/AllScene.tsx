@@ -8,7 +8,7 @@ import { Image, Plus } from "lucide-react";
 import { observer } from "mobx-react-lite";
 import { useRightSidebar } from "../RightSidebar";
 import { useProjectManager } from "@/store/project";
-import { NodeType } from "@prisma/client";
+import { NodeType } from "@brickly/db";
 import { NewSceneDialog } from "./NewSceneDialog";
 import { DraggableScene } from "./DraggableScene";
 

@@ -7,7 +7,7 @@ import {
   UpdateResourceInput,
   updateResourceSchema,
 } from "./schema";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@brickly/db";
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { ObjectStore } from "@/lib/objectStore";

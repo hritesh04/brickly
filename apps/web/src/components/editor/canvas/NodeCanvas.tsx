@@ -1,6 +1,6 @@
 import { Layer, Group } from "react-konva";
 import { node } from "@/actions/node/schema";
-import { NodeType } from "@prisma/client";
+import { NodeType } from "@brickly/db";
 import { ResourceCanvas } from "./ResourceCanvas";
 import { observer } from "mobx-react-lite";
 import { useEditor } from "@/store/editor";

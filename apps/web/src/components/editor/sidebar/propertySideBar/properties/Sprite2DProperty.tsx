@@ -7,7 +7,7 @@ import { useEditor } from "@/store/editor";
 import { useAction } from "@/hooks/useAction";
 import { createResource } from "@/actions/resource";
 import { Property } from "@brickly/types";
-import { AssetType, ResourceType } from "@prisma/client";
+import { AssetType, ResourceType } from "@brickly/db";
 
 export const Sprite2DProperty = observer(() => {
   const [visuals, setVisuals] = useState<Set<string>>(new Set());
@@ -52,7 +52,7 @@ export const Sprite2DProperty = observer(() => {
   return (
     <div className="space-y-4">
       <h3 className="text-sm font-semibold text-gray-900">Sprite2D</h3>
-      
+
       <div className="space-y-3">
         <span className="text-sm font-medium text-gray-700">Texture</span>
         <div className="space-y-3">
@@ -67,7 +67,9 @@ export const Sprite2DProperty = observer(() => {
             </div>
           ) : (
             <div className="p-3 border-2 border-dashed border-gray-300 rounded-md">
-              <div className="text-sm text-gray-600 mb-2">No texture assigned</div>
+              <div className="text-sm text-gray-600 mb-2">
+                No texture assigned
+              </div>
               <input
                 type="file"
                 onChange={handleUpload}
