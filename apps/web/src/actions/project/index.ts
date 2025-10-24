@@ -1,6 +1,6 @@
 "use server";
 
-import { prisma } from "@brickly/db";
+import { getSceneHierarchy, project } from "@brickly/db";
 import {
   CreateProjectInput,
   createProjectSchema,
@@ -10,7 +10,6 @@ import {
 import { node } from "@/actions/node/schema";
 import { revalidatePath } from "next/cache";
 import { createSafeAction } from "@/lib/actionState";
-import { Prisma } from "@brickly/db";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
 
@@ -23,12 +22,9 @@ async function createProjectHandler(
     const token = (await cookies()).get("brickly");
     if (!token) return { error: "Token Missing" };
     const session = jwt.verify(token.value, JWT_SECRET) as { userId: number };
-    console.log(session);
-    const res = await prisma.project.create({
-      data: {
-        ...data,
-        userID: session.userId,
-      },
+    const res = await project.createProject({
+      ...data,
+      userID: session.userId,
     });
     revalidatePath("/dashboard");
     return { data: res };
@@ -40,64 +36,14 @@ async function createProjectHandler(
 
 export async function getProject(id: number): Promise<ReturnTypeGetProject> {
   try {
-    const project = await prisma.project.findFirst({
-      where: { id: id },
-      include: {
-        resource: true,
-      },
-    });
-    if (!project) return { error: "project not found" };
-    const nodes = await prisma.$queryRaw<
-      node[]
-    >(Prisma.sql`WITH RECURSIVE node_hierarchy AS (
-      SELECT 
-        n.id,
-        n.name,
-        n.type,
-        n.property,
-        n."parentID",
-        n."projectID"
-      FROM "Node" n
-      WHERE n."projectID" = ${id} AND n."parentID" IS NULL
-      
-      UNION ALL
-      
-      SELECT 
-        n.id,
-        n.name,
-        n.type,
-        n.property,
-        n."parentID",
-        n."projectID"
-      FROM "Node" n
-      INNER JOIN node_hierarchy nh ON n."parentID" = nh.id
-    )
-    SELECT 
-      nh.id,
-      nh.name,
-      nh.type,
-      nh.property,
-      nh."parentID",
-      nh."projectID",
-      COALESCE(
-        json_agg(
-          json_build_object(
-            'id', r.id,
-            'name', r.name,
-            'type', r.type,
-            'assetType', r."assetType",
-            'path', r.path,
-            'property', r.property
-          )
-        ) FILTER (WHERE r.id IS NOT NULL), '[]'::json
-      ) as resource,
-      null as children
-    FROM node_hierarchy nh
-    LEFT JOIN "Resource" r ON r."parentID" = nh.id
-    GROUP BY nh.id, nh.name, nh.type, nh.property, nh."parentID", nh."projectID"
-    ORDER BY nh.id;`);
+    const res = await project.getProjectByID(id);
+    if (!res) return { error: "project not found" };
+
+    const nodes = await getSceneHierarchy(id);
+
     const scene = buildTree(nodes);
-    return { data: { ...project, scene } };
+
+    return { data: { ...res, scene } };
   } catch (e: any) {
     console.log(e);
     return { error: "Error fetching project details" };

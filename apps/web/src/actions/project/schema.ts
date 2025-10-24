@@ -1,5 +1,5 @@
 import z from "zod";
-import type { Prisma, Project as ProjectDTO } from "@brickly/db";
+import type { Project as ProjectDTO } from "@brickly/db";
 import { ActionState } from "@/lib/actionState";
 import { nodeWithRelations } from "../node/schema";
 import { resourceSchema } from "../resource/schema";
@@ -19,10 +19,6 @@ export const projectSchema = z.object({
   userID: z.number(),
 }) satisfies z.ZodType<ProjectDTO>;
 
-export const projectWithResource = projectSchema.extend({
-  resource: z.array(resourceSchema).nullable(),
-});
-
 export const projectWithRelationSchema = projectSchema.extend({
   scene: z.array(nodeWithRelations).nullable(),
   resource: z.array(resourceSchema).nullable(),
@@ -31,6 +27,5 @@ export const projectWithRelationSchema = projectSchema.extend({
 export type Project = z.infer<typeof projectSchema>;
 export type CreateProjectInput = z.infer<typeof createProjectSchema>;
 export type ReturnTypeCreateProject = ActionState<CreateProjectInput, Project>;
-export type projectWithResource = z.infer<typeof projectWithResource>;
 export type ProjectWithRelation = z.infer<typeof projectWithRelationSchema>;
 export type ReturnTypeGetProject = ActionState<number, ProjectWithRelation>;

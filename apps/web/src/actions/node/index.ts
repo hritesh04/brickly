@@ -1,9 +1,11 @@
 "use server";
 
-import { prisma } from "@brickly/db";
+import {
+  createNode as CreateNode,
+  updateNode as UpdateNode,
+} from "@brickly/db";
 import {
   CreateNodeInput,
-  createNodeSchema,
   createNodeWithChildrenSchema,
   UpdateNodeInput,
   updateNodeSchema,
@@ -12,25 +14,7 @@ import { createSafeAction } from "@/lib/actionState";
 
 async function createNodeHandler(data: CreateNodeInput) {
   try {
-    const children =
-      data.children?.map((c) => ({
-        name: c.type,
-        type: c.type,
-      })) ?? [];
-    console.log(data);
-    const res = await prisma.node.create({
-      data: {
-        name: data.type,
-        type: data.type,
-        parentID: data.parentID,
-        projectID: data.projectID,
-        ...(children.length > 0 && {
-          children: { create: children },
-        }),
-      },
-      include: { children: true },
-    });
-
+    const res = await CreateNode(data);
     return { data: res };
   } catch (error: any) {
     console.error(error);
@@ -42,26 +26,12 @@ async function updateNodeHandler(data: UpdateNodeInput) {
   try {
     if (data.property) {
       const property = JSON.parse(data.property);
-      const res = await prisma.node.update({
-        where: {
-          id: data.id,
-        },
-        data: {
-          ...data,
-          property,
-        },
-      });
+      const res = await UpdateNode({ ...data, property });
+      return { data: res };
+    } else {
+      const res = await UpdateNode(data);
       return { data: res };
     }
-    const res = await prisma.node.update({
-      where: {
-        id: data.id,
-      },
-      data: {
-        ...data,
-      },
-    });
-    return { data: res };
   } catch (error: any) {
     return { error };
   }

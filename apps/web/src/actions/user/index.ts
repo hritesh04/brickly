@@ -1,7 +1,7 @@
 "use server";
 import { createSafeAction } from "@/lib/actionState";
 import { cookies } from "next/headers";
-import { prisma } from "@brickly/db";
+import { createUser, getUserByEmail, getUserByID } from "@brickly/db";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import {
@@ -22,10 +22,8 @@ export const checkAuth = async () => {
 
   try {
     const decoded = jwt.verify(token.value, JWT_SECRET) as { userId: number };
-    const user = await prisma.user.findUnique({
-      where: { id: decoded.userId },
-      select: { id: true, email: true, name: true },
-    });
+
+    const user = await getUserByID(decoded.userId);
     return user;
   } catch {
     return null;
@@ -37,9 +35,7 @@ export const signupHandler = async ({
   email,
   password,
 }: SignUpInput): Promise<ReturnTypeSignIn> => {
-  const existingUser = await prisma.user.findUnique({
-    where: { email },
-  });
+  const existingUser = await getUserByEmail(email);
 
   if (existingUser) {
     return {
@@ -49,14 +45,7 @@ export const signupHandler = async ({
 
   const hashedPassword = await bcrypt.hash(password, 12);
 
-  const user = await prisma.user.create({
-    data: {
-      name,
-      email,
-      password: hashedPassword,
-    },
-    select: { id: true, email: true, name: true },
-  });
+  const user = await createUser(name, email, hashedPassword);
 
   const token = jwt.sign({ userId: user.id }, JWT_SECRET, {
     expiresIn: "7d",
@@ -71,9 +60,7 @@ export const signinHandler = async ({
   email,
   password,
 }: SignInInput): Promise<ReturnTypeSignUp> => {
-  const user = await prisma.user.findUnique({
-    where: { email },
-  });
+  const user = await getUserByEmail(email);
 
   if (!user) {
     return { data: { success: false, error: "Invalid email or password" } };

@@ -13,6 +13,8 @@
     "eslint": "^9"
   },
   "scripts": {
+    "predev": "turbo run build --filter=@brickly/db",
+    "prebuild": "turbo run build --filter=@brickly/db",
     "dev": "turbo run dev --parallel",
     "build": "turbo run build",
     "lint": "turbo run lint",
