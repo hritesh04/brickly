@@ -1,15 +1,13 @@
 "use server";
 
 import {
-  createNode as CreateNode,
-  updateNode as UpdateNode,
-} from "@brickly/db";
-import {
+  CreateNode,
   CreateNodeInput,
   createNodeWithChildrenSchema,
+  UpdateNode,
   UpdateNodeInput,
   updateNodeSchema,
-} from "./schema";
+} from "@brickly/db";
 import { createSafeAction } from "@/lib/actionState";
 
 async function createNodeHandler(data: CreateNodeInput) {

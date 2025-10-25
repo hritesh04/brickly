@@ -1,19 +1,29 @@
-import { Resource } from "../resource/schema.js";
+import z from "zod";
+import type { Project as ProjectDTO } from "@prisma/client";
+import { nodeWithRelations } from "../node/schema.js";
+import { resourceSchema } from "../resource/schema.js";
 
-export type CreateProjectInput = {
-  name: string;
-  height: number;
-  width: number;
-  userID: number;
-};
+export const createProjectSchema = z.object({
+  name: z.string(),
+  height: z.number(),
+  width: z.number(),
+  userID: z.number(),
+});
+export const projectSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  icon: z.string().nullable(),
+  height: z.number(),
+  width: z.number(),
+  property: z.any().nullable(),
+  userID: z.number(),
+}) satisfies z.ZodType<ProjectDTO>;
 
-export type Project = {
-  id: number;
-  name: string;
-  icon: string | null;
-  height: number;
-  width: number;
-  property: any | null;
-  userID: number;
-  resource: Resource[] | null;
-};
+export const projectWithRelationSchema = projectSchema.extend({
+  scene: z.array(nodeWithRelations).nullable(),
+  resource: z.array(resourceSchema).nullable(),
+});
+
+export type Project = z.infer<typeof projectSchema>;
+export type CreateProjectInput = z.infer<typeof createProjectSchema>;
+export type ProjectWithRelation = z.infer<typeof projectWithRelationSchema>;

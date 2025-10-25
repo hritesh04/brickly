@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import { prisma } from "../client.js";
 import { CreateNodeInput, node, UpdateNodeInput } from "./schema.js";
 
-export async function createNode(data: CreateNodeInput): Promise<node> {
+export async function CreateNode(data: CreateNodeInput): Promise<node> {
   try {
     const children =
       data.children?.map((c) => ({
@@ -29,7 +29,7 @@ export async function createNode(data: CreateNodeInput): Promise<node> {
   }
 }
 
-export async function updateNode(data: UpdateNodeInput) {
+export async function UpdateNode(data: UpdateNodeInput) {
   try {
     const res = await prisma.node.update({
       where: {

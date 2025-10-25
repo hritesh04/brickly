@@ -1,17 +1,11 @@
 "use server";
 import { createSafeAction } from "@/lib/actionState";
-import {
-  CreateResourceInput,
-  createResourceSchema,
-  ReturnTypeCreateResource,
-  UpdateResourceInput,
-  updateResourceSchema,
-} from "./schema";
+import { ReturnTypeCreateResource } from "./schema";
 import { ObjectStore } from "@/lib/objectStore";
 import { resource } from "@brickly/db";
 
 async function createResourceHandler(
-  data: CreateResourceInput
+  data: resource.CreateResourceInput
 ): Promise<ReturnTypeCreateResource> {
   try {
     if (data.file) {
@@ -32,7 +26,7 @@ async function createResourceHandler(
   }
 }
 
-async function updateResourceHandler(data: UpdateResourceInput) {
+async function updateResourceHandler(data: resource.UpdateResourceInput) {
   try {
     if (data.property) {
       const property = JSON.parse(data.property);
@@ -47,10 +41,10 @@ async function updateResourceHandler(data: UpdateResourceInput) {
 }
 
 export const createResource = createSafeAction(
-  createResourceSchema,
+  resource.createResourceSchema,
   createResourceHandler
 );
 export const updateResource = createSafeAction(
-  updateResourceSchema,
+  resource.updateResourceSchema,
   updateResourceHandler
 );

@@ -3,7 +3,7 @@ import { CreateProjectInput, Project } from "./schema.js";
 
 export async function createProject(
   data: CreateProjectInput
-): Promise<Omit<Project, "resource">> {
+): Promise<Project> {
   try {
     const res = await prisma.project.create({
       data,

@@ -1,22 +1,16 @@
 "use server";
 
-import { getSceneHierarchy, project } from "@brickly/db";
-import {
-  CreateProjectInput,
-  createProjectSchema,
-  ReturnTypeCreateProject,
-  ReturnTypeGetProject,
-} from "./schema";
-import { node } from "@/actions/node/schema";
+import { getSceneHierarchy, project, node } from "@brickly/db";
 import { revalidatePath } from "next/cache";
 import { createSafeAction } from "@/lib/actionState";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
+import { ReturnTypeCreateProject, ReturnTypeGetProject } from "./schema";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
 async function createProjectHandler(
-  data: CreateProjectInput
+  data: project.CreateProjectInput
 ): Promise<ReturnTypeCreateProject> {
   try {
     const token = (await cookies()).get("brickly");
@@ -74,6 +68,6 @@ function buildTree(nodes: node[]) {
   return rootNodes;
 }
 export const createProject = createSafeAction(
-  createProjectSchema,
+  project.createProjectSchema,
   createProjectHandler
 );

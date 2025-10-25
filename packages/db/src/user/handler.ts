@@ -35,8 +35,5 @@ export async function createUser(
       password,
     },
   });
-  // if (!user) {
-  //   return null;
-  // }
   return user;
 }
