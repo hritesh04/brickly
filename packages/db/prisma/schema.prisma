@@ -13,6 +13,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model ApiKey {
+  id Int @id @default(autoincrement())
+  key String @unique
+  userID Int @unique
+  user User @relation(references: [id], fields: [userID])
+}
 
 model User {
   id Int @id @default(autoincrement())
@@ -20,6 +26,7 @@ model User {
   email String @unique
   password String
   project Project[]
+  key ApiKey?
 }
 
 model Project{

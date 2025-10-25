@@ -1,0 +1,18 @@
+{
+  "extends": "@brickly/tsconfig/base.json",
+  "compilerOptions": {
+    "target": "es2020",
+    "module": "es2020",
+    "moduleResolution": "node",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "paths": {
+      "@brickly/db": ["../db/dist"]
+    }
+  },
+  "ts-node": {
+    "esm": true
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}
