@@ -8,7 +8,7 @@
     "prebuild": "npx prisma generate",
     "build": "npx tsc -b .",
     "predev": "npx prisma generate",
-    "dev": "npm run build -- --watch",
+    "dev": "npm run build -- --watch --preserveWatchOutput",
     "postinstall": "npx prisma generate",
     "db:generate": "npx prisma generate",
     "db:migrate": "npx prisma migrate dev --skip-generate",

@@ -1,0 +1,11 @@
+{
+  "extends": "@brickly/tsconfig/base.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "nodenext",
+    "moduleResolution": "Node16",
+    "outDir": "./dist",
+    "rootDir": "./src"
+  },
+  "include": ["src/**/*"]
+}

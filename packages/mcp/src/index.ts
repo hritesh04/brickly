@@ -5,6 +5,7 @@ import express, { NextFunction, Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { project, CheckAPIKey } from "@brickly/db";
 import dotenv from "dotenv";
+import { IsomorphicHeaders } from "@modelcontextprotocol/sdk/types";
 
 dotenv.config({ path: "../../.env" });
 
@@ -44,9 +45,45 @@ const setupServer = () => {
       },
     },
     async ({ name, height, width }, extra) => {
-      const userId = extra.requestInfo?.headers["userId"];
-      if (!userId) {
+      try {
+        if (!extra.requestInfo)
+          return {
+            isError: true,
+            content: [
+              {
+                type: "text",
+                text: "request metadata not found",
+              },
+            ],
+          };
+        const userId = await getUserID(extra.requestInfo.headers);
+        if (!userId) {
+          console.log("UserID not found");
+          return {
+            isError: true,
+            content: [
+              {
+                type: "text",
+                text: "authentication error",
+              },
+            ],
+          };
+        }
+
+        const result = await project.createProject({
+          name,
+          height,
+          width,
+          userID: Number(userId),
+        });
         return {
+          structuredContent: result,
+          content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
+        };
+      } catch (error) {
+        console.log("Error creating project : ", error);
+        return {
+          isError: true,
           content: [
             {
               type: "text",
@@ -55,17 +92,6 @@ const setupServer = () => {
           ],
         };
       }
-
-      const result = await project.createProject({
-        name,
-        height,
-        width,
-        userID: Number(userId),
-      });
-      return {
-        structuredContent: result,
-        content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
-      };
     }
   );
 
@@ -75,11 +101,49 @@ const setupServer = () => {
 const app = express();
 app.use(express.json());
 
+export async function getUserID(header: IsomorphicHeaders) {
+  try {
+    const apiKey = header["x-api-key"] as string;
+    const session = header["brickly-session"] as string;
+    console.log(apiKey, session);
+    if (!apiKey && !session) {
+      console.log("neither apikey nor session found");
+      return null;
+    }
+
+    if (apiKey) {
+      const data = await CheckAPIKey(apiKey);
+
+      if (!data) {
+        console.log("invalid API key");
+        return null;
+      }
+      if (!data.valid) {
+        console.log("expired API key");
+        return null;
+      }
+      return data.userID;
+    }
+
+    if (session) {
+      try {
+        const decoded = jwt.verify(session, JWT_SECRET) as { userId: number };
+        return decoded.userId;
+      } catch (err) {
+        console.error("Invalid or expired session token:", err);
+        return null;
+      }
+    }
+  } catch (err) {
+    console.error("Unexpected error in auth middleware:", err);
+    return null;
+  }
+}
+
 export async function auth(req: Request, res: Response, next: NextFunction) {
   try {
     const apiKey = req.header("X-API-KEY");
     const session = req.header("BRICKLY-SESSION");
-
     if (!apiKey && !session) {
       return sendAuthError(res, "Missing authentication credentials");
     }
@@ -88,20 +152,21 @@ export async function auth(req: Request, res: Response, next: NextFunction) {
       const data = await CheckAPIKey(apiKey);
 
       if (!data) {
+        console.log("invalid API key");
         return sendAuthError(res, "Invalid API key");
       }
       if (!data.valid) {
+        console.log("expired API key");
         return sendAuthError(res, "Expired API key");
       }
-
-      req.headers["userId"] = String(data.userID);
+      req.headers["userID"] = String(data.userID);
       return next();
     }
 
     if (session) {
       try {
         const decoded = jwt.verify(session, JWT_SECRET) as { userId: number };
-        req.headers["userId"] = String(decoded.userId);
+        req.headers["userID"] = String(decoded.userId);
         return next();
       } catch (err) {
         console.error("Invalid or expired session token:", err);
@@ -130,21 +195,16 @@ function sendAuthError(res: Response, message: string) {
     });
   }
 }
+const server = setupServer();
 
-app.post("/mcp", auth, async (req: Request, res: Response) => {
-  const server = setupServer();
+const transport = new StreamableHTTPServerTransport({
+  sessionIdGenerator: undefined,
+  enableJsonResponse: true,
+});
+
+app.post("/mcp", async (req: Request, res: Response) => {
   try {
-    const transport = new StreamableHTTPServerTransport({
-      sessionIdGenerator: undefined,
-      enableJsonResponse: true,
-    });
-    await server.connect(transport);
     await transport.handleRequest(req, res, req.body);
-    req.on("close", () => {
-      console.log("Request closed");
-      transport.close();
-      server.close();
-    });
   } catch (error) {
     console.error("Error handling MCP request:", error);
     if (!res.headersSent) {
@@ -176,10 +236,13 @@ app.get("/mcp", async (req, res) => {
 
 const PORT = process.env.MCP_PORT || 3002;
 
-try {
-  app.listen(PORT, () => {
-    console.log(`MCP Server running on port ${PORT}`);
-  });
-} catch (error) {
-  console.log(error);
-}
+(async function () {
+  try {
+    await server.connect(transport);
+    app.listen(PORT, () => {
+      console.log(`MCP Server running on port ${PORT}`);
+    });
+  } catch (error) {
+    console.log(error);
+  }
+})();
