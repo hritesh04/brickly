@@ -25,7 +25,7 @@ export async function CreateNode(data: CreateNodeInput): Promise<node> {
     return res;
   } catch (error: any) {
     console.error(error);
-    throw new Error("create node erro");
+    throw new Error("create node error");
   }
 }
 
@@ -39,11 +39,12 @@ export async function UpdateNode(data: UpdateNodeInput) {
     });
     return res;
   } catch (error: any) {
-    return { error };
+    console.error(error);
+    throw new Error("create node error");
   }
 }
 
-export async function getSceneHierarchy(id: number) {
+export async function getSceneHierarchy(id: number): Promise<node[]> {
   try {
     const res = await prisma.$queryRaw<
       node[]
@@ -94,9 +95,33 @@ export async function getSceneHierarchy(id: number) {
       LEFT JOIN "Resource" r ON r."parentID" = nh.id
       GROUP BY nh.id, nh.name, nh.type, nh.property, nh."parentID", nh."projectID"
       ORDER BY nh.id;`);
-    return res;
+    return buildTree(res);
   } catch (error) {
     console.log(error);
     throw new Error("error retrieving scene hierarchy");
   }
+}
+
+function buildTree(nodes: node[]) {
+  const map = new Map<number, node>();
+  const rootNodes: node[] = [];
+
+  nodes.forEach((node) => {
+    map.set(node.id, node);
+  });
+
+  nodes.forEach((node) => {
+    if (node.parentID) {
+      const parent = map.get(node.parentID);
+      if (parent) {
+        if (!parent.children) parent.children = [];
+        parent.children.push(node);
+      }
+    }
+    if (node.projectID) {
+      rootNodes.push(node);
+    }
+  });
+
+  return rootNodes;
 }

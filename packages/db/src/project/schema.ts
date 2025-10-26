@@ -3,25 +3,34 @@ import type { Project as ProjectDTO } from "@prisma/client";
 import { nodeWithRelations } from "../node/schema.js";
 import { resourceSchema } from "../resource/schema.js";
 
-export const createProjectSchema = z.object({
-  name: z.string(),
-  height: z.number(),
-  width: z.number(),
-  userID: z.number(),
-});
 export const projectSchema = z.object({
-  id: z.number(),
-  name: z.string(),
-  icon: z.string().nullable(),
-  height: z.number(),
-  width: z.number(),
-  property: z.any().nullable(),
-  userID: z.number(),
-}) satisfies z.ZodType<ProjectDTO>;
+  id: z.number().describe("unique id of the project"),
+  name: z.string().describe("nameof the project"),
+  icon: z
+    .string()
+    .nullable()
+    .describe("url path to icon that represent the proejct"),
+  height: z.number().describe("viewport height of the game (e.g. 810)"),
+  width: z.number().describe("viewport height of the game (e.g. 1440)"),
+  userID: z.number().describe("id of the user to whom this project belong to"),
+  property: z.any().nullable().describe("property of the node"),
+  resource: z
+    .array(resourceSchema)
+    .nullable()
+    .describe("resource attached to the project"),
+});
+// satisfies z.ZodType<ProjectDTO>;
+
+export const createProjectSchema = projectSchema
+  .omit({ id: true, icon: true, property: true, resource: true })
+  .extend({
+    userID: z
+      .number()
+      .describe("id of the user to whom this project belong to"),
+  });
 
 export const projectWithRelationSchema = projectSchema.extend({
   scene: z.array(nodeWithRelations).nullable(),
-  resource: z.array(resourceSchema).nullable(),
 });
 
 export type Project = z.infer<typeof projectSchema>;

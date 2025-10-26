@@ -7,23 +7,21 @@ const authResponseSchema = z.object({
 });
 
 export const signinSchema = z.object({
-  email: z.email(),
+  email: z.string().email(),
   password: z.string(),
 });
 
 export const signupSchema = z.object({
   name: z.string(),
-  email: z.email({ error: "Invalid email address" }),
-  password: z
-    .string()
-    .min(6, { error: "Password must be at least 6 characters" }),
+  email: z.string().email("Invalid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
 });
 
 const returnTypeAuth = authResponseSchema.extend({
   data: z
     .object({
       id: z.number(),
-      email: z.email(),
+      email: z.string().email(),
       name: z.string().nullable(),
       token: z.string(),
     })

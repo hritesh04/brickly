@@ -7,6 +7,9 @@ export async function createProject(
   try {
     const res = await prisma.project.create({
       data,
+      include: {
+        resource: true,
+      },
     });
     return res;
   } catch (e: any) {
@@ -15,10 +18,13 @@ export async function createProject(
   }
 }
 
-export async function getProjectByID(id: number): Promise<Project | null> {
+export async function getProjectByID(
+  id: number,
+  userID: number
+): Promise<Project | null> {
   try {
     const res = await prisma.project.findFirst({
-      where: { id: id },
+      where: { id: id, userID: userID },
       include: {
         resource: true,
       },

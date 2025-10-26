@@ -5,12 +5,17 @@ import { revalidatePath } from "next/cache";
 import { createSafeAction } from "@/lib/actionState";
 import { cookies } from "next/headers";
 import jwt from "jsonwebtoken";
-import { ReturnTypeCreateProject, ReturnTypeGetProject } from "./schema";
+import {
+  CreateProjectInput,
+  CreateProjectInputSchema,
+  ReturnTypeCreateProject,
+  ReturnTypeGetProject,
+} from "./schema";
 
 const JWT_SECRET = process.env.JWT_SECRET || "your-secret-key";
 
 async function createProjectHandler(
-  data: project.CreateProjectInput
+  data: CreateProjectInput
 ): Promise<ReturnTypeCreateProject> {
   try {
     const token = (await cookies()).get("brickly");
@@ -30,14 +35,17 @@ async function createProjectHandler(
 
 export async function getProject(id: number): Promise<ReturnTypeGetProject> {
   try {
-    const res = await project.getProjectByID(id);
+    const token = (await cookies()).get("brickly");
+    if (!token) return { error: "Token Missing" };
+    const session = jwt.verify(token.value, JWT_SECRET) as { userId: number };
+    const res = await project.getProjectByID(id, session.userId);
     if (!res) return { error: "project not found" };
 
-    const nodes = await getSceneHierarchy(id);
+    const scene = await getSceneHierarchy(id);
 
-    const scene = buildTree(nodes);
+    // const scene = buildTree(nodes);
 
-    return { data: { ...res, scene } };
+    return { data: { ...res, scene, resource: res.resource ?? null } };
   } catch (e: any) {
     console.log(e);
     return { error: "Error fetching project details" };
@@ -68,6 +76,6 @@ function buildTree(nodes: node[]) {
   return rootNodes;
 }
 export const createProject = createSafeAction(
-  project.createProjectSchema,
+  CreateProjectInputSchema,
   createProjectHandler
 );

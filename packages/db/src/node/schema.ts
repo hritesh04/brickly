@@ -2,7 +2,7 @@ import z from "zod";
 import { NodeType, Node } from "@prisma/client";
 import { resourceSchema } from "../resource/schema.js";
 
-export const nodeType = z.enum(NodeType);
+export const nodeType = z.nativeEnum(NodeType);
 
 export const nodeSchema = z.object({
   id: z.number(),
@@ -11,36 +11,64 @@ export const nodeSchema = z.object({
   parentID: z.number().nullable(),
   projectID: z.number().nullable(),
   property: z.any().nullable(),
-}) satisfies z.ZodType<Node>;
+});
+// satisfies z.ZodType<Node>;
 
-export const nodeWithRelations: z.ZodType<
-  z.infer<typeof nodeSchema> & {
-    resource?: Array<z.infer<typeof resourceSchema>> | null;
-    children?: Array<any> | null;
+export const nodeWithRelations: z.ZodObject<
+  typeof nodeSchema.shape & {
+    resource: z.ZodOptional<z.ZodNullable<z.ZodArray<typeof resourceSchema>>>;
+    children: z.ZodOptional<z.ZodNullable<z.ZodArray<any>>>;
   }
-> = z.lazy(() =>
-  nodeSchema.extend({
-    resource: z.array(resourceSchema).nullable().optional(),
-    children: z.array(nodeWithRelations).nullable().optional(),
-  })
-);
+> = nodeSchema.extend({
+  resource: z.array(resourceSchema).nullable().optional(),
+  children: z
+    .array(z.lazy(() => nodeWithRelations))
+    .nullable()
+    .optional(),
+});
+
 export const createNodeSchema = z.object({
-  type: nodeType,
-  parentID: z.number().optional(),
-  projectID: z.number().optional(),
+  type: nodeType.describe("Godot node type"),
+  parentID: z
+    .number()
+    .optional()
+    .describe(
+      "id of the parent node that this node will be the child of. Required if the node is a child node"
+    ),
+  projectID: z
+    .number()
+    .optional()
+    .describe(
+      "id of the project this node is part. Required if the node is a scene root node"
+    ),
 });
 
 export const createNodeWithChildrenSchema = createNodeSchema.extend({
-  children: z.array(createNodeSchema).optional(),
+  children: z
+    .array(createNodeSchema)
+    .optional()
+    .describe(
+      "respresents childrens of the node. the parentID and projectID fields are not required if created a nested node structure"
+    ),
 });
 
 export const updateNodeSchema = z.object({
-  id: z.number(),
-  name: z.string().optional(),
-  type: nodeType.optional(),
-  parentID: z.number().nullable().optional(),
-  projectID: z.number().nullable().optional(),
-  property: z.any().nullable().optional(),
+  id: z.number().describe("unique id of the node"),
+  name: z.string().optional().describe("name of the node"),
+  type: nodeType.describe("Godot node type"),
+  parentID: z
+    .number()
+    .optional()
+    .describe(
+      "id of the parent node that this node will be the child of. Required if the node is a child node"
+    ),
+  projectID: z
+    .number()
+    .optional()
+    .describe(
+      "id of the project this node is part. Required if the node is a scene root node"
+    ),
+  property: z.any().nullable().optional().describe("property of the node"),
 });
 
 export type node = z.infer<typeof nodeWithRelations>;
