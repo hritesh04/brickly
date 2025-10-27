@@ -1,25 +1,22 @@
 import { MultiServerMCPClient } from "@langchain/mcp-adapters";
 
-export class BricklyMCP {
+export class PixelLabMCP {
   private client: MultiServerMCPClient;
   constructor() {
     this.client = new MultiServerMCPClient({
       mcpServers: {
-        brickly: {
+        pixellab: {
           transport: "http",
-          url: process.env.MCP_URL || "http://localhost:4000/mcp",
+          url: "https://api.pixellab.ai/mcp",
           headers: {
-            "X-AGENT-AUTH": process.env.AGENT_KEY || "brickly agent",
+            Authorization: "Bearer " + process.env.PIXELLAB_KEY,
           },
         },
       },
-      beforeToolCall: ({ serverName, args, name }, _, opts) => {
+      beforeToolCall: ({ serverName, args, name }) => {
         console.log("calling tool ", serverName, name, " with args ", args);
         return {
           ...(args as Record<string, unknown>),
-          headers: {
-            Authorization: "Bearer " + opts.configurable?.session,
-          },
         };
       },
     });
