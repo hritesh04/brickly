@@ -43,9 +43,14 @@ export const createNodeSchema = z.object({
     ),
 });
 
-export const createNodeWithChildrenSchema = createNodeSchema.extend({
+export const createNodeWithChildrenSchema: z.ZodObject<
+  typeof createNodeSchema.shape & {
+    children: z.ZodOptional<z.ZodNullable<z.ZodArray<any>>>;
+  }
+> = createNodeSchema.extend({
   children: z
-    .array(createNodeSchema)
+    .array(z.lazy(() => createNodeWithChildrenSchema))
+    .nullable()
     .optional()
     .describe(
       "respresents childrens of the node. the parentID and projectID fields are not required if created a nested node structure"
