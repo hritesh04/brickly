@@ -107,7 +107,7 @@ export class BricklyAgent {
           input.request,
           option.configurable?.session
         );
-        
+
         const result = await agent.invoke(
           {
             messages: [{ role: "user", content: input.request }],
@@ -119,10 +119,10 @@ export class BricklyAgent {
             },
           }
         );
-        
+
         const lastMessage = result.messages[result.messages.length - 1];
         logger.agentComplete(describe.name, result.messages.length);
-        
+
         return lastMessage.text;
       } catch (error) {
         logger.error(`Error while invoking ${describe.name}`, error);
@@ -138,7 +138,7 @@ export class BricklyAgent {
     }
 
     logger.agentInvoke("Supervisor", query, session);
-    
+
     const result = await this.agent.invoke(
       {
         messages: [{ role: "user", content: query }],
@@ -150,12 +150,12 @@ export class BricklyAgent {
         },
       }
     );
-    
+
     logger.agentComplete("Supervisor", result.messages.length);
     return result;
   }
 
-  async *stream(query: string) {
+  async *stream(query: string, session: string) {
     if (!this.agent) {
       logger.error("Agent not initialized for streaming");
       yield { type: "error", content: "Agent not initialized" };
@@ -165,9 +165,17 @@ export class BricklyAgent {
     logger.agentInvoke("Supervisor (Stream)", query);
 
     try {
-      const stream = await this.agent.stream({
-        messages: [{ role: "user", content: query }],
-      });
+      const stream = await this.agent.stream(
+        {
+          messages: [{ role: "user", content: query }],
+        },
+        {
+          configurable: {
+            session,
+            agentName: "Supervisor",
+          },
+        }
+      );
 
       for await (const step of stream) {
         for (const [key, update] of Object.entries(step)) {
@@ -178,19 +186,25 @@ export class BricklyAgent {
                   role: message.type,
                   contentPreview: message.content?.substring(0, 100),
                 });
-                
+
                 yield {
-                  type: "message",
+                  id: message.id || null,
+                  type: message.content ? "message" : "tool_call",
                   agent: key,
-                  content: message.content,
+                  content:
+                    message.content ||
+                    message?.additional_kwargs?.tool_calls?.map(
+                      (k: any) => k.function
+                    ),
                   role: message.type,
+                  timestamp: new Date(),
                 };
               }
             }
           }
         }
       }
-      
+
       logger.info("Stream completed successfully");
     } catch (error) {
       logger.error("Error during streaming", error);

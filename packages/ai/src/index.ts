@@ -47,17 +47,26 @@ app.use(express.json());
 app.post("/api/chat", async (req, res) => {
   const startTime = Date.now();
   const session = req.header("BRICKLY-SESSION");
-  const { message } = req.body;
-
-  logger.httpRequest("POST", "/api/chat", session);
-
-  if (!message) {
-    logger.warn("Chat request missing message");
-    return res.status(400).json({ error: "Message is required" });
-  }
-
   try {
-    const result = await agent.invoke(message, session!);
+    const { message } = req.body;
+
+    if (!session) {
+      res.status(401).json({
+        success: false,
+        error: "Unauthorized access session header missing",
+      });
+    }
+
+    logger.httpRequest("POST", "/api/chat", session);
+
+    if (!message) {
+      logger.warn("Chat request missing message");
+      return res
+        .status(400)
+        .json({ success: false, error: "Message is required" });
+    }
+
+    const result = await agent.invoke(message.content, session!);
     if (!result) {
       logger.error("Agent not available");
       return res.json({ error: "Agent not available" });
@@ -65,17 +74,25 @@ app.post("/api/chat", async (req, res) => {
 
     const duration = Date.now() - startTime;
     logger.httpResponse("POST", "/api/chat", 200, duration);
-
     res.json({
+      success: true,
       response: result.messages[result.messages.length - 1].content,
-      messages: result.messages.map((m: any) => ({
-        role: m.role || m._getType?.(),
-        content: m.content,
-      })),
+      timestamp: new Date(),
+      messages: result.messages.map((m: any) => {
+        return {
+          id: m.id || null,
+          type: message.content ? "message" : "tool_call",
+          role: m.type,
+          content:
+            m.content ||
+            m?.additional_kwargs?.tool_calls?.map((k: any) => k.function),
+          timestamp: new Date(),
+        };
+      }),
     });
   } catch (err) {
     const duration = Date.now() - startTime;
-    logger.error("Error processing chat request", err);
+    logger.error(`Error processing chat request ${session}`, err);
     logger.httpResponse("POST", "/api/chat", 500, duration);
     res.status(500).json({ error: "Internal error" });
   }
@@ -83,21 +100,29 @@ app.post("/api/chat", async (req, res) => {
 
 app.post("/api/chat/stream", async (req, res) => {
   const startTime = Date.now();
-  const { message } = req.body;
-
-  logger.httpRequest("POST", "/api/chat/stream");
-
-  if (!message) {
-    logger.warn("Stream request missing message");
-    return res.status(400).json({ error: "Message is required" });
-  }
-
-  res.setHeader("Content-Type", "text/event-stream");
-  res.setHeader("Cache-Control", "no-cache");
-  res.setHeader("Connection", "keep-alive");
-
+  const session = req.header("BRICKLY-SESSION");
   try {
-    for await (const chunk of agent.stream(message)) {
+    const { message } = req.body;
+
+    if (!session) {
+      res.status(401).json({
+        success: false,
+        error: "Unauthorized access session header missing",
+      });
+    }
+
+    logger.httpRequest("POST", "/api/chat/stream");
+
+    if (!message) {
+      logger.warn("Stream request missing message");
+      return res.status(400).json({ error: "Message is required" });
+    }
+
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
+
+    for await (const chunk of agent.stream(message.content, session!)) {
       res.write(`data: ${JSON.stringify(chunk)}\n\n`);
     }
 
@@ -108,7 +133,10 @@ app.post("/api/chat/stream", async (req, res) => {
     logger.httpResponse("POST", "/api/chat/stream", 200, duration);
   } catch (err) {
     const duration = Date.now() - startTime;
-    logger.error("Error processing streaming request", err);
+    logger.error(
+      `Error processing streaming request for session ${session}`,
+      err
+    );
     logger.httpResponse("POST", "/api/chat/stream", 500, duration);
     res.write(
       `data: ${JSON.stringify({
