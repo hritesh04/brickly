@@ -13,12 +13,11 @@
     "eslint": "^9"
   },
   "scripts": {
-    "predev": "turbo run build --filter=@brickly/db",
-    "prebuild": "turbo run build --filter=@brickly/db",
-    "dev": "turbo run dev --parallel",
+    "dev": "npm run db:build && turbo run build --filter=brickly-mcp && turbo run dev --parallel",
+    "db:build": "turbo run build --filter=@brickly/db",
     "build": "turbo run build",
     "lint": "turbo run lint",
     "format": "turbo run format",
-    "start": "turbo run start --filter=apps/web..."
+    "start": "npm run db:build && turbo run start --filter=apps/web..."
   }
 }

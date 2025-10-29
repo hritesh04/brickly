@@ -2,7 +2,8 @@
   "name": "brickly-mcp",
   "type": "module",
   "scripts": {
-    "dev": "nodemon",
+    "dev": "node dist/index.js",
+    "build": "npx tsc -b .",
     "start": "npx tsc -b . && node dist/index.js"
   },
   "files": [
