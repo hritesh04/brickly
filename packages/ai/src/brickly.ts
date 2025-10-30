@@ -181,25 +181,26 @@ export class BricklyAgent {
         for (const [key, update] of Object.entries(step)) {
           if (update && typeof update === "object" && "messages" in update) {
             if (Array.isArray((update as any).messages)) {
-              for (const message of (update as any).messages) {
-                logger.debug(`Stream message from ${key}`, {
-                  role: message.type,
-                  contentPreview: message.content?.substring(0, 100),
-                });
+              const message = (update as any).messages[
+                (update as any).messages.length - 1
+              ];
+              logger.debug(`Stream message from ${key}`, {
+                role: message.type,
+                contentPreview: message.content?.substring(0, 100),
+              });
 
-                yield {
-                  id: message.id || null,
-                  type: message.content ? "message" : "tool_call",
-                  agent: key,
-                  content:
-                    message.content ||
-                    message?.additional_kwargs?.tool_calls?.map(
-                      (k: any) => k.function
-                    ),
-                  role: message.type,
-                  timestamp: new Date(),
-                };
-              }
+              yield {
+                id: message.id || null,
+                type: message.content ? "message" : "tool_call",
+                agent: key,
+                content:
+                  message.content ||
+                  message?.additional_kwargs?.tool_calls?.map(
+                    (k: any) => k.function
+                  ),
+                role: message.type,
+                timestamp: new Date(),
+              };
             }
           }
         }
