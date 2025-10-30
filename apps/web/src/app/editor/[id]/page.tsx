@@ -22,7 +22,7 @@ export default function EditorPage({ params }: { params: { id: string } }) {
 
   return (
     <DotBackGround>
-      <SidebarProvider className="min-h-full absolute" defaultOpen={false}>
+      <SidebarProvider className="min-h-[92.25vh] absolute" defaultOpen={false}>
         <RightSidebarProvider>
           <Suspense fallback={<SpinnerLoading />}>
             <Main id={projectId} />
@@ -40,7 +40,11 @@ async function Main({ id }: { id: number }) {
   }
   return (
     <>
-      {data && <SideBar project={data} />}
+      {data && (
+        // <div className=" h-full overflow-clip">
+        <SideBar project={data} />
+        // </div>
+      )}
       <SideBarTrigger className="mt-4 z-50" />
       <SidebarInset className=" bg-transparent overflow-hidden absolute h-full">
         <TopDock />

@@ -1,3 +1,4 @@
+import AIChat from "./ai/AIChat";
 import { SceneBar } from "./sceneBar/SceneBar";
 export default function ActiveSideBar({
   activeTitle,
@@ -11,5 +12,9 @@ export default function ActiveSideBar({
       return <SceneBar />;
     case "Animations":
       return <div>ANIMATION</div>;
+    case "AI":
+      return <AIChat />;
+    default:
+      return <p className=" text-center">Select a Tab to view</p>;
   }
 }

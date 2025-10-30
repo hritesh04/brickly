@@ -14,15 +14,14 @@ import GameTab from "./GameTab";
 import { ImagePlayIcon, Layers, LucideIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import ActiveSideBar from "./ActiveSideBar";
-import { useRightSidebar } from "./RightSidebar";
 import { Separator } from "@/components/ui/separator";
-import { ProjectWithRelation } from "@/actions/project/schema";
+import { project, node } from "@brickly/db";
 import { useProjectManager } from "@/store/project";
 import { useEditor } from "@/store/editor";
-import { node } from "@/actions/node/schema";
 import { observer } from "mobx-react-lite";
+import { LucideStars } from "lucide-react";
 
-const navMain = [
+const navMain: { title: string; icon: LucideIcon }[] = [
   {
     title: "Scenes",
     icon: Layers,
@@ -31,14 +30,14 @@ const navMain = [
     title: "Animations",
     icon: ImagePlayIcon,
   },
-  //   {
-  // title: "Code Editor",
-  // icon: Code2Icon,
-  //   },
+  {
+    title: "AI",
+    icon: LucideStars,
+  },
 ];
 
 export const SideBar = observer(
-  ({ project }: { project: ProjectWithRelation }) => {
+  ({ project }: { project: project.ProjectWithRelation }) => {
     const [activeItem, setActiveItem] = useState<{
       title: string;
       icon: LucideIcon;
@@ -62,7 +61,7 @@ export const SideBar = observer(
         variant="floating"
         className="relative h-full overflow-hidden *:data-[sidebar=sidebar]:flex-row w-full"
       >
-        <Sidebar collapsible="none" className="w-fit border-r py-2">
+        <Sidebar collapsible="none" className="w-fit border-r py-2 h-full">
           <SidebarHeader className="h-fit m-auto">
             <GameTab />
           </SidebarHeader>
@@ -91,7 +90,6 @@ export const SideBar = observer(
                         isActive={activeItem?.title === nav.title}
                       >
                         <nav.icon />
-                        {/* <span>{nav.title}</span> */}
                       </SidebarMenuButton>
                     </SidebarMenuItem>
                   ))}
@@ -100,15 +98,15 @@ export const SideBar = observer(
             </SidebarGroup>
           </SidebarContent>
         </Sidebar>
-        <Sidebar collapsible="none" className="hidden flex-1 md:flex">
+        <Sidebar collapsible="none" className="hidden flex-1 md:flex h-full">
           <SidebarHeader>
             <div className=" flex items-center gap-3 px-2">
-              {activeItem?.icon && <activeItem.icon className="size-4" />}
+              {activeItem?.icon && <activeItem.icon />}
               <p className=" text-center font-medium">{activeItem?.title}</p>
             </div>
             <Separator />
           </SidebarHeader>
-          <SidebarContent className=" h-full px-2 w-full">
+          <SidebarContent className="h-full px-2 w-full">
             <ActiveSideBar activeTitle={activeItem?.title} />
           </SidebarContent>
         </Sidebar>
