@@ -1,5 +1,5 @@
 import { updateNode } from "@/actions/node";
-import { nodeType } from "@/actions/node/schema";
+import { NodeType } from "@brickly/db";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,7 +10,6 @@ import {
 import { useAction } from "@/hooks/useAction";
 import { useEditor } from "@/store/editor";
 import { observer } from "mobx-react-lite";
-// import { nodeType } from "@/actions/node/schema";
 export const NodeTypeProperty = observer(() => {
   const editor = useEditor();
   const { execute } = useAction(updateNode, {
@@ -39,10 +38,10 @@ export const NodeTypeProperty = observer(() => {
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent className="w-56">
-            {nodeType.options.map((n) => (
+            {Object.values(NodeType).map((n) => (
               <DropdownMenuCheckboxItem
                 key={n}
-                checked={activeNode.type == n}
+                checked={activeNode.type === n}
                 onCheckedChange={() => execute({ id: activeNode.id, type: n })}
                 className="text-sm"
               >

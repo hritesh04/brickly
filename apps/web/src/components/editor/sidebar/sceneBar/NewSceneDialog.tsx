@@ -11,7 +11,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-// import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { useAction } from "@/hooks/useAction";
 import { useEditor } from "@/store/editor";
@@ -34,11 +33,13 @@ export const NewSceneDialog = () => {
   const [hasPhysics, setHasPhysics] = useState(false);
   const [physicsType, setPhysicsType] = useState<NodeType | null>(null);
   const [hasAnimation, setHasAnimation] = useState(false);
+  const [open, setOpen] = useState(false);
   const editor = useEditor();
   const project = useProjectManager();
   const { execute } = useAction(createNode, {
     onSuccess(data) {
       editor.addNode(data);
+      setOpen(false);
     },
   });
 
@@ -153,7 +154,7 @@ export const NewSceneDialog = () => {
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Plus size={18} />
       </DialogTrigger>
@@ -272,7 +273,7 @@ export const NewSceneDialog = () => {
             variant="default"
             onClick={() => {
               const result = generateNodeStructure();
-              execute(result);
+              execute({ name: sceneName, ...result });
             }}
           >
             Create
