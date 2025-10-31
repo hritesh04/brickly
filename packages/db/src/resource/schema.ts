@@ -35,7 +35,7 @@ export const resourceSchema = z.object({
 // satisfies z.ZodType<ResourceDTO>;
 
 export const createResourceSchema = resourceSchema
-  .omit({ id: true, path: true, property: true })
+  .omit({ id: true, property: true })
   .extend({
     file: z
       .instanceof(File)

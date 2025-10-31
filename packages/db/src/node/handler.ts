@@ -44,7 +44,9 @@ export async function UpdateNode(data: UpdateNodeInput) {
   }
 }
 
-export async function getSceneHierarchy(id: number): Promise<node[]> {
+export async function getSceneHierarchy(
+  id: number
+): Promise<{ scene: node[] }> {
   try {
     const res = await prisma.$queryRaw<
       node[]
@@ -95,7 +97,7 @@ export async function getSceneHierarchy(id: number): Promise<node[]> {
       LEFT JOIN "Resource" r ON r."parentID" = nh.id
       GROUP BY nh.id, nh.name, nh.type, nh.property, nh."parentID", nh."projectID"
       ORDER BY nh.id;`);
-    return buildTree(res);
+    return { scene: buildTree(res) };
   } catch (error) {
     console.log(error);
     throw new Error("error retrieving scene hierarchy");

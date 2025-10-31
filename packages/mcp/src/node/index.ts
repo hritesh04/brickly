@@ -97,7 +97,7 @@ export function registerNodeTools(server: McpServer) {
     {
       description: "get node and all its childrens detail",
       inputSchema: { id: z.number().describe("id of the node") },
-      outputSchema: nodeWithRelations.shape,
+      outputSchema: { scenes: z.array(nodeWithRelations) },
     },
     async (data, extra) => {
       try {
@@ -116,7 +116,7 @@ export function registerNodeTools(server: McpServer) {
         }
         const result = await getSceneHierarchy(data.id);
         return {
-          structuredContent: { result },
+          structuredContent: result,
           content: [{ type: "text", text: JSON.stringify(result, null, 2) }],
         };
       } catch (error) {
