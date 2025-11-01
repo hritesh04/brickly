@@ -3,5 +3,5 @@ import { Resource, resource } from "@brickly/db";
 
 export type ReturnTypeCreateResource = ActionState<
   resource.CreateResourceInput,
-  Resource
+  resource.Resource
 >;

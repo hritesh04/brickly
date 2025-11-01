@@ -1,5 +1,5 @@
 import { prisma } from "../client.js";
-import { CreateProjectInput, Project } from "./schema.js";
+import { CreateProjectInput, Project, ProjectWithResource } from "./schema.js";
 
 export async function createProject(
   data: CreateProjectInput
@@ -7,9 +7,6 @@ export async function createProject(
   try {
     const res = await prisma.project.create({
       data,
-      include: {
-        resource: true,
-      },
     });
     return res;
   } catch (e: any) {
@@ -21,7 +18,7 @@ export async function createProject(
 export async function getProjectByID(
   id: number,
   userID: number
-): Promise<Project | null> {
+): Promise<ProjectWithResource | null> {
   try {
     const res = await prisma.project.findFirst({
       where: { id: id, userID: userID },
@@ -34,5 +31,17 @@ export async function getProjectByID(
   } catch (e: any) {
     console.log(e);
     throw new Error("Error fetching project details");
+  }
+}
+
+export async function getUserProjects(id: number): Promise<Project[]> {
+  try {
+    const res = await prisma.project.findMany({
+      where: { userID: id },
+    });
+    return res;
+  } catch (e: any) {
+    console.log(e);
+    throw new Error("Error fetching user projects");
   }
 }

@@ -45,6 +45,6 @@ export const createResource = createSafeAction(
   createResourceHandler
 );
 export const updateResource = createSafeAction(
-  resource.updateResourceSchema,
+  resource.resourceSchema,
   updateResourceHandler
 );

@@ -41,11 +41,9 @@ export async function getProject(id: number): Promise<ReturnTypeGetProject> {
     const res = await project.getProjectByID(id, session.userId);
     if (!res) return { error: "project not found" };
 
-    const scene = await getSceneHierarchy(id);
+    const result = await getSceneHierarchy(id);
 
-    // const scene = buildTree(nodes);
-
-    return { data: { ...res, scene, resource: res.resource ?? null } };
+    return { data: { ...res, scene: result.scene } };
   } catch (e: any) {
     console.log(e);
     return { error: "Error fetching project details" };

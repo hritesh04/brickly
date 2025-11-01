@@ -1,5 +1,4 @@
 import z from "zod";
-import type { Project as ProjectDTO } from "@prisma/client";
 import { nodeWithRelations } from "../node/schema.js";
 import { resourceSchema } from "../resource/schema.js";
 
@@ -14,6 +13,9 @@ export const projectSchema = z.object({
   width: z.number().describe("viewport height of the game (e.g. 1440)"),
   userID: z.number().describe("id of the user to whom this project belong to"),
   property: z.any().nullable().describe("property of the node"),
+});
+
+export const projectWithResourceSchema = projectSchema.extend({
   resource: z
     .array(resourceSchema)
     .nullable()
@@ -22,17 +24,18 @@ export const projectSchema = z.object({
 // satisfies z.ZodType<ProjectDTO>;
 
 export const createProjectSchema = projectSchema
-  .omit({ id: true, icon: true, property: true, resource: true })
+  .omit({ id: true, icon: true, property: true })
   .extend({
     userID: z
       .number()
       .describe("id of the user to whom this project belong to"),
   });
 
-export const projectWithRelationSchema = projectSchema.extend({
+export const projectWithRelationSchema = projectWithResourceSchema.extend({
   scene: z.array(nodeWithRelations).nullable(),
 });
 
 export type Project = z.infer<typeof projectSchema>;
+export type ProjectWithResource = z.infer<typeof projectWithResourceSchema>;
 export type CreateProjectInput = z.infer<typeof createProjectSchema>;
 export type ProjectWithRelation = z.infer<typeof projectWithRelationSchema>;
